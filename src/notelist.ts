@@ -58,35 +58,50 @@ namespace noteList {
 
   export async function genItemTemplate() {
     console.log("Func: genItemTemplate");
-    let template = [];
-    template.push(
-      '<div class="content {{#item.selected}}-selected{{/item.selected}}">'
+
+    const content = document.createElement("div");
+    content.setAttribute(
+      "class",
+      "content {{#item.selected}}-selected{{/item.selected}} {{#completed}}-completed{{/completed}}"
     );
-    template.push('<p class="title">{{{noteTitle}}}</p>');
+
+    const title = document.createElement("p");
+    title.setAttribute("class", "title");
+    title.innerHTML = "{{{noteTitle}}}";
 
     if (noteListSettings["firstLine"] != "") {
-      template.push('<p class="firstLine">{{firstLine}}</p>');
+      const firstLine = document.createElement("p");
+      firstLine.setAttribute("class", "firstLine");
+      firstLine.innerHTML = "{{firstLine}}";
+      content.appendChild(firstLine);
     }
 
+    content.appendChild(title);
+
+    const dateInline = document.createElement("span");
+    dateInline.setAttribute("class", "date");
+    dateInline.innerHTML = "{{noteDate}}";
+
+    const body = document.createElement("p");
+    body.setAttribute("class", "body");
     if (noteListSettings["datePositionInline"] == "begin") {
-      template.push(
-        '<p class="body"><span class="date">{{noteDate}}</span> {{noteBody}}</p>'
-      );
+      body.innerHTML = dateInline.outerHTML + " {{noteBody}}";
     } else if (noteListSettings["datePositionInline"] == "end") {
-      template.push(
-        '<p class="body">{{noteBody}} <span class="date">{{noteDate}}</span></p>'
-      );
+      body.innerHTML = " {{noteBody}}" + dateInline.outerHTML;
     } else {
-      template.push('<p class="body">{{noteBody}}</p>');
+      body.innerHTML = "{{noteBody}}";
     }
+
+    content.appendChild(body);
 
     if (noteListSettings["lastLine"] != "") {
-      template.push('<p class="lastLine">{{lastLine}}</p>');
+      const lastLine = document.createElement("p");
+      lastLine.setAttribute("class", "lastLine");
+      lastLine.innerHTML = "{{lastLine}}";
+      content.appendChild(lastLine);
     }
 
-    template.push("</div>");
-
-    noteListSettings["itemTemplate"] = template.join("\n");
+    noteListSettings["itemTemplate"] = content.outerHTML;
   }
 
   export async function getNoteDateFormated(noteDate: any): Promise<string> {
