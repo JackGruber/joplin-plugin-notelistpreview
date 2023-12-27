@@ -5,6 +5,8 @@
 
 # Joplin note list preview
 
+A plugin to add a previw to the note list.
+
 <img src=img/main.png>
 
 ## Installation
@@ -25,7 +27,7 @@
 
 ## Usage
 
-Die neue Notzizlisten ansicht kann unter `View > Note list style > Preview` aktiviert werden.
+The new note list view can be activated under `View > Note list style > Preview`.
 <img src=img/enable.png>
 
 ## Plugin options
