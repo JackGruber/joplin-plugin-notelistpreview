@@ -164,6 +164,7 @@ namespace noteList {
         height: noteListSettings["itemSizeHeight"],
       },
       dependencies: [
+        "note.id",
         "item.selected",
         "note.titleHtml",
         "note.body",
