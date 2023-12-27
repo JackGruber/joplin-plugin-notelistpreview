@@ -9,6 +9,7 @@ import * as naturalCompare from "string-natural-compare";
 
 let i18n: any;
 let noteListSettings = {};
+let msgDialog: any;
 
 namespace noteList {
   export async function init() {
@@ -18,6 +19,7 @@ namespace noteList {
     await noteList.loadSettings();
     await noteList.genItemTemplate();
     await noteList.registerRendererPreview();
+    await noteList.createMsgDialog();
   }
 
   export async function translate() {
@@ -229,6 +231,39 @@ namespace noteList {
         };
       },
     });
+  }
+
+  export async function settingsChanged() {
+    await noteList.loadSettings();
+    await noteList.showMsg(
+      i18n.__("msg.settingsChanged", "Note list (Preview)")
+    );
+  }
+
+  export async function createMsgDialog() {
+    msgDialog = await joplin.views.dialogs.create("noteListPreviewDialog");
+    await joplin.views.dialogs.addScript(msgDialog, "webview.css");
+  }
+
+  export async function showMsg(msg: string, title: string = null) {
+    const html = [];
+
+    if (title !== null) {
+      console.log(`${title}: ${msg}`);
+    } else {
+      console.log(`${msg}`);
+    }
+
+    html.push('<div id="notelist" style="backuperror">');
+    html.push(`<h3>Backup plugin</h3>`);
+    if (title) {
+      html.push(`<p>${title}</p>`);
+    }
+    html.push(`<div id="msg">${msg}`);
+    html.push("</div>");
+    await joplin.views.dialogs.setButtons(msgDialog, [{ id: "ok" }]);
+    await joplin.views.dialogs.setHtml(msgDialog, html.join("\n"));
+    await joplin.views.dialogs.open(msgDialog);
   }
 }
 

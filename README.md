@@ -48,6 +48,7 @@ The new note list view can be activated under `View > Note list style > Preview`
 ## Plugin options
 
 Settings for the plugin, accessible at `Tools > Options > Note overview`.
+Joplin must be restarted after changing settings!
 
 ## Changelog
 

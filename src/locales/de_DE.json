@@ -29,5 +29,8 @@
       "label": "Notiz Auszug",
       "description": "Wieviele zeichen sollen aus dem Notiz Text angezeigt werden"
     }
+  },
+  "msg": {
+    "settingsChanged": "Einstellungen für das %s Plugin wurden geändert, bitte Joplin neustarten"
   }
 }
