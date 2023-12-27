@@ -9,6 +9,21 @@ A plugin to add a previw to the note list.
 
 <img src=img/main.png>
 
+<!-- prettier-ignore-start -->
+
+<!-- TOC depthfrom:2 orderedlist:false -->
+
+- [Installation](#installation)
+    - [Automatic](#automatic)
+    - [Manual](#manual)
+- [Usage](#usage)
+- [Plugin options](#plugin-options)
+- [Changelog](#changelog)
+
+<!-- /TOC -->
+
+<!-- prettier-ignore-end -->
+
 ## Installation
 
 ### Automatic
