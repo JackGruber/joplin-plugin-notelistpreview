@@ -269,8 +269,8 @@ namespace noteList {
       console.log(`${msg}`);
     }
 
-    html.push('<div id="notelist" style="backuperror">');
-    html.push(`<h3>Backup plugin</h3>`);
+    html.push('<div id="notelist" style="notelistmsg">');
+    html.push(`<h3>Note list (Preview) plugin</h3>`);
     if (title) {
       html.push(`<p>${title}</p>`);
     }
