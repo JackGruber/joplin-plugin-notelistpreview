@@ -1,0 +1,33 @@
+{
+  "settings": {
+    "datePositionInline": {
+      "label": "Position Inline Datum",
+      "description": "Wo soll das Datum inline zum Notetext angezeigt werden",
+      "values": {
+        "no": "Kein Datum einfügen",
+        "begin": "Am Anfang",
+        "end": "Am Ende"
+      }
+    },
+    "daysHumanizeDate": {
+      "label": "Humanisiertes Datum",
+      "description": "Bis zu wieviel Tagen soll das Datum Humanisiert angezeigt werden. -1 = Deaktivert"
+    },
+    "firstLine": {
+      "label": "Erste Zeile",
+      "description": "Inhalt erste Zeile vor dem Notiztext. Als Variablen stehen {{field_tags}} (Tags) und {{field_date}} (Änderungsdatum) zu verfügung"
+    },
+    "lastLine": {
+      "label": "Letzte Zeile",
+      "description": "Inhalt letzten Zeile nach dem Notiztext. Als Variablen stehen {{field_tags}} (Tags) und {{field_date}} (Änderungsdatum) zu verfügung"
+    },
+    "itemSizeHeight": {
+      "label": "Höhe des Elements",
+      "description": "Wie hoch die Vorschau in pixel jedes Notizelements sein soll"
+    },
+    "bodyExcerpt": {
+      "label": "Notiz Auszug",
+      "description": "Wieviele zeichen sollen aus dem Notiz Text angezeigt werden"
+    }
+  }
+}
