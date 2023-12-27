@@ -1,15 +1,24 @@
 {
-	"manifest_version": 1,
-	"id": "io.github.jackgruber.notelistpreview",
-	"app_min_version": "2.13",
-	"version": "0.0.1",
-	"name": "Note list (Preview)",
-	"description": "Displays a note priview in the note list",
-	"author": "JackGruber",
-	"homepage_url": "https://github.com/JackGruber/joplin-plugin-notelistpreview/README.md",
-	"repository_url": "https://github.com/JackGruber/joplin-plugin-notelistpreview",
-	"keywords": ["priview", "vorschau", "notiz", "note", "notelist"],
-	"categories": ["themes", "productivity"],
-	"screenshots": [],
-	"icons": {}
+  "manifest_version": 1,
+  "id": "io.github.jackgruber.notelistpreview",
+  "app_min_version": "2.13",
+  "version": "0.0.2",
+  "name": "Note list (Preview)",
+  "description": "Displays a note priview in the note list",
+  "author": "JackGruber",
+  "homepage_url": "https://github.com/JackGruber/joplin-plugin-notelistpreview/README.md",
+  "repository_url": "https://github.com/JackGruber/joplin-plugin-notelistpreview",
+  "keywords": [
+    "priview",
+    "vorschau",
+    "notiz",
+    "note",
+    "notelist"
+  ],
+  "categories": [
+    "themes",
+    "productivity"
+  ],
+  "screenshots": [],
+  "icons": {}
 }
