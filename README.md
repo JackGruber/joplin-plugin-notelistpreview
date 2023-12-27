@@ -35,7 +35,7 @@ A plugin to add a previw to the note list.
 
 ### Manual
 
-- Download the latest released JPL package (`io.github.jackgruber.notelist.jpl`) from [here](https://github.com/JackGruber/joplin-plugin-notelist/releases/latest)
+- Download the latest released JPL package (`io.github.jackgruber.notelistpreview.jpl`) from [here](https://github.com/JackGruber/joplin-plugin-notelistpreview/releases/latest)
 - Close Joplin
 - Copy the downloaded JPL package in your profile `plugins` folder
 - Start Joplin
