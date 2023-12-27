@@ -1,0 +1,9 @@
+#notelistmsg {
+  width: fit-content;
+  display: block;
+  flex-direction: column;
+  min-width: 300px;
+  overflow-wrap: break-word;
+  font-size: var(--joplin-font-size);
+  font-family: var(--joplin-font-family);
+}
