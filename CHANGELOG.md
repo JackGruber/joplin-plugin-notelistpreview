@@ -2,6 +2,8 @@
 
 ## not released
 
+## v0.1.0 (2023-12-28)
+
 - Add: Info to restart Joplin on settings change
 - Add: #2 Display external editing (isWatched) status
 - Add: #1 Display and edit ToDos
