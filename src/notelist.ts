@@ -80,6 +80,7 @@ namespace noteList {
         <div class="content {{#item.selected}}-selected{{/item.selected}} {{#completed}}-completed{{/completed}}">
           <div class="title">
             {{#note.is_todo}}<span class="checkbox"><input data-id="todo-checkbox" type="checkbox" {{#completed}}checked{{/completed}} /></span>{{/note.is_todo}}
+            {{#note.isWatched}}<i class="watchedicon fa fa-share-square"></i>{{/note.isWatched}}
             <span>{{{noteTitle}}}</span>
           </div>
           ${firstLine}
@@ -221,6 +222,8 @@ namespace noteList {
         "note.body",
         "note.user_updated_time",
         "note.tags",
+        "note.isWatched",
+      ],
       itemCss: await noteList.getItemCss(),
       itemTemplate: noteListSettings["itemTemplate"],
 
