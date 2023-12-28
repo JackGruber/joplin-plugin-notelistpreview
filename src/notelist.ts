@@ -243,9 +243,18 @@ namespace noteList {
     noteBody = noteBody.replace(/(\s\\?==|==\s)/g, " ");
     noteBody = noteBody.replace(/(\s\\?\+\+|\+\+\s)/g, " ");
 
-    noteBody = noteBody.substring(0, noteListSettings["bodyExcerpt"]);
+    let bodyExcerpt = "";
+    for (const word of noteBody.split(" ")) {
+      if (bodyExcerpt.length + word.length > noteListSettings["bodyExcerpt"]) {
+        break;
+      }
+      bodyExcerpt = bodyExcerpt + word + " ";
+    }
+    if (bodyExcerpt.length < noteBody.length) {
+      bodyExcerpt = bodyExcerpt + " ...";
+    }
 
-    return noteBody;
+    return bodyExcerpt;
   }
 
   export async function getTags(noteTags: any): Promise<Array<string>> {
