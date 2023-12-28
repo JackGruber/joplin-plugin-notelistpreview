@@ -12,7 +12,7 @@ let noteListSettings = {};
 let msgDialog: any;
 
 namespace noteList {
-  export async function init() {
+  export async function init(): Promise<void> {
     console.log("Func: init");
     await noteList.translate();
     await settings.register();
@@ -22,7 +22,7 @@ namespace noteList {
     await noteList.createMsgDialog();
   }
 
-  export async function translate() {
+  export async function translate(): Promise<void> {
     console.log("Func: translate");
     const joplinLocale = await joplin.settings.globalValue("locale");
     const installationDir = await joplin.plugins.installationDir();
@@ -41,7 +41,7 @@ namespace noteList {
     moment.locale(joplinLocale);
   }
 
-  export async function loadSettings() {
+  export async function loadSettings(): Promise<void> {
     console.log("Func: loadSettings");
     noteListSettings = {
       itemTemplate: "",
@@ -62,7 +62,7 @@ namespace noteList {
     };
   }
 
-  export async function genItemTemplate() {
+  export async function genItemTemplate(): Promise<void> {
     console.log("Func: genItemTemplate");
 
     let firstLine = "";
@@ -99,7 +99,7 @@ namespace noteList {
     console.log(noteListSettings["itemTemplate"]);
   }
 
-  export async function getItemCss() {
+  export async function getItemCss(): Promise<string> {
     const cssDateDefault = "color: var(--joplin-color4);";
     const cssTagDefault = `
       border-radius: 5px;
@@ -269,7 +269,7 @@ namespace noteList {
     return tags;
   }
 
-  export async function registerRendererPreview() {
+  export async function registerRendererPreview(): Promise<void> {
     console.log("Func: registerRendererPreview");
     await joplin.views.noteList.registerRenderer({
       id: "previewNotelist",
@@ -358,14 +358,14 @@ namespace noteList {
     }
   }
 
-  export async function settingsChanged() {
+  export async function settingsChanged(): Promise<void> {
     await noteList.loadSettings();
     await noteList.showMsg(
       i18n.__("msg.settingsChanged", "Note list (Preview)")
     );
   }
 
-  export async function createMsgDialog() {
+  export async function createMsgDialog(): Promise<void> {
     msgDialog = await joplin.views.dialogs.create("noteListPreviewDialog");
     await joplin.views.dialogs.addScript(msgDialog, "webview.css");
   }
