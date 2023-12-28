@@ -28,6 +28,25 @@
     "bodyExcerpt": {
       "label": "Note excerpt",
       "description": "How many characters should be displayed from the note text"
+    },
+    "cssDateOverwrite": {
+      "label": "Replace CSS styles for the date",
+      "description": "Replace the CSS styles for the class %s"
+    },
+    "cssTagOverwrite": {
+      "label": "Replace CSS styles for the tags",
+      "description": "Replace CSS styles for the class %s"
+    },
+    "cssFirstLineOverwrite": {
+      "label": "Replace CSS styles for the first line",
+      "description": "Replace CSS styles for the class %s"
+    },
+    "cssLastLineOverwrite": {
+      "label": "Replace CSS styles for the last line",
+      "description": "Replace CSS styles for the class %s"
     }
+  },
+  "msg": {
+    "settingsChanged": "Settings have been changed for the %s Plugin, please restart Joplin"
   }
 }

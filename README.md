@@ -18,6 +18,8 @@ A plugin to add a previw to the note list.
     - [Manual](#manual)
 - [Usage](#usage)
 - [Plugin options](#plugin-options)
+- [Examples with settings](#examples-with-settings)
+    - [Date and Tags](#date-and-tags)
 - [Changelog](#changelog)
 
 <!-- /TOC -->
@@ -48,6 +50,18 @@ The new note list view can be activated under `View > Note list style > Preview`
 ## Plugin options
 
 Settings for the plugin, accessible at `Tools > Options > Note overview`.
+Joplin must be restarted after changing settings!
+
+## Examples with settings
+
+### Date and Tags
+
+<img src=img/example_tag.png>
+
+| Setting | Value |
+| ------- | ----- |
+| Note excerpt | 115 |
+| Last line | {{tags}} |
 
 ## Changelog
 
