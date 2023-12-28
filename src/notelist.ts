@@ -59,49 +59,39 @@ namespace noteList {
   export async function genItemTemplate() {
     console.log("Func: genItemTemplate");
 
-    const content = document.createElement("div");
-    content.setAttribute(
-      "class",
-      "content {{#item.selected}}-selected{{/item.selected}} {{#completed}}-completed{{/completed}}"
-    );
-
-    const title = document.createElement("p");
-    title.setAttribute("class", "title");
-    title.innerHTML = "{{{noteTitle}}}";
-
+    let firstLine = "";
     if (noteListSettings["firstLine"] != "") {
-      const firstLine = document.createElement("p");
-      firstLine.setAttribute("class", "firstLine");
-      firstLine.innerHTML = "{{firstLine}}";
-      content.appendChild(firstLine);
+      firstLine = '<p class="firstLine">{{firstLine}}</p>';
     }
 
-    content.appendChild(title);
-
-    const dateInline = document.createElement("span");
-    dateInline.setAttribute("class", "date");
-    dateInline.innerHTML = "{{noteDate}}";
-
-    const body = document.createElement("p");
-    body.setAttribute("class", "body");
-    if (noteListSettings["datePositionInline"] == "begin") {
-      body.innerHTML = dateInline.outerHTML + " {{noteBody}}";
-    } else if (noteListSettings["datePositionInline"] == "end") {
-      body.innerHTML = " {{noteBody}}" + dateInline.outerHTML;
-    } else {
-      body.innerHTML = "{{noteBody}}";
-    }
-
-    content.appendChild(body);
-
+    let lastLine = "";
     if (noteListSettings["lastLine"] != "") {
-      const lastLine = document.createElement("p");
-      lastLine.setAttribute("class", "lastLine");
-      lastLine.innerHTML = "{{lastLine}}";
-      content.appendChild(lastLine);
+      lastLine = '<p class="lastLine">{{lastLine}}</p>';
     }
 
-    noteListSettings["itemTemplate"] = content.outerHTML;
+    let noteBody = "{{noteBody}}";
+    if (noteListSettings["datePositionInline"] == "begin") {
+      noteBody = '<span class="date">{{noteDate}}</span> ' + noteBody;
+    } else if (noteListSettings["datePositionInline"] == "end") {
+      noteBody = noteBody + ' <span class="date">{{noteDate}}</span>';
+    }
+
+    noteListSettings["itemTemplate"] = `
+        <div class="content {{#item.selected}}-selected{{/item.selected}} {{#completed}}-completed{{/completed}}">
+          <div class="title">
+            {{#note.is_todo}}<span class="checkbox"><input data-id="todo-checkbox" type="checkbox" {{#completed}}checked{{/completed}} /></span>{{/note.is_todo}}
+            <span>{{{noteTitle}}}</span>
+          </div>
+          ${firstLine}
+          <p class="body"> 
+            ${noteBody}
+          </p>
+          ${lastLine}
+        </div>
+    `;
+    console.log(noteListSettings["itemTemplate"]);
+  }
+
   export async function getItemCss() {
     return `
       > .content {
