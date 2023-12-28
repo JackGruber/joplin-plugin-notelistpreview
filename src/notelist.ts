@@ -251,24 +251,21 @@ namespace noteList {
 
     let firstLine = noteListSettings["firstLine"];
     let lastLine = noteListSettings["lastLine"];
+    const dateStringHtml = '<span class="date">' + dateString + "</span>";
 
-    firstLine = firstLine.replace(
-      "{{tags}}",
-      '<span class="tags">' + tags.join(", ") + "</span>"
-    );
-    lastLine = lastLine.replace(
-      "{{tags}}",
-      '<span class="tags">' + tags.join(", ") + "</span>"
-    );
+    let tagString = "";
+    if (tags.length > 0) {
+      tagString =
+        '<span class="tags"><span class="tag">' +
+        tags.join('</span> <span class="tag">') +
+        "</span></span>";
+    }
 
-    firstLine = firstLine.replace(
-      "{{date}}",
-      '<span class="date">' + dateString + "</span>"
-    );
-    lastLine = lastLine.replace(
-      "{{date}}",
-      '<span class="date">' + dateString + "</span>"
-    );
+    firstLine = firstLine.replace("{{tags}}", tagString);
+    lastLine = lastLine.replace("{{tags}}", tagString);
+
+    firstLine = firstLine.replace("{{date}}", dateStringHtml);
+    lastLine = lastLine.replace("{{date}}", dateStringHtml);
 
     return {
       ...props,
