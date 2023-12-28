@@ -70,7 +70,7 @@ export namespace settings {
         description: i18n.__("settings.itemSizeHeight.description"),
       },
       bodyExcerpt: {
-        value: 130,
+        value: 150,
         minimum: 1,
         maximum: 9999,
         type: SettingItemType.Int,
