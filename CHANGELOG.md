@@ -2,6 +2,8 @@
 
 ## not released
 
+## v0.2.0 (2023-12-28)
+
 - Add: Option for a thumbnail
 
 ## v0.1.0 (2023-12-28)
