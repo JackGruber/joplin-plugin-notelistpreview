@@ -8,17 +8,25 @@
   "author": "JackGruber",
   "homepage_url": "https://github.com/JackGruber/joplin-plugin-notelistpreview/README.md",
   "repository_url": "https://github.com/JackGruber/joplin-plugin-notelistpreview",
-  "keywords": [
-    "preview",
-    "vorschau",
-    "notiz",
-    "note",
-    "notelist"
+  "keywords": ["preview", "vorschau", "notiz", "note", "notelist"],
+  "categories": ["themes", "productivity"],
+  "screenshots": [
+    {
+      "src": "../img/main.png",
+      "label": "Screenshot: Showing the Note liste preview with thumbnail"
+    },
+    {
+      "src": "../img/showcase1.png",
+      "label": "Screenshot: Showing the Note liste preview"
+    },
+    {
+      "src": "../img/showcase2.png",
+      "label": "Screenshot: Showing the Note liste preview with thumbnail and tags"
+    }
   ],
-  "categories": [
-    "themes",
-    "productivity"
-  ],
-  "screenshots": [],
-  "icons": {}
+  "icons": {
+    "icons": {
+      "256": "../img/icon_256.png"
+    }
+  }
 }
