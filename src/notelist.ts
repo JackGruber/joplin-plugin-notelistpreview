@@ -228,7 +228,7 @@ namespace noteList {
       ],
       itemCss: await noteList.getItemCss(),
       itemTemplate: noteListSettings["itemTemplate"],
-      onRenderNote: async (props: any) => {
+      onRenderNote: async (props: any): Promise<any> => {
         return await noteList.onRenderNoteCall(props);
       },
       onChange: async (event: OnChangeEvent): Promise<void> => {
@@ -237,7 +237,7 @@ namespace noteList {
     });
   }
 
-  export async function onRenderNoteCall(props: any) {
+  export async function onRenderNoteCall(props: any): Promise<any> {
     console.log("Func: onRenderNoteCall");
     console.log(props);
     const noteBody = await noteList.getBody(props.note.body);
