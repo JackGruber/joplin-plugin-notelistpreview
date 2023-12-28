@@ -53,6 +53,12 @@ namespace noteList {
       lastLine: (await joplin.settings.value("lastLine")).trim(),
       dateFormatJoplin: await joplin.settings.globalValue("dateFormat"),
       timeFormatJoplin: await joplin.settings.globalValue("timeFormat"),
+      cssDateOverwrite: await joplin.settings.value("cssDateOverwrite"),
+      cssTagOverwrite: await joplin.settings.value("cssTagOverwrite"),
+      cssFirstLineOverwrite: await joplin.settings.value(
+        "cssFirstLineOverwrite"
+      ),
+      cssLastLineOverwrite: await joplin.settings.value("cssLastLineOverwrite"),
     };
   }
 
@@ -94,6 +100,25 @@ namespace noteList {
   }
 
   export async function getItemCss() {
+    const cssDateDefault = "color: var(--joplin-color4);";
+    const cssTagDefault = `
+      border-radius: 5px;
+      background: var(--joplin-divider-color);
+      padding: 2px 5px 2px 5px;
+    `;
+
+    const cssDate =
+      noteListSettings["cssDateOverwrite"].trim() != ""
+        ? noteListSettings["cssDateOverwrite"]
+        : cssDateDefault;
+    const cssTag =
+      noteListSettings["cssTagOverwrite"].trim() != ""
+        ? noteListSettings["cssTagOverwrite"]
+        : cssTagDefault;
+
+    const cssFirstLine = noteListSettings["cssFirstLineOverwrite"];
+    const cssLastLine = noteListSettings["cssLastLineOverwrite"];
+
     return `
       > .content {
           width: 100%;
@@ -147,7 +172,31 @@ namespace noteList {
       }
 
       > .content > .body > .date {
-          color: var(--joplin-color4);
+        ${cssDate}
+      }
+
+      > .content > .firstLine {
+        ${cssFirstLine}
+      }
+
+      > .content > .lastLine {
+        ${cssLastLine}
+      }
+
+      > .content > .firstLine > .date {
+        ${cssDate}
+      }
+
+      > .content > .lastLine > .date {
+        ${cssDate}
+      }
+
+      > .content > .firstLine > .tags > .tag {
+        ${cssTag}
+      }
+
+      > .content > .lastLine > .tags > .tag {
+        ${cssTag}
       }
 
       > .content.-selected {

@@ -80,6 +80,48 @@ export namespace settings {
         label: i18n.__("settings.bodyExcerpt.label"),
         description: i18n.__("settings.bodyExcerpt.description"),
       },
+      cssFirstLineOverwrite: {
+        value: "",
+        type: SettingItemType.String,
+        section: "noteListPreview",
+        public: true,
+        advanced: true,
+        label: i18n.__("settings.cssFirstLineOverwrite.label"),
+        description: i18n.__(
+          "settings.cssFirstLineOverwrite.description",
+          ".firstLine"
+        ),
+      },
+      cssLastLineOverwrite: {
+        value: "",
+        type: SettingItemType.String,
+        section: "noteListPreview",
+        public: true,
+        advanced: true,
+        label: i18n.__("settings.cssLastLineOverwrite.label"),
+        description: i18n.__(
+          "settings.cssLastLineOverwrite.description",
+          ".lastLine"
+        ),
+      },
+      cssDateOverwrite: {
+        value: "",
+        type: SettingItemType.String,
+        section: "noteListPreview",
+        public: true,
+        advanced: true,
+        label: i18n.__("settings.cssDateOverwrite.label"),
+        description: i18n.__("settings.cssDateOverwrite.description", ".date"),
+      },
+      cssTagOverwrite: {
+        value: "",
+        type: SettingItemType.String,
+        section: "noteListPreview",
+        public: true,
+        advanced: true,
+        label: i18n.__("settings.cssTagOverwrite.label"),
+        description: i18n.__("settings.cssTagOverwrite.description", ".tags"),
+      },
     });
   }
 }

@@ -25,9 +25,21 @@
       "label": "Höhe des Elements",
       "description": "Wie hoch die Vorschau in pixel jedes Notizelements sein soll"
     },
-    "bodyExcerpt": {
-      "label": "Notiz Auszug",
-      "description": "Wieviele zeichen sollen aus dem Notiz Text angezeigt werden"
+    "cssDateOverwrite": {
+      "label": "CSS Styles für das Datum ersetzen",
+      "description": "Ersetzt den CSS Styles für die class %s"
+    },
+    "cssTagOverwrite": {
+      "label": "CSS Styles für die Tags ersetzen",
+      "description": "Ersetzt den CSS Styles für die class %s"
+    },
+    "cssFirstLineOverwrite": {
+      "label": "CSS Styles für die erste Zeile ersetzen",
+      "description": "Ersetzt den CSS Styles für die class %s"
+    },
+    "cssLastLineOverwrite": {
+      "label": "CSS Styles für die letzte Zeile ersetzen",
+      "description": "Ersetzt den CSS Styles für die class %s"
     }
   },
   "msg": {
