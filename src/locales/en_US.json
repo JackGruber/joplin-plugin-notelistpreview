@@ -44,9 +44,25 @@
     "cssLastLineOverwrite": {
       "label": "Replace CSS styles for the last line",
       "description": "Replace CSS styles for the class %s"
+    },
+    "thumbnail": {
+      "label": "Thumbnail",
+      "description": "The first image is used as the preview image",
+      "values": {
+        "no": "No",
+        "left": "Left",
+        "right": "Right"
+      }
+    },
+    "thumbnailSize": {
+      "label": "Thumbnail size",
+      "description": "Maximum width and height of the thumbnail"
     }
   },
   "msg": {
-    "settingsChanged": "Settings have been changed for the %s Plugin, please restart Joplin"
+    "settingsChanged": "Settings have been changed for the %s Plugin, please restart Joplin",
+    "error": {
+      "cleanResourcePreview": "Error when cleaning up the preview images"
+    }
   }
 }

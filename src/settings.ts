@@ -34,6 +34,20 @@ export namespace settings {
         label: i18n.__("settings.daysHumanizeDate.label"),
         description: i18n.__("settings.daysHumanizeDate.description"),
       },
+      thumbnail: {
+        value: "no",
+        type: SettingItemType.String,
+        section: "noteListPreview",
+        isEnum: true,
+        public: true,
+        options: {
+          no: i18n.__("settings.thumbnail.values.no"),
+          left: i18n.__("settings.thumbnail.values.left"),
+          right: i18n.__("settings.thumbnail.values.right"),
+        },
+        label: i18n.__("settings.thumbnail.label"),
+        description: i18n.__("settings.thumbnail.description"),
+      },
       firstLine: {
         value: "",
         type: SettingItemType.String,
@@ -79,6 +93,17 @@ export namespace settings {
         advanced: true,
         label: i18n.__("settings.bodyExcerpt.label"),
         description: i18n.__("settings.bodyExcerpt.description"),
+      },
+      thumbnailSize: {
+        value: 75,
+        minimum: 1,
+        maximum: 200,
+        type: SettingItemType.Int,
+        section: "noteListPreview",
+        public: true,
+        advanced: true,
+        label: i18n.__("settings.thumbnailSize.label"),
+        description: i18n.__("settings.thumbnailSize.description"),
       },
       cssFirstLineOverwrite: {
         value: "",

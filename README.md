@@ -20,6 +20,7 @@ A plugin to add a previw to the note list.
 - [Plugin options](#plugin-options)
 - [Examples with settings](#examples-with-settings)
     - [Date and Tags](#date-and-tags)
+    - [Thumbnail right](#thumbnail-right)
 - [Changelog](#changelog)
 
 <!-- /TOC -->
@@ -62,6 +63,15 @@ Joplin must be restarted after changing settings!
 | ------- | ----- |
 | Note excerpt | 115 |
 | Last line | {{tags}} |
+
+### Thumbnail right
+
+<img src=img/example_thumbnail_right.png>
+
+| Setting | Value |
+| ------- | ----- |
+| Thumbnail | Right |
+| Note excerpt | 100 |
 
 ## Changelog
 

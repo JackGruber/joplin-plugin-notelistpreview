@@ -40,9 +40,25 @@
     "cssLastLineOverwrite": {
       "label": "CSS Styles für die letzte Zeile ersetzen",
       "description": "Ersetzt den CSS Styles für die class %s"
+    },
+    "thumbnail": {
+      "label": "Vorschaubild",
+      "description": "Es wird das erste Bild als Vorschaubild verwendet",
+      "values": {
+        "no": "Keins",
+        "left": "Links",
+        "right": "Rechts"
+      }
+    },
+    "thumbnailSize": {
+      "label": "Vorschaubild Größe",
+      "description": "Maximale Bereite und Höhe des Vorschaubildes"
     }
   },
   "msg": {
-    "settingsChanged": "Einstellungen für das %s Plugin wurden geändert, bitte Joplin neustarten"
+    "settingsChanged": "Einstellungen für das %s Plugin wurden geändert, bitte Joplin neustarten",
+    "error": {
+      "cleanResourcePreview": "Fehler beim Aufräumen der Vorschaubilder"
+    }
   }
 }
