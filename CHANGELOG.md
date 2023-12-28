@@ -4,6 +4,7 @@
 
 - Add: Info to restart Joplin on settings change
 - Add: #2 Display external editing (isWatched) status
+- Add: #1 Display and edit ToDos
 
 ## v0.0.2 (2023-12-27)
 

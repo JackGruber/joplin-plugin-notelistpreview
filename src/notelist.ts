@@ -272,6 +272,17 @@ namespace noteList {
   export async function onChangeEvent(event: OnChangeEvent): Promise<void> {
     console.log("Func: onChangeEvent");
     console.log(event);
+    if (event.elementId === "todoCheckboxCompleted") {
+      if (event.value) {
+        await joplin.data.put(["notes", event.noteId], null, {
+          todo_completed: Date.now(),
+        });
+      } else {
+        await joplin.data.put(["notes", event.noteId], null, {
+          todo_completed: 0,
+        });
+      }
+    }
   }
 
   export async function settingsChanged() {
