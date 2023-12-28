@@ -102,6 +102,67 @@ namespace noteList {
     }
 
     noteListSettings["itemTemplate"] = content.outerHTML;
+  export async function getItemCss() {
+    return `
+      > .content {
+          width: 100%;
+          box-sizing: border-box;
+          padding-left: 10px;
+          padding-right: 10px;
+          padding-top: 5px;
+          padding-bottom: 5px;
+          overflow: hidden;
+          color: var(--joplin-color);
+      }
+
+      > .content p {
+          margin-bottom: 5px;
+      }
+
+      > .content > .title {
+          font-weight: bold;
+          font-family: var(--joplin-font-family);
+          font-size: var(--joplin-font-size);
+          white-space: nowrap;
+          display: flex;
+          align-items: center;
+      }
+
+      > .content > .title > .checkbox {
+        padding-right: 4px;
+      }
+
+      > .content > .title > .checkbox input {
+        margin: 3px 3px 3px 0px;
+      }
+
+      > .content > .title > .watchedicon {
+        padding-right: 4px;
+        padding-left: 1px;
+      }
+
+      > .content > .body {
+          opacity: 0.7;
+      }
+
+      > .content > .firstLine {
+          opacity: 0.7;
+          margin-bottom: 2px;
+      }
+
+      > .content > .lastLine {
+          opacity: 0.7;
+          margin-top: 2px;
+      }
+
+      > .content > .body > .date {
+          color: var(--joplin-color4);
+      }
+
+      > .content.-selected {
+          background-color: var(--joplin-selected-color);
+      }
+    `;
   }
 
   export async function getNoteDateFormated(noteDate: any): Promise<string> {
@@ -170,54 +231,7 @@ namespace noteList {
         "note.body",
         "note.user_updated_time",
         "note.tags",
-      ],
-
-      itemCss: `
-                > .content {
-                    width: 100%;
-                    box-sizing: border-box;
-                    padding-left: 10px;
-                    padding-right: 10px;
-                    padding-top: 5px;
-                    padding-bottom: 5px;
-                    overflow: hidden;
-                    color: var(--joplin-color);
-                }
-    
-                > .content p {
-                    margin-bottom: 5px;
-                }
-    
-                >.content > .title {
-                    font-weight: bold;
-                    font-family: var(--joplin-font-family);
-                    font-size: var(--joplin-font-size);
-                    white-space: nowrap;
-                }
-    
-                >.content > .body {
-                    opacity: 0.7;
-                }
-
-                >.content > .firstLine {
-                    opacity: 0.7;
-                    margin-bottom: 2px;
-                }
-
-                >.content > .lastLine {
-                    opacity: 0.7;
-                    margin-top: 2px;
-                }
-
-                >.content > .body > .date {
-                    color: var(--joplin-color4);
-                }
-    
-                > .content.-selected {
-                    background-color: var(--joplin-selected-color);
-                }
-            `,
-
+      itemCss: await noteList.getItemCss(),
       itemTemplate: noteListSettings["itemTemplate"],
 
       onRenderNote: async (props: any) => {
