@@ -1,5 +1,5 @@
 import joplin from "api";
-import { ItemFlow } from "api/noteListType";
+import { ItemFlow, OnChangeEvent } from "api/noteListType";
 import * as moment from "moment";
 import * as removeMd from "remove-markdown";
 import { I18n } from "i18n";
@@ -79,7 +79,7 @@ namespace noteList {
     noteListSettings["itemTemplate"] = `
         <div class="content {{#item.selected}}-selected{{/item.selected}} {{#completed}}-completed{{/completed}}">
           <div class="title">
-            {{#note.is_todo}}<span class="checkbox"><input data-id="todo-checkbox" type="checkbox" {{#completed}}checked{{/completed}} /></span>{{/note.is_todo}}
+            {{#note.is_todo}}<span class="checkbox"><input data-id="todoCheckboxCompleted" type="checkbox" {{#completed}}checked{{/completed}} /></span>{{/note.is_todo}}
             {{#note.isWatched}}<i class="watchedicon fa fa-share-square"></i>{{/note.isWatched}}
             <span>{{{noteTitle}}}</span>
           </div>
@@ -222,38 +222,56 @@ namespace noteList {
         "note.body",
         "note.user_updated_time",
         "note.tags",
+        "note.is_todo",
+        "note.todo_completed",
         "note.isWatched",
       ],
       itemCss: await noteList.getItemCss(),
       itemTemplate: noteListSettings["itemTemplate"],
-
       onRenderNote: async (props: any) => {
-        console.log("Func: onRenderNote");
-        const noteBody = await noteList.getBody(props.note.body);
-        const dateString = await noteList.getNoteDateFormated(
-          props.note.user_updated_time
-        );
-        const tags = await noteList.getTags(props.note.tags);
-
-        let firstLine = noteListSettings["firstLine"];
-        let lastLine = noteListSettings["lastLine"];
-
-        firstLine = firstLine.replace("{{tags}}", tags.join(", "));
-        lastLine = lastLine.replace("{{tags}}", tags.join(", "));
-
-        firstLine = firstLine.replace("{{date}}", dateString);
-        lastLine = lastLine.replace("{{date}}", dateString);
-
-        return {
-          ...props,
-          noteBody: noteBody,
-          noteTitle: props.note.titleHtml,
-          noteDate: dateString,
-          firstLine: firstLine,
-          lastLine: lastLine,
-        };
+        return await noteList.onRenderNoteCall(props);
+      },
+      onChange: async (event: OnChangeEvent): Promise<void> => {
+        await noteList.onChangeEvent(event);
       },
     });
+  }
+
+  export async function onRenderNoteCall(props: any) {
+    console.log("Func: onRenderNoteCall");
+    console.log(props);
+    const noteBody = await noteList.getBody(props.note.body);
+    const dateString = await noteList.getNoteDateFormated(
+      props.note.user_updated_time
+    );
+    const tags = await noteList.getTags(props.note.tags);
+
+    const completed =
+      props.note.is_todo == 1 && props.note.todo_completed != 0 ? true : false;
+
+    let firstLine = noteListSettings["firstLine"];
+    let lastLine = noteListSettings["lastLine"];
+
+    firstLine = firstLine.replace("{{tags}}", tags.join(", "));
+    lastLine = lastLine.replace("{{tags}}", tags.join(", "));
+
+    firstLine = firstLine.replace("{{date}}", dateString);
+    lastLine = lastLine.replace("{{date}}", dateString);
+
+    return {
+      ...props,
+      noteBody: noteBody,
+      noteTitle: props.note.titleHtml,
+      noteDate: dateString,
+      firstLine: firstLine,
+      lastLine: lastLine,
+      completed: completed,
+    };
+  }
+
+  export async function onChangeEvent(event: OnChangeEvent): Promise<void> {
+    console.log("Func: onChangeEvent");
+    console.log(event);
   }
 
   export async function settingsChanged() {
