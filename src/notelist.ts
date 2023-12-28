@@ -116,8 +116,14 @@ namespace noteList {
         ? noteListSettings["cssTagOverwrite"]
         : cssTagDefault;
 
-    const cssFirstLine = noteListSettings["cssFirstLineOverwrite"];
-    const cssLastLine = noteListSettings["cssLastLineOverwrite"];
+    const cssFirstLine =
+      noteListSettings["cssFirstLineOverwrite"].trim() != ""
+        ? noteListSettings["cssFirstLineOverwrite"]
+        : "white-space: nowrap;";
+    const cssLastLine =
+      noteListSettings["cssLastLineOverwrite"].trim() != ""
+        ? noteListSettings["cssLastLineOverwrite"]
+        : "white-space: nowrap;";
 
     return `
       > .content {
