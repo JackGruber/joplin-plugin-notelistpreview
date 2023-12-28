@@ -61,12 +61,12 @@ namespace noteList {
 
     let firstLine = "";
     if (noteListSettings["firstLine"] != "") {
-      firstLine = '<p class="firstLine">{{firstLine}}</p>';
+      firstLine = '<p class="firstLine">{{{firstLine}}}</p>';
     }
 
     let lastLine = "";
     if (noteListSettings["lastLine"] != "") {
-      lastLine = '<p class="lastLine">{{lastLine}}</p>';
+      lastLine = '<p class="lastLine">{{{lastLine}}}</p>';
     }
 
     let noteBody = "{{noteBody}}";
@@ -252,11 +252,23 @@ namespace noteList {
     let firstLine = noteListSettings["firstLine"];
     let lastLine = noteListSettings["lastLine"];
 
-    firstLine = firstLine.replace("{{tags}}", tags.join(", "));
-    lastLine = lastLine.replace("{{tags}}", tags.join(", "));
+    firstLine = firstLine.replace(
+      "{{tags}}",
+      '<span class="tags">' + tags.join(", ") + "</span>"
+    );
+    lastLine = lastLine.replace(
+      "{{tags}}",
+      '<span class="tags">' + tags.join(", ") + "</span>"
+    );
 
-    firstLine = firstLine.replace("{{date}}", dateString);
-    lastLine = lastLine.replace("{{date}}", dateString);
+    firstLine = firstLine.replace(
+      "{{date}}",
+      '<span class="date">' + dateString + "</span>"
+    );
+    lastLine = lastLine.replace(
+      "{{date}}",
+      '<span class="date">' + dateString + "</span>"
+    );
 
     return {
       ...props,
