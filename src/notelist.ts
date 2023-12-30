@@ -462,7 +462,7 @@ namespace noteList {
         for (const resourceItem of resources.items) {
           if (check == resourceItem.id) {
             if (resourceItem.mime.includes("image/")) {
-            resource = resourceItem;
+              resource = resourceItem;
             }
             break;
           }
