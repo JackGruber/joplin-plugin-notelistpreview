@@ -479,25 +479,33 @@ namespace noteList {
       if (existingFilePath) {
         thumbnailFilePath = existingFilePath;
       } else {
-        const imageHandle = await joplin.imaging.createFromResource(
-          resource.id
+        thumbnailFilePath = path.join(
+          noteListSettings["dataDir"],
+          "thumb_" + resource.id + ".jpg"
         );
-        const resizedImageHandle = await joplin.imaging.resize(imageHandle, {
-          width: noteListSettings["thumbnailSize"],
-        });
-        thumbnailFilePath =
-          noteListSettings["dataDir"] + "/thumb_" + resource.id + ".jpg";
-        await joplin.imaging.toJpgFile(
-          resizedImageHandle,
-          thumbnailFilePath,
-          90
-        );
-        await joplin.imaging.free(imageHandle);
-        await joplin.imaging.free(resizedImageHandle);
+
+        await genResourcePreviewImage(resource, thumbnailFilePath);
+
         thumbnailCache[resource.id] = thumbnailFilePath;
       }
     }
     return thumbnailFilePath;
+  }
+
+  export async function genResourcePreviewImage(
+    resource: any,
+    filePath: string
+  ): Promise<boolean> {
+    console.log("Func: genResourcePreviewImage");
+    const imageHandle = await joplin.imaging.createFromResource(resource.id);
+    const resizedImageHandle = await joplin.imaging.resize(imageHandle, {
+      width: noteListSettings["thumbnailSize"],
+    });
+    await joplin.imaging.toJpgFile(resizedImageHandle, filePath, 90);
+    await joplin.imaging.free(imageHandle);
+    await joplin.imaging.free(resizedImageHandle);
+
+    return true;
   }
 
   export async function cleanResourcePreview(): Promise<void> {
