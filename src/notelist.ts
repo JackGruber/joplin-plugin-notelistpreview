@@ -460,12 +460,10 @@ namespace noteList {
     if (resourceOrder.length > 0) {
       for (const check of resourceOrder) {
         for (const resourceItem of resources.items) {
-          if (
-            check == resourceItem.id &&
-            resourceItem.mime.includes("image/")
-          ) {
+          if (check == resourceItem.id) {
+            if (resourceItem.mime.includes("image/")) {
             resource = resourceItem;
-          } else {
+            }
             break;
           }
         }
