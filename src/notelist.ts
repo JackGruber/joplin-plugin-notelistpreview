@@ -300,13 +300,14 @@ class Notelist {
 
   private async getNoteDateFormated(noteDate: any): Promise<string> {
     let date = new Date(noteDate);
+    const now = new Date(Date.now());
     let dateString: string =
       moment(date.getTime()).format(this.settings["dateFormatJoplin"]) +
       " " +
       moment(date.getTime()).format(this.settings["timeFormatJoplin"]);
 
     if (
-      moment(moment()).diff(date.getTime(), "days") <=
+      moment(now.getTime()).diff(date.getTime(), "days") <=
       this.settings["daysHumanizeDate"]
     ) {
       dateString = moment
