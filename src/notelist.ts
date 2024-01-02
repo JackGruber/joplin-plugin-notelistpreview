@@ -375,11 +375,13 @@ class Notelist {
         "note.titleHtml",
         "note.body",
         "note.user_updated_time",
+        "note.user_created_time",
         "note.tags",
         "note.is_todo",
         "note.todo_completed",
         "note.isWatched",
         "note.title",
+        "note.source_url",
       ],
       itemCss: await this.getItemCss(),
       itemTemplate: this.settings["itemTemplate"],
@@ -396,12 +398,26 @@ class Notelist {
     const dateUpdatedTime = await this.getNoteDateFormated(
       props.note.user_updated_time
     );
+    const dateCreatedTime = await this.getNoteDateFormated(
+      props.note.user_created_time
+    );
+
     const tags = await this.getTags(props.note.tags);
     data = data.replace(
       /{{date}}/gi,
       '<span class="date">' + dateUpdatedTime + "</span>"
     );
+    data = data.replace(
+      /{{createdTime}}/gi,
+      '<span class="date">' + dateCreatedTime + "</span>"
+    );
+    data = data.replace(
+      /{{updatedTime}}/gi,
       '<span class="date">' + dateUpdatedTime + "</span>"
+    );
+    data = data.replace(
+      /{{url}}/gi,
+      '<span class="url">' + props.note.source_url + "</span>"
     );
 
     let tagString = "";
@@ -411,7 +427,7 @@ class Notelist {
         tags.join('</span> <span class="tag">') +
         "</span></span>";
     }
-    data = data.replace("{{tags}}", tagString);
+    data = data.replace(/{{tags}}/gi, tagString);
 
     return data;
   }

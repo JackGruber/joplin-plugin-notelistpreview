@@ -55,10 +55,10 @@ export namespace settings {
         public: true,
         advanced: true,
         label: i18n.__("settings.firstLine.label"),
-        description: i18n.__("settings.firstLine.description", {
-          field_tags: "{{tags}}",
-          field_date: "{{date}}",
-        }),
+        description: i18n.__(
+          "settings.firstLine.description",
+          "{{updatedTime}}, {{createdTime}}, {{tags}}, {{url}}"
+        ),
       },
       lastLine: {
         value: "",
@@ -67,10 +67,10 @@ export namespace settings {
         public: true,
         advanced: true,
         label: i18n.__("settings.lastLine.label"),
-        description: i18n.__("settings.lastLine.description", {
-          field_tags: "{{tags}}",
-          field_date: "{{date}}",
-        }),
+        description: i18n.__(
+          "settings.lastLine.description",
+          "{{updatedTime}}, {{createdTime}}, {{tags}}, {{url}}"
+        ),
       },
       itemSizeHeight: {
         value: 100,

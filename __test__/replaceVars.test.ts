@@ -147,6 +147,84 @@ describe("replaceVars", function () {
       expected:
         'Test <span class="tags"><span class="tag">first</span> <span class="tag">more</span> <span class="tag">second</span></span> tags',
     },
+    {
+      description: "Created time",
+      string: "Test {{createdTime}} date",
+      props: {
+        note: {
+          user_updated_time: testDates.minus2Day,
+          user_created_time: testDates.minus5Day,
+          tags: [],
+        },
+      },
+      dateFormatJoplin: "DD/MM/YYYY",
+      timeFormatJoplin: "HH:mm",
+      daysHumanizeDate: "1",
+      expected: 'Test <span class="date">16/06/2021 15:30</span> date',
+    },
+    {
+      description: "Updated time",
+      string: "Test {{updatedTime}} date",
+      props: {
+        note: {
+          user_updated_time: testDates.minus2Day,
+          user_created_time: testDates.minus5Day,
+          tags: [],
+        },
+      },
+      dateFormatJoplin: "DD/MM/YYYY",
+      timeFormatJoplin: "HH:mm",
+      daysHumanizeDate: "1",
+      expected: 'Test <span class="date">19/06/2021 15:30</span> date',
+    },
+    {
+      description: "Updated time (lower)",
+      string: "Test {{updatedtime}} date",
+      props: {
+        note: {
+          user_updated_time: testDates.minus2Day,
+          user_created_time: testDates.minus5Day,
+          tags: [],
+        },
+      },
+      dateFormatJoplin: "DD/MM/YYYY",
+      timeFormatJoplin: "HH:mm",
+      daysHumanizeDate: "1",
+      expected: 'Test <span class="date">19/06/2021 15:30</span> date',
+    },
+    {
+      description: "Created time (upper)",
+      string: "Test {{CREATEDTIME}} date",
+      props: {
+        note: {
+          user_updated_time: testDates.minus2Day,
+          user_created_time: testDates.minus5Day,
+          tags: [],
+        },
+      },
+      dateFormatJoplin: "DD/MM/YYYY",
+      timeFormatJoplin: "HH:mm",
+      daysHumanizeDate: "1",
+      expected: 'Test <span class="date">16/06/2021 15:30</span> date',
+    },
+    {
+      description: "URL",
+      string: "Test {{url}} url",
+      props: {
+        note: {
+          user_updated_time: testDates.minus2Day,
+          user_created_time: testDates.minus5Day,
+          tags: [],
+          source_url:
+            "https://joplinapp.org/help/api/references/rest_api#properties",
+        },
+      },
+      dateFormatJoplin: "DD/MM/YYYY",
+      timeFormatJoplin: "HH:mm",
+      daysHumanizeDate: "1",
+      expected:
+        'Test <span class="url">https://joplinapp.org/help/api/references/rest_api#properties</span> url',
+    },
   ];
 
   for (const testCase of testCases) {

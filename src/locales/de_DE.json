@@ -15,11 +15,11 @@
     },
     "firstLine": {
       "label": "Erste Zeile",
-      "description": "Inhalt erste Zeile vor dem Notiztext. Als Variablen stehen {{field_tags}} (Tags) und {{field_date}} (Änderungsdatum) zu verfügung"
+      "description": "Inhalt erste Zeile vor dem Notiztext. Als Variablen stehen folgender Felder zu verfügung: %s"
     },
     "lastLine": {
       "label": "Letzte Zeile",
-      "description": "Inhalt letzten Zeile nach dem Notiztext. Als Variablen stehen {{field_tags}} (Tags) und {{field_date}} (Änderungsdatum) zu verfügung"
+      "description": "Inhalt letzten Zeile nach dem Notiztext. Als Variablen stehen folgender Felder zu verfügung: %s"
     },
     "itemSizeHeight": {
       "label": "Höhe des Elements",
