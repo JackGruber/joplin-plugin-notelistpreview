@@ -132,11 +132,17 @@ class Notelist {
       lastLine = '<p class="lastLine">{{{lastLine}}}</p>';
     }
 
-    let noteBody = "{{noteBody}}";
+    let noteBody = '<span class="excerpt">{{noteBody}}</span>';
     if (this.settings["datePositionInline"] == "begin") {
-      noteBody = '<span class="date">{{noteDate}}</span> ' + noteBody;
+      noteBody =
+        '<span class="date">{{noteDate}}</span><span class="excerpt"> ' +
+        noteBody +
+        "</span>";
     } else if (this.settings["datePositionInline"] == "end") {
-      noteBody = noteBody + ' <span class="date">{{noteDate}}</span>';
+      noteBody =
+        '<span class="excerpt"> ' +
+        noteBody +
+        ' </span><span class="date">{{noteDate}}</span>';
     }
 
     this.settings["itemTemplate"] = `
@@ -160,11 +166,17 @@ class Notelist {
   }
 
   private async getItemCss(): Promise<string> {
-    const cssDateDefault = "color: var(--joplin-color4);";
+    const cssDateDefault = `
+      color: var(--joplin-color4);
+    `;
     const cssTagDefault = `
-      border-radius: 5px;
+      border-radius: 1em;
       background: var(--joplin-divider-color);
-      padding: 2px 5px 2px 5px;
+      padding: 1px 5px;
+      color: var(--joplin-color);
+      font-family: var(--joplin-font-family);
+      opacity: 0.7;
+      font-size: 12px;
     `;
 
     const cssDate =
@@ -240,10 +252,11 @@ class Notelist {
       > .content > .title > .watchedicon {
         padding-right: 4px;
         padding-left: 1px;
+        letter-spacing: .03em;
       }
 
-      > .content > .body {
-          opacity: 0.7;
+      > .content > .body .excerpt {
+        opacity: 0.7;
       }
 
       > .content > .body .thumbnail {
@@ -255,12 +268,10 @@ class Notelist {
       }
 
       > .content > .firstLine {
-          opacity: 0.7;
           margin-bottom: 2px;
       }
 
       > .content > .lastLine {
-          opacity: 0.7;
           margin-top: 2px;
       }
 
