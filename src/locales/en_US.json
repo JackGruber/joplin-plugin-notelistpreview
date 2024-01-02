@@ -15,11 +15,11 @@
     },
     "firstLine": {
       "label": "First line",
-      "description": "Content first line before the note text. As variables {{field_tags}} (Tags) and {{field_date}} (note modification date) are available"
+      "description": "Content first line before the note text. The following fields are available as variables: %s"
     },
     "lastLine": {
       "label": "Last line",
-      "description": "Content last line after the note text. As variables {{field_tags}} (Tags) and {{field_date}} (note modification date) are available"
+      "description": "Content last line after the note text. The following fields are available as variables: %s"
     },
     "itemSizeHeight": {
       "label": "Item height",
@@ -62,7 +62,8 @@
   "msg": {
     "settingsChanged": "Settings have been changed for the %s Plugin, please restart Joplin",
     "error": {
-      "cleanResourcePreview": "Error when cleaning up the preview images"
+      "cleanResourcePreview": "Error when cleaning up the preview images",
+      "deleteLogFile": "Error when deleting old logfile"
     }
   }
 }

@@ -5,7 +5,7 @@ import { i18n } from "./notelist";
 export namespace settings {
   export async function register() {
     await joplin.settings.registerSection("noteListPreview", {
-      label: "Notel ist preview",
+      label: "Note list preview",
       iconName: "far fa-list-alt",
     });
 
@@ -55,10 +55,10 @@ export namespace settings {
         public: true,
         advanced: true,
         label: i18n.__("settings.firstLine.label"),
-        description: i18n.__("settings.firstLine.description", {
-          field_tags: "{{tags}}",
-          field_date: "{{date}}",
-        }),
+        description: i18n.__(
+          "settings.firstLine.description",
+          "{{updatedTime}}, {{createdTime}}, {{tags}}, {{url}}"
+        ),
       },
       lastLine: {
         value: "",
@@ -67,10 +67,10 @@ export namespace settings {
         public: true,
         advanced: true,
         label: i18n.__("settings.lastLine.label"),
-        description: i18n.__("settings.lastLine.description", {
-          field_tags: "{{tags}}",
-          field_date: "{{date}}",
-        }),
+        description: i18n.__(
+          "settings.lastLine.description",
+          "{{updatedTime}}, {{createdTime}}, {{tags}}, {{url}}"
+        ),
       },
       itemSizeHeight: {
         value: 100,
@@ -146,6 +146,23 @@ export namespace settings {
         advanced: true,
         label: i18n.__("settings.cssTagOverwrite.label"),
         description: i18n.__("settings.cssTagOverwrite.description", ".tags"),
+      },
+      fileLogLevel: {
+        value: "warn",
+        type: SettingItemType.String,
+        section: "noteListPreview",
+        isEnum: true,
+        public: true,
+        advanced: true,
+        label: i18n.__("settings.fileLogLevel.label"),
+        description: i18n.__("settings.fileLogLevel.description"),
+        options: {
+          false: "Off",
+          verbose: "Verbose",
+          info: "Info",
+          warn: "Warning",
+          error: "Error",
+        },
       },
     });
   }

@@ -15,11 +15,11 @@
     },
     "firstLine": {
       "label": "Erste Zeile",
-      "description": "Inhalt erste Zeile vor dem Notiztext. Als Variablen stehen {{field_tags}} (Tags) und {{field_date}} (Änderungsdatum) zu verfügung"
+      "description": "Inhalt erste Zeile vor dem Notiztext. Als Variablen stehen folgender Felder zu verfügung: %s"
     },
     "lastLine": {
       "label": "Letzte Zeile",
-      "description": "Inhalt letzten Zeile nach dem Notiztext. Als Variablen stehen {{field_tags}} (Tags) und {{field_date}} (Änderungsdatum) zu verfügung"
+      "description": "Inhalt letzten Zeile nach dem Notiztext. Als Variablen stehen folgender Felder zu verfügung: %s"
     },
     "itemSizeHeight": {
       "label": "Höhe des Elements",
@@ -58,7 +58,8 @@
   "msg": {
     "settingsChanged": "Einstellungen für das %s Plugin wurden geändert, bitte Joplin neustarten",
     "error": {
-      "cleanResourcePreview": "Fehler beim Aufräumen der Vorschaubilder"
+      "cleanResourcePreview": "Fehler beim Aufräumen der Vorschaubilder",
+      "deleteLogFile": "Fehler beim löschen der alten Logdatei"
     }
   }
 }
