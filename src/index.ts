@@ -1,13 +1,15 @@
 import joplin from "api";
-import { noteList } from "./notelist";
+import { Notelist } from "./notelist";
+
+const notelist = new Notelist();
 
 joplin.plugins.register({
   onStart: async function () {
-    await noteList.init();
+    await notelist.init();
 
     joplin.settings.onChange(async (event: any) => {
       console.log("Settings changed");
-      await noteList.settingsChanged();
+      await notelist.settingsChanged();
     });
   },
 });

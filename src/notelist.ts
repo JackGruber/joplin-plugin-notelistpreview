@@ -9,23 +9,26 @@ import * as naturalCompare from "string-natural-compare";
 import * as fs from "fs-extra";
 
 let i18n: any;
-let noteListSettings = {};
-let msgDialog: any;
-const thumbnailCache: Record<string, string> = {};
 
-namespace noteList {
-  export async function init(): Promise<void> {
+class Notelist {
+  private settings: any;
+  private msgDialog: any;
+  private thumbnailCache: Record<string, string> = {};
+
+  constructor() {}
+
+  public async init(): Promise<void> {
     console.log("Func: init");
-    await noteList.translate();
+    await this.translate();
     await settings.register();
-    await noteList.loadSettings();
-    await noteList.cleanResourcePreview();
-    await noteList.genItemTemplate();
-    await noteList.registerRendererPreview();
-    await noteList.createMsgDialog();
+    await this.loadSettings();
+    await this.cleanResourcePreview();
+    await this.genItemTemplate();
+    await this.registerRendererPreview();
+    await this.createMsgDialog();
   }
 
-  export async function translate(): Promise<void> {
+  private async translate(): Promise<void> {
     console.log("Func: translate");
     const joplinLocale = await joplin.settings.globalValue("locale");
     const installationDir = await joplin.plugins.installationDir();
@@ -44,9 +47,9 @@ namespace noteList {
     moment.locale(joplinLocale);
   }
 
-  export async function loadSettings(): Promise<void> {
+  private async loadSettings(): Promise<void> {
     console.log("Func: loadSettings");
-    noteListSettings = {
+    this.settings = {
       itemTemplate: "",
       itemSizeHeight: await joplin.settings.value("itemSizeHeight"),
       daysHumanizeDate: await joplin.settings.value("daysHumanizeDate"),
@@ -68,27 +71,27 @@ namespace noteList {
     };
   }
 
-  export async function genItemTemplate(): Promise<void> {
+  private async genItemTemplate(): Promise<void> {
     console.log("Func: genItemTemplate");
 
     let firstLine = "";
-    if (noteListSettings["firstLine"] != "") {
+    if (this.settings["firstLine"] != "") {
       firstLine = '<p class="firstLine">{{{firstLine}}}</p>';
     }
 
     let lastLine = "";
-    if (noteListSettings["lastLine"] != "") {
+    if (this.settings["lastLine"] != "") {
       lastLine = '<p class="lastLine">{{{lastLine}}}</p>';
     }
 
     let noteBody = "{{noteBody}}";
-    if (noteListSettings["datePositionInline"] == "begin") {
+    if (this.settings["datePositionInline"] == "begin") {
       noteBody = '<span class="date">{{noteDate}}</span> ' + noteBody;
-    } else if (noteListSettings["datePositionInline"] == "end") {
+    } else if (this.settings["datePositionInline"] == "end") {
       noteBody = noteBody + ' <span class="date">{{noteDate}}</span>';
     }
 
-    noteListSettings["itemTemplate"] = `
+    this.settings["itemTemplate"] = `
         <div class="content {{#item.selected}}-selected{{/item.selected}} {{#completed}}-completed{{/completed}}">
           <div class="title">
             {{#note.is_todo}}<span class="checkbox"><input data-id="todoCheckboxCompleted" type="checkbox" {{#completed}}checked{{/completed}} /></span>{{/note.is_todo}}
@@ -105,10 +108,10 @@ namespace noteList {
           ${lastLine}
         </div>
     `;
-    console.log(noteListSettings["itemTemplate"]);
+    console.log(this.settings["itemTemplate"]);
   }
 
-  export async function getItemCss(): Promise<string> {
+  private async getItemCss(): Promise<string> {
     const cssDateDefault = "color: var(--joplin-color4);";
     const cssTagDefault = `
       border-radius: 5px;
@@ -117,30 +120,28 @@ namespace noteList {
     `;
 
     const cssDate =
-      noteListSettings["cssDateOverwrite"].trim() != ""
-        ? noteListSettings["cssDateOverwrite"]
+      this.settings["cssDateOverwrite"].trim() != ""
+        ? this.settings["cssDateOverwrite"]
         : cssDateDefault;
     const cssTag =
-      noteListSettings["cssTagOverwrite"].trim() != ""
-        ? noteListSettings["cssTagOverwrite"]
+      this.settings["cssTagOverwrite"].trim() != ""
+        ? this.settings["cssTagOverwrite"]
         : cssTagDefault;
 
     const cssFirstLine =
-      noteListSettings["cssFirstLineOverwrite"].trim() != ""
-        ? noteListSettings["cssFirstLineOverwrite"]
+      this.settings["cssFirstLineOverwrite"].trim() != ""
+        ? this.settings["cssFirstLineOverwrite"]
         : "white-space: nowrap;";
     const cssLastLine =
-      noteListSettings["cssLastLineOverwrite"].trim() != ""
-        ? noteListSettings["cssLastLineOverwrite"]
+      this.settings["cssLastLineOverwrite"].trim() != ""
+        ? this.settings["cssLastLineOverwrite"]
         : "white-space: nowrap;";
 
     const thumbnailFloat =
-      noteListSettings["thumbnail"] == "right"
-        ? "float: right;"
-        : "float: left;";
+      this.settings["thumbnail"] == "right" ? "float: right;" : "float: left;";
 
     const thumbnailMargin =
-      noteListSettings["thumbnail"] == "right"
+      this.settings["thumbnail"] == "right"
         ? "margin: 3px 3px 3px 0px;"
         : "margin: 3px 0px 3px 3px;";
 
@@ -199,8 +200,8 @@ namespace noteList {
 
       > .content > .body .thumbnail {
         display: flex;
-        max-width: ${noteListSettings["thumbnailSize"]}px;
-        max-height: ${noteListSettings["thumbnailSize"]}px;
+        max-width: ${this.settings["thumbnailSize"]}px;
+        max-height: ${this.settings["thumbnailSize"]}px;
         ${thumbnailFloat}
         ${thumbnailMargin}
       }
@@ -249,16 +250,16 @@ namespace noteList {
     `;
   }
 
-  export async function getNoteDateFormated(noteDate: any): Promise<string> {
+  private async getNoteDateFormated(noteDate: any): Promise<string> {
     let date = new Date(noteDate);
     let dateString: string =
-      moment(date.getTime()).format(noteListSettings["dateFormatJoplin"]) +
+      moment(date.getTime()).format(this.settings["dateFormatJoplin"]) +
       " " +
-      moment(date.getTime()).format(noteListSettings["timeFormatJoplin"]);
+      moment(date.getTime()).format(this.settings["timeFormatJoplin"]);
 
     if (
       moment(moment()).diff(date.getTime(), "days") <=
-      noteListSettings["daysHumanizeDate"]
+      this.settings["daysHumanizeDate"]
     ) {
       dateString = moment
         .duration(moment(date.getTime()).diff(moment()))
@@ -268,7 +269,7 @@ namespace noteList {
     return dateString;
   }
 
-  export async function getBody(noteBody: string): Promise<string> {
+  private async getBody(noteBody: string): Promise<string> {
     noteBody = removeMd(noteBody, {
       stripListLeaders: true, // strip list leaders (default: true)
       listUnicodeChar: "", // char to insert instead of stripped list leaders (default: '')
@@ -283,7 +284,7 @@ namespace noteList {
 
     let bodyExcerpt = "";
     for (const word of noteBody.split(" ")) {
-      if (bodyExcerpt.length + word.length > noteListSettings["bodyExcerpt"]) {
+      if (bodyExcerpt.length + word.length > this.settings["bodyExcerpt"]) {
         break;
       }
       bodyExcerpt = bodyExcerpt + word + " ";
@@ -295,7 +296,7 @@ namespace noteList {
     return bodyExcerpt;
   }
 
-  export async function getTags(noteTags: any): Promise<Array<string>> {
+  private async getTags(noteTags: any): Promise<Array<string>> {
     let tags = [];
     for (const tag of noteTags) {
       tags.push(tag.title);
@@ -307,7 +308,7 @@ namespace noteList {
     return tags;
   }
 
-  export async function registerRendererPreview(): Promise<void> {
+  private async registerRendererPreview(): Promise<void> {
     console.log("Func: registerRendererPreview");
     await joplin.views.noteList.registerRenderer({
       id: "previewNotelist",
@@ -315,7 +316,7 @@ namespace noteList {
       flow: ItemFlow.TopToBottom,
       itemSize: {
         width: 0,
-        height: noteListSettings["itemSizeHeight"],
+        height: this.settings["itemSizeHeight"],
       },
       dependencies: [
         "note.id",
@@ -328,31 +329,31 @@ namespace noteList {
         "note.todo_completed",
         "note.isWatched",
       ],
-      itemCss: await noteList.getItemCss(),
-      itemTemplate: noteListSettings["itemTemplate"],
+      itemCss: await this.getItemCss(),
+      itemTemplate: this.settings["itemTemplate"],
       onRenderNote: async (props: any): Promise<any> => {
-        return await noteList.onRenderNoteCall(props);
+        return await this.onRenderNoteCall(props);
       },
       onChange: async (event: OnChangeEvent): Promise<void> => {
-        await noteList.onChangeEvent(event);
+        await this.onChangeEvent(event);
       },
     });
   }
 
-  export async function onRenderNoteCall(props: any): Promise<any> {
+  private async onRenderNoteCall(props: any): Promise<any> {
     console.log("Func: onRenderNoteCall");
     console.log(props);
-    const noteBody = await noteList.getBody(props.note.body);
-    const dateString = await noteList.getNoteDateFormated(
+    const noteBody = await this.getBody(props.note.body);
+    const dateString = await this.getNoteDateFormated(
       props.note.user_updated_time
     );
-    const tags = await noteList.getTags(props.note.tags);
+    const tags = await this.getTags(props.note.tags);
 
     const completed =
       props.note.is_todo == 1 && props.note.todo_completed != 0 ? true : false;
 
-    let firstLine = noteListSettings["firstLine"];
-    let lastLine = noteListSettings["lastLine"];
+    let firstLine = this.settings["firstLine"];
+    let lastLine = this.settings["lastLine"];
     const dateStringHtml = '<span class="date">' + dateString + "</span>";
 
     let tagString = "";
@@ -370,11 +371,8 @@ namespace noteList {
     lastLine = lastLine.replace("{{date}}", dateStringHtml);
 
     let thumbnail = null;
-    if (noteListSettings["thumbnail"] != "no") {
-      thumbnail = await noteList.getResourcePreview(
-        props.note.id,
-        props.note.body
-      );
+    if (this.settings["thumbnail"] != "no") {
+      thumbnail = await this.getResourcePreview(props.note.id, props.note.body);
     }
 
     return {
@@ -389,7 +387,7 @@ namespace noteList {
     };
   }
 
-  export async function onChangeEvent(event: OnChangeEvent): Promise<void> {
+  private async onChangeEvent(event: OnChangeEvent): Promise<void> {
     console.log("Func: onChangeEvent");
     console.log(event);
     if (event.elementId === "todoCheckboxCompleted") {
@@ -405,19 +403,17 @@ namespace noteList {
     }
   }
 
-  export async function settingsChanged(): Promise<void> {
-    await noteList.loadSettings();
-    await noteList.showMsg(
-      i18n.__("msg.settingsChanged", "Note list (Preview)")
-    );
+  public async settingsChanged(): Promise<void> {
+    await this.loadSettings();
+    await this.showMsg(i18n.__("msg.settingsChanged", "Note list (Preview)"));
   }
 
-  export async function createMsgDialog(): Promise<void> {
-    msgDialog = await joplin.views.dialogs.create("noteListPreviewDialog");
-    await joplin.views.dialogs.addScript(msgDialog, "webview.css");
+  private async createMsgDialog(): Promise<void> {
+    this.msgDialog = await joplin.views.dialogs.create("noteListPreviewDialog");
+    await joplin.views.dialogs.addScript(this.msgDialog, "webview.css");
   }
 
-  export async function showMsg(msg: string, title: string = null) {
+  private async showMsg(msg: string, title: string = null) {
     const html = [];
 
     if (title !== null) {
@@ -433,12 +429,12 @@ namespace noteList {
     }
     html.push(`<div id="msg">${msg}`);
     html.push("</div>");
-    await joplin.views.dialogs.setButtons(msgDialog, [{ id: "ok" }]);
-    await joplin.views.dialogs.setHtml(msgDialog, html.join("\n"));
-    await joplin.views.dialogs.open(msgDialog);
+    await joplin.views.dialogs.setButtons(this.msgDialog, [{ id: "ok" }]);
+    await joplin.views.dialogs.setHtml(this.msgDialog, html.join("\n"));
+    await joplin.views.dialogs.open(this.msgDialog);
   }
 
-  export async function getResourcePreview(
+  private async getResourcePreview(
     noteId: string,
     noteBody: string
   ): Promise<string> {
@@ -475,31 +471,31 @@ namespace noteList {
 
     let thumbnailFilePath = "";
     if (resource) {
-      const existingFilePath = thumbnailCache[resource.id];
+      const existingFilePath = this.thumbnailCache[resource.id];
       if (existingFilePath) {
         thumbnailFilePath = existingFilePath;
       } else {
         thumbnailFilePath = path.join(
-          noteListSettings["dataDir"],
+          this.settings["dataDir"],
           "thumb_" + resource.id + ".jpg"
         );
 
-        await genResourcePreviewImage(resource, thumbnailFilePath);
+        await this.genResourcePreviewImage(resource, thumbnailFilePath);
 
-        thumbnailCache[resource.id] = thumbnailFilePath;
+        this.thumbnailCache[resource.id] = thumbnailFilePath;
       }
     }
     return thumbnailFilePath;
   }
 
-  export async function genResourcePreviewImage(
+  private async genResourcePreviewImage(
     resource: any,
     filePath: string
   ): Promise<boolean> {
     console.log("Func: genResourcePreviewImage");
     const imageHandle = await joplin.imaging.createFromResource(resource.id);
     const resizedImageHandle = await joplin.imaging.resize(imageHandle, {
-      width: noteListSettings["thumbnailSize"],
+      width: this.settings["thumbnailSize"],
     });
     await joplin.imaging.toJpgFile(resizedImageHandle, filePath, 90);
     await joplin.imaging.free(imageHandle);
@@ -508,11 +504,11 @@ namespace noteList {
     return true;
   }
 
-  export async function cleanResourcePreview(): Promise<void> {
+  private async cleanResourcePreview(): Promise<void> {
     console.log("Func: cleanResourcePreview");
 
     const files = fs
-      .readdirSync(noteListSettings["dataDir"], { withFileTypes: true })
+      .readdirSync(this.settings["dataDir"], { withFileTypes: true })
       .filter((dirent) => dirent.isFile())
       .map((dirent) => dirent.name)
       .reverse();
@@ -520,7 +516,7 @@ namespace noteList {
     for (const file of files) {
       if (file.includes("thumb_") && file.includes(".jpg")) {
         try {
-          fs.removeSync(path.join(noteListSettings["dataDir"], file));
+          fs.removeSync(path.join(this.settings["dataDir"], file));
         } catch (e) {
           await this.showMsg(
             i18n.__(
@@ -536,4 +532,4 @@ namespace noteList {
   }
 }
 
-export { noteList, i18n };
+export { Notelist, i18n };
