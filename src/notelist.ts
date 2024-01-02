@@ -398,7 +398,9 @@ class Notelist {
     );
     const tags = await this.getTags(props.note.tags);
     data = data.replace(
-      "{{date}}",
+      /{{date}}/gi,
+      '<span class="date">' + dateUpdatedTime + "</span>"
+    );
       '<span class="date">' + dateUpdatedTime + "</span>"
     );
 
