@@ -2,10 +2,11 @@
 
 ## not released
 
+- Fix: #4 Incorrect excerpt on new lines
+
 ## v0.2.0 (2023-12-28)
 
 - Add: Option for a thumbnail
-- Fix: #4 Incorrect excerpt on new lines
 
 ## v0.1.0 (2023-12-28)
 
