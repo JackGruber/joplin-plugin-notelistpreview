@@ -62,7 +62,8 @@
   "msg": {
     "settingsChanged": "Settings have been changed for the %s Plugin, please restart Joplin",
     "error": {
-      "cleanResourcePreview": "Error when cleaning up the preview images"
+      "cleanResourcePreview": "Error when cleaning up the preview images",
+      "deleteLogFile": "Error when deleting old logfile"
     }
   }
 }

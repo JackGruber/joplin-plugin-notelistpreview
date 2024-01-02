@@ -7,6 +7,7 @@ import * as path from "path";
 import { settings } from "./settings";
 import * as naturalCompare from "string-natural-compare";
 import * as fs from "fs-extra";
+import notelistLogging from "electron-log/main";
 
 let i18n: any;
 
@@ -14,22 +15,66 @@ class Notelist {
   private settings: any;
   private msgDialog: any;
   private thumbnailCache: Record<string, string> = {};
+  private log: any;
+  private logFile: any;
+  private dataDir: string;
 
-  constructor() {}
+  constructor() {
+    this.log = notelistLogging;
+    this.setupLog();
+  }
 
   public async init(): Promise<void> {
-    console.log("Func: init");
+    this.log.verbose("Func: init");
     await this.translate();
     await settings.register();
     await this.loadSettings();
+    await this.fileLogging(true);
+    await this.logSettings();
     await this.cleanResourcePreview();
     await this.genItemTemplate();
     await this.registerRendererPreview();
     await this.createMsgDialog();
   }
 
+  private async setupLog() {
+    this.log.initialize({ spyRendererConsole: true });
+    const logFormat = "[{y}-{m}-{d} {h}:{i}:{s}.{ms}] [{level}] {text}";
+    this.log.initialize();
+    this.log.transports.file.level = false;
+    this.log.transports.file.format = logFormat;
+    this.log.transports.console.level = "verbose";
+    this.log.transports.console.format = logFormat;
+  }
+
+  private async fileLogging(enable: boolean) {
+    const fileLogLevel = await joplin.settings.value("fileLogLevel");
+
+    try {
+      fs.removeSync(this.logFile);
+    } catch (e) {
+      await this.showMsg(
+        i18n.__("msg.error.deleteLogFile", "cleanResourcePreview", e.message)
+      );
+      throw e;
+    }
+
+    if (enable === true && fileLogLevel !== "false") {
+      this.log.transports.file.resolvePathFn = () => this.logFile;
+      this.log.transports.file.level = fileLogLevel;
+    } else {
+      this.log.transports.file.level = false;
+    }
+  }
+
+  private async logSettings(): Promise<void> {
+    this.log.verbose("## SETTINGS ##");
+    this.log.verbose(this.settings);
+    this.log.verbose("## SETTINGS ##");
+  }
+
   private async translate(): Promise<void> {
-    console.log("Func: translate");
+    this.log.verbose("Func: translate");
     const joplinLocale = await joplin.settings.globalValue("locale");
     const installationDir = await joplin.plugins.installationDir();
 
@@ -48,7 +93,11 @@ class Notelist {
   }
 
   private async loadSettings(): Promise<void> {
-    console.log("Func: loadSettings");
+    this.log.verbose("Func: loadSettings");
+
+    this.dataDir = await joplin.plugins.dataDir();
+    this.logFile = path.join(this.dataDir, "log.log");
+
     this.settings = {
       itemTemplate: "",
       itemSizeHeight: await joplin.settings.value("itemSizeHeight"),
@@ -65,14 +114,13 @@ class Notelist {
         "cssFirstLineOverwrite"
       ),
       cssLastLineOverwrite: await joplin.settings.value("cssLastLineOverwrite"),
-      dataDir: await joplin.plugins.dataDir(),
       thumbnail: await joplin.settings.value("thumbnail"),
       thumbnailSize: await joplin.settings.value("thumbnailSize"),
     };
   }
 
   private async genItemTemplate(): Promise<void> {
-    console.log("Func: genItemTemplate");
+    this.log.verbose("Func: genItemTemplate");
 
     let firstLine = "";
     if (this.settings["firstLine"] != "") {
@@ -108,7 +156,7 @@ class Notelist {
           ${lastLine}
         </div>
     `;
-    console.log(this.settings["itemTemplate"]);
+    this.log.verbose(this.settings["itemTemplate"]);
   }
 
   private async getItemCss(): Promise<string> {
@@ -309,7 +357,7 @@ class Notelist {
   }
 
   private async registerRendererPreview(): Promise<void> {
-    console.log("Func: registerRendererPreview");
+    this.log.verbose("Func: registerRendererPreview");
     await joplin.views.noteList.registerRenderer({
       id: "previewNotelist",
       label: async () => "Preview",
@@ -328,6 +376,7 @@ class Notelist {
         "note.is_todo",
         "note.todo_completed",
         "note.isWatched",
+        "note.title",
       ],
       itemCss: await this.getItemCss(),
       itemTemplate: this.settings["itemTemplate"],
@@ -341,8 +390,9 @@ class Notelist {
   }
 
   private async onRenderNoteCall(props: any): Promise<any> {
-    console.log("Func: onRenderNoteCall");
-    console.log(props);
+    this.log.verbose("Func: onRenderNoteCall");
+    this.log.verbose("ID: " + props.note.id);
+    this.log.verbose("Title: " + props.note.title);
     const noteBody = await this.getBody(props.note.body);
     const dateString = await this.getNoteDateFormated(
       props.note.user_updated_time
@@ -388,8 +438,8 @@ class Notelist {
   }
 
   private async onChangeEvent(event: OnChangeEvent): Promise<void> {
-    console.log("Func: onChangeEvent");
-    console.log(event);
+    this.log.verbose("Func: onChangeEvent");
+    this.log.verbose(event);
     if (event.elementId === "todoCheckboxCompleted") {
       if (event.value) {
         await joplin.data.put(["notes", event.noteId], null, {
@@ -417,9 +467,9 @@ class Notelist {
     const html = [];
 
     if (title !== null) {
-      console.log(`${title}: ${msg}`);
+      this.log.verbose(`${title}: ${msg}`);
     } else {
-      console.log(`${msg}`);
+      this.log.verbose(`${msg}`);
     }
 
     html.push('<div id="notelist" style="notelistmsg">');
@@ -438,7 +488,7 @@ class Notelist {
     noteId: string,
     noteBody: string
   ): Promise<string> {
-    console.log("Func: getResourcePreview");
+    this.log.verbose("Func: getResourcePreview");
 
     const regExresourceId =
       /(!\[([^\]]+|)\]\(|<img([^>]+)src=["']):\/(?<resourceId>[\da-z]{32})/g;
@@ -476,7 +526,7 @@ class Notelist {
         thumbnailFilePath = existingFilePath;
       } else {
         thumbnailFilePath = path.join(
-          this.settings["dataDir"],
+          this.dataDir,
           "thumb_" + resource.id + ".jpg"
         );
 
@@ -492,7 +542,7 @@ class Notelist {
     resource: any,
     filePath: string
   ): Promise<boolean> {
-    console.log("Func: genResourcePreviewImage");
+    this.log.verbose("Func: genResourcePreviewImage");
     const imageHandle = await joplin.imaging.createFromResource(resource.id);
     const resizedImageHandle = await joplin.imaging.resize(imageHandle, {
       width: this.settings["thumbnailSize"],
@@ -505,10 +555,10 @@ class Notelist {
   }
 
   private async cleanResourcePreview(): Promise<void> {
-    console.log("Func: cleanResourcePreview");
+    this.log.verbose("Func: cleanResourcePreview");
 
     const files = fs
-      .readdirSync(this.settings["dataDir"], { withFileTypes: true })
+      .readdirSync(this.dataDir, { withFileTypes: true })
       .filter((dirent) => dirent.isFile())
       .map((dirent) => dirent.name)
       .reverse();
@@ -516,7 +566,7 @@ class Notelist {
     for (const file of files) {
       if (file.includes("thumb_") && file.includes(".jpg")) {
         try {
-          fs.removeSync(path.join(this.settings["dataDir"], file));
+          fs.removeSync(path.join(this.dataDir, file));
         } catch (e) {
           await this.showMsg(
             i18n.__(

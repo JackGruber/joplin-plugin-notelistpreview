@@ -147,6 +147,23 @@ export namespace settings {
         label: i18n.__("settings.cssTagOverwrite.label"),
         description: i18n.__("settings.cssTagOverwrite.description", ".tags"),
       },
+      fileLogLevel: {
+        value: "warn",
+        type: SettingItemType.String,
+        section: "noteListPreview",
+        isEnum: true,
+        public: true,
+        advanced: true,
+        label: i18n.__("settings.fileLogLevel.label"),
+        description: i18n.__("settings.fileLogLevel.description"),
+        options: {
+          false: "Off",
+          verbose: "Verbose",
+          info: "Info",
+          warn: "Warning",
+          error: "Error",
+        },
+      },
     });
   }
 }
