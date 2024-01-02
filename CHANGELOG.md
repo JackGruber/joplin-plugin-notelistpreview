@@ -6,6 +6,8 @@
 - Fix: Sometimes the first image was not used for the preview
 - Add: Additional variables added, `{{url}}`, `{{createdTime}}` and `{{updatedTime}}` #6
 - Improved: Some css changes
+- Improved: Regenerate thumbnail on resource change #5
+
 
 ## v0.2.0 (2023-12-28)
 

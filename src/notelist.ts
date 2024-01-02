@@ -5,6 +5,7 @@ import * as removeMd from "remove-markdown";
 import { I18n } from "i18n";
 import * as path from "path";
 import { settings } from "./settings";
+import { ThumbnailCache, Thumbnail } from "./type";
 import * as naturalCompare from "string-natural-compare";
 import * as fs from "fs-extra";
 import notelistLogging from "electron-log/main";
@@ -14,7 +15,7 @@ let i18n: any;
 class Notelist {
   private settings: any;
   private msgDialog: any;
-  private thumbnailCache: Record<string, string> = {};
+  private thumbnailCache: ThumbnailCache = {};
   private log: any;
   private logFile: any;
   private dataDir: string;
@@ -537,9 +538,8 @@ class Notelist {
     }
 
     const resources = await joplin.data.get(["notes", noteId, "resources"], {
-      fields: "id, title, mime, filename",
+      fields: "id, title, mime, filename, updated_time",
     });
-
     let resource = null;
     if (resourceOrder.length > 0) {
       for (const check of resourceOrder) {
@@ -559,9 +559,9 @@ class Notelist {
 
     let thumbnailFilePath = "";
     if (resource) {
-      const existingFilePath = this.thumbnailCache[resource.id];
-      if (existingFilePath) {
-        thumbnailFilePath = existingFilePath;
+      const thumbnail = this.thumbnailCache[resource.id];
+      if (thumbnail && thumbnail.updated_time == resource.updated_time) {
+        thumbnailFilePath = thumbnail.path;
       } else {
         thumbnailFilePath = path.join(
           this.dataDir,
@@ -570,7 +570,10 @@ class Notelist {
 
         await this.genResourcePreviewImage(resource, thumbnailFilePath);
 
-        this.thumbnailCache[resource.id] = thumbnailFilePath;
+        this.thumbnailCache[resource.id] = {
+          path: thumbnailFilePath,
+          updated_time: resource.updated_time,
+        };
       }
     }
     return thumbnailFilePath;
