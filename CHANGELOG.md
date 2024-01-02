@@ -2,6 +2,8 @@
 
 ## not released
 
+## v0.3.0 (2024-01-02)
+
 - Fix: #4 Incorrect excerpt on new lines
 - Fix: Sometimes the first image was not used for the preview
 - Add: Additional variables added, `{{url}}`, `{{createdTime}}` and `{{updatedTime}}` #6
