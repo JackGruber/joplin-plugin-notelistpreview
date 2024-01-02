@@ -6,10 +6,11 @@
     "prepare": "npm run dist",
     "updateVersion": "webpack --env joplin-plugin-config=updateVersion",
     "update": "npm install -g generator-joplin && yo joplin --node-package-manager npm --update --force",
-    "release": "node ./node_modules/joplinplugindevtools/dist/createRelease.js",
-    "preRelease": "node ./node_modules/joplinplugindevtools/dist/createRelease.js --prerelease",
+    "release": "npm test && node ./node_modules/joplinplugindevtools/dist/createRelease.js",
+    "preRelease": "npm test && node ./node_modules/joplinplugindevtools/dist/createRelease.js --prerelease",
     "gitRelease": "node ./node_modules/joplinplugindevtools/dist/createRelease.js --upload",
-    "gitPreRelease": "node ./node_modules/joplinplugindevtools/dist/createRelease.js --upload --prerelease"
+    "gitPreRelease": "node ./node_modules/joplinplugindevtools/dist/createRelease.js --upload --prerelease",
+    "test": "jest"
   },
   "license": "MIT",
   "keywords": [
@@ -45,5 +46,20 @@
     "moment": "^2.29.4",
     "remove-markdown": "^0.5.0",
     "string-natural-compare": "^3.0.1"
+  },
+  "jest": {
+    "transform": {
+      ".(ts|tsx)": "ts-jest"
+    },
+    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "moduleNameMapper": {
+      "^api$": "<rootDir>/node_modules/joplinplugindevtools/dist/apiMock.js",
+      "^api/(.*)$": "<rootDir>/api/$1"
+    }
   }
 }
