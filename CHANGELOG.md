@@ -8,7 +8,6 @@
 - Improved: Some css changes
 - Improved: Regenerate thumbnail on resource change #5
 
-
 ## v0.2.0 (2023-12-28)
 
 - Add: Option for a thumbnail
