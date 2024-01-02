@@ -338,7 +338,7 @@ class Notelist {
       bodyExcerpt = bodyExcerpt + word + " ";
     }
     if (bodyExcerpt.length < noteBody.length) {
-      bodyExcerpt = bodyExcerpt + " ...";
+      bodyExcerpt = bodyExcerpt + "...";
     }
 
     return bodyExcerpt;
