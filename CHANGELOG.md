@@ -3,6 +3,7 @@
 ## not released
 
 - Fix: #4 Incorrect excerpt on new lines
+- Fix: Sometimes the first image was not used for the preview
 
 ## v0.2.0 (2023-12-28)
 
