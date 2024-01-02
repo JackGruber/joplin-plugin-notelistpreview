@@ -392,22 +392,15 @@ class Notelist {
     });
   }
 
-  private async onRenderNoteCall(props: any): Promise<any> {
-    this.log.verbose("Func: onRenderNoteCall");
-    this.log.verbose("ID: " + props.note.id);
-    this.log.verbose("Title: " + props.note.title);
-    const noteBody = await this.getBody(props.note.body);
-    const dateString = await this.getNoteDateFormated(
+  private async replaceVars(data: string, props: any): Promise<string> {
+    const dateUpdatedTime = await this.getNoteDateFormated(
       props.note.user_updated_time
     );
     const tags = await this.getTags(props.note.tags);
-
-    const completed =
-      props.note.is_todo == 1 && props.note.todo_completed != 0 ? true : false;
-
-    let firstLine = this.settings["firstLine"];
-    let lastLine = this.settings["lastLine"];
-    const dateStringHtml = '<span class="date">' + dateString + "</span>";
+    data = data.replace(
+      "{{date}}",
+      '<span class="date">' + dateUpdatedTime + "</span>"
+    );
 
     let tagString = "";
     if (tags.length > 0) {
@@ -416,12 +409,25 @@ class Notelist {
         tags.join('</span> <span class="tag">') +
         "</span></span>";
     }
+    data = data.replace("{{tags}}", tagString);
 
-    firstLine = firstLine.replace("{{tags}}", tagString);
-    lastLine = lastLine.replace("{{tags}}", tagString);
+    return data;
+  }
 
-    firstLine = firstLine.replace("{{date}}", dateStringHtml);
-    lastLine = lastLine.replace("{{date}}", dateStringHtml);
+  private async onRenderNoteCall(props: any): Promise<any> {
+    this.log.verbose("Func: onRenderNoteCall");
+    this.log.verbose("ID: " + props.note.id);
+    this.log.verbose("Title: " + props.note.title);
+    const noteBody = await this.getBody(props.note.body);
+
+    const completed =
+      props.note.is_todo == 1 && props.note.todo_completed != 0 ? true : false;
+
+    let firstLine = this.settings["firstLine"];
+    let lastLine = this.settings["lastLine"];
+
+    firstLine = await this.replaceVars(firstLine, props);
+    lastLine = await this.replaceVars(lastLine, props);
 
     let thumbnail = null;
     if (this.settings["thumbnail"] != "no") {
@@ -432,7 +438,7 @@ class Notelist {
       ...props,
       noteBody: noteBody,
       noteTitle: props.note.titleHtml,
-      noteDate: dateString,
+      noteDate: await this.getNoteDateFormated(props.note.user_updated_time),
       firstLine: firstLine,
       lastLine: lastLine,
       completed: completed,
