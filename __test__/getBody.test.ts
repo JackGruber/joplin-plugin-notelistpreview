@@ -18,7 +18,7 @@ describe("body", function () {
         note: "testnote1",
         bodyExcerpt: 130,
         expected:
-          "Welcome to Joplin!\r\n\r\nJoplin is a free, open source note taking and to-do application, which helps you write and organise your ...",
+          "Welcome to Joplin! Joplin is a free, open source note taking and to-do application, which helps you write and organise your notes, ...",
       },
       {
         description: "Short",
@@ -31,13 +31,13 @@ describe("body", function () {
         note: "testnote2",
         bodyExcerpt: 100,
         expected:
-          "Exporting notes\r\n\r\nJoplin can export to the JEX format (Joplin Export file), which is an archive ...",
+          "Exporting notes Joplin can export to the JEX format (Joplin Export file), which is an archive that ...",
       },
       {
         description: "Nearly only URLs",
         note: "urls",
         bodyExcerpt: 130,
-        expected: `To ...`,
+        expected: `To check https://test1.com/product/3574/9851?gad_source=1 https://test2.com/product/test-product/ ...`,
       },
     ];
 

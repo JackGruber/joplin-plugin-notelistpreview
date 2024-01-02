@@ -331,6 +331,9 @@ class Notelist {
     noteBody = noteBody.replace(/(\s\\?\+\+|\+\+\s)/g, " ");
 
     let bodyExcerpt = "";
+    noteBody = noteBody.replace(/(\r\n|\n)/g, " ");
+    noteBody = noteBody.replace(/\s+/g, " ");
+    console.log(noteBody);
     for (const word of noteBody.split(" ")) {
       if (bodyExcerpt.length + word.length > this.settings["bodyExcerpt"]) {
         break;
