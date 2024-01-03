@@ -25,6 +25,6 @@
     }
   ],
   "icons": {
-    "256": "../img/icon_256.png"
+    "256": "img/icon_256.png"
   }
 }
