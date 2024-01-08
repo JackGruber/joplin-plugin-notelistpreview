@@ -12,15 +12,15 @@
   "categories": ["themes", "productivity"],
   "screenshots": [
     {
-      "src": "../img/main.png",
+      "src": "img/main.png",
       "label": "Screenshot: Showing the Note liste preview with thumbnail"
     },
     {
-      "src": "../img/showcase1.png",
+      "src": "img/showcase1.png",
       "label": "Screenshot: Showing the Note liste preview"
     },
     {
-      "src": "../img/showcase2.png",
+      "src": "img/showcase2.png",
       "label": "Screenshot: Showing the Note liste preview with thumbnail and tags"
     }
   ],
