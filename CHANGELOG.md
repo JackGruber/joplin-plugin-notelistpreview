@@ -2,6 +2,8 @@
 
 ## not released
 
+- Fix: Path for Plugin discovery website
+
 ## v0.3.0 (2024-01-02)
 
 - Fix: #4 Incorrect excerpt on new lines
