@@ -569,6 +569,9 @@ class Notelist {
         if (check != resourceItem.id) {
           continue;
         }
+        this.log.verbose(
+          "Use resource " + resourceItem.id + " for note " + noteId
+        );
 
         let thumbnailPath = await this.getThumbnailFromCache(resourceItem);
         if (thumbnailPath != "") {
