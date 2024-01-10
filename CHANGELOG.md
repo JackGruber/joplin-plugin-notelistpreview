@@ -2,6 +2,8 @@
 
 ## not released
 
+## v0.3.1 (2024-01-09)
+
 - Fix: Path for Plugin discovery website
 
 ## v0.3.0 (2024-01-02)
