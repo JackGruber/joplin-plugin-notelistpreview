@@ -445,9 +445,7 @@ class Notelist {
   }
 
   private async onRenderNoteCall(props: any): Promise<any> {
-    this.log.verbose("Func: onRenderNoteCall");
-    this.log.verbose("ID: " + props.note.id);
-    this.log.verbose("Title: " + props.note.title);
+    this.log.verbose("Func: onRenderNoteCall " + props.note.id);
     const noteBody = await this.getBody(props.note.body);
 
     const completed =
@@ -523,14 +521,35 @@ class Notelist {
     await joplin.views.dialogs.open(this.msgDialog);
   }
 
+  private async getThumbnailFromCache(resource: any): Promise<string> {
+    this.log.verbose("Get thumbnail " + resource.id + " from cache");
+
+    const thumbnail = this.thumbnailCache[resource.id];
+    if (thumbnail && thumbnail.updated_time == resource.updated_time) {
+      this.log.verbose("Use cache for " + resource.id);
+      return thumbnail.path;
+    }
+    return "";
+  }
+
+  private async storeThumbnailInCache(
+    resource: any,
+    thumbnailFilePath: string
+  ): Promise<void> {
+    this.log.verbose("Update cache for: " + resource.id);
+    this.thumbnailCache[resource.id] = {
+      path: thumbnailFilePath,
+      updated_time: resource.updated_time,
+    };
+  }
+
   private async getResourcePreview(
     noteId: string,
     noteBody: string
   ): Promise<string> {
-    this.log.verbose("Func: getResourcePreview");
+    this.log.verbose("Func: getResourcePreview" + noteId);
 
-    const regExresourceId =
-      /(!\[([^\]]+|)\]\(|<img([^>]+)src=["']):\/(?<resourceId>[\da-z]{32})/g;
+    const regExresourceId = /:\/(?<resourceId>[\da-z]{32})/g;
     let resourceOrder = [];
     let regExMatch = null;
     while ((regExMatch = regExresourceId.exec(noteBody)) != null) {
@@ -540,59 +559,73 @@ class Notelist {
     const resources = await joplin.data.get(["notes", noteId, "resources"], {
       fields: "id, title, mime, filename, updated_time",
     });
-    let resource = null;
-    if (resourceOrder.length > 0) {
-      for (const check of resourceOrder) {
-        for (const resourceItem of resources.items) {
-          if (check == resourceItem.id) {
-            if (resourceItem.mime.includes("image/")) {
-              resource = resourceItem;
-            }
-            break;
-          }
-        }
-        if (resource) {
-          break;
-        }
-      }
+
+    if (resourceOrder.length == 0) {
+      return "";
     }
 
-    let thumbnailFilePath = "";
-    if (resource) {
-      const thumbnail = this.thumbnailCache[resource.id];
-      if (thumbnail && thumbnail.updated_time == resource.updated_time) {
-        thumbnailFilePath = thumbnail.path;
-      } else {
-        thumbnailFilePath = path.join(
-          this.dataDir,
-          "thumb_" + resource.id + ".jpg"
+    for (const check of resourceOrder) {
+      for (const resourceItem of resources.items) {
+        if (check != resourceItem.id) {
+          continue;
+        }
+        this.log.verbose(
+          "Use resource " + resourceItem.id + " for note " + noteId
         );
 
-        await this.genResourcePreviewImage(resource, thumbnailFilePath);
+        let thumbnailPath = await this.getThumbnailFromCache(resourceItem);
+        if (thumbnailPath != "") {
+          return thumbnailPath;
+        }
 
-        this.thumbnailCache[resource.id] = {
-          path: thumbnailFilePath,
-          updated_time: resource.updated_time,
-        };
+        let thumbnailFilePath = path.join(
+          this.dataDir,
+          "thumb_" + resourceItem.id + ".jpg"
+        );
+
+        if (resourceItem.mime.includes("image/")) {
+          thumbnailPath = await this.genResourcePreviewImage(
+            resourceItem,
+            thumbnailFilePath
+          );
+        }
+
+        if (thumbnailPath == "") {
+          continue;
+        }
+
+        await this.storeThumbnailInCache(resourceItem, thumbnailPath);
+
+        return thumbnailPath;
       }
     }
-    return thumbnailFilePath;
   }
 
   private async genResourcePreviewImage(
     resource: any,
     filePath: string
-  ): Promise<boolean> {
-    this.log.verbose("Func: genResourcePreviewImage");
-    const imageHandle = await joplin.imaging.createFromResource(resource.id);
-    const resizedImageHandle = await joplin.imaging.resize(imageHandle, {
-      width: this.settings["thumbnailSize"],
-    });
-    await joplin.imaging.toJpgFile(resizedImageHandle, filePath, 90);
-    await joplin.imaging.free(imageHandle);
-    await joplin.imaging.free(resizedImageHandle);
+  ): Promise<string> {
+    this.log.verbose("Func: genResourcePreviewImage " + resource.id);
+    try {
+      const imageHandle = await joplin.imaging.createFromResource(resource.id);
+      const resizedImageHandle = await joplin.imaging.resize(imageHandle, {
+        width: this.settings["thumbnailSize"],
+      });
+      await joplin.imaging.toJpgFile(resizedImageHandle, filePath, 90);
+      await joplin.imaging.free(imageHandle);
+      await joplin.imaging.free(resizedImageHandle);
+    } catch (e) {
+      if (e.message.includes("Could not load resource path")) {
+        this.log.warn("Resource file " + resource.id + " is not available");
+      } else {
+        this.log.error("Func: genResourcePreviewImage " + resource.id);
+        this.log.error(e.message);
+      }
 
-    return true;
+      return "";
+    }
+
+    return filePath;
   }
 
   private async cleanResourcePreview(): Promise<void> {

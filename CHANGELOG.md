@@ -2,6 +2,11 @@
 
 ## not released
 
+## v0.3.2 (2024-01-10)
+
+- Optimize: Remove note title from logs
+- Fix: #10 Previews are not loaded (white field) if the resource file has not been downloaded
+
 ## v0.3.1 (2024-01-09)
 
 - Fix: Path for Plugin discovery website
