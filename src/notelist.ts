@@ -445,9 +445,7 @@ class Notelist {
   }
 
   private async onRenderNoteCall(props: any): Promise<any> {
-    this.log.verbose("Func: onRenderNoteCall");
-    this.log.verbose("ID: " + props.note.id);
-    this.log.verbose("Title: " + props.note.title);
+    this.log.verbose("Func: onRenderNoteCall " + props.note.id);
     const noteBody = await this.getBody(props.note.body);
 
     const completed =
@@ -527,7 +525,7 @@ class Notelist {
     noteId: string,
     noteBody: string
   ): Promise<string> {
-    this.log.verbose("Func: getResourcePreview");
+    this.log.verbose("Func: getResourcePreview" + noteId);
 
     const regExresourceId =
       /(!\[([^\]]+|)\]\(|<img([^>]+)src=["']):\/(?<resourceId>[\da-z]{32})/g;
@@ -559,6 +557,10 @@ class Notelist {
 
     let thumbnailFilePath = "";
     if (resource) {
+      this.log.verbose(
+        "Selected ResourceId: " + resource.id + " for NoteId: " + noteId
+      );
+
       const thumbnail = this.thumbnailCache[resource.id];
       if (thumbnail && thumbnail.updated_time == resource.updated_time) {
         thumbnailFilePath = thumbnail.path;
@@ -567,7 +569,6 @@ class Notelist {
           this.dataDir,
           "thumb_" + resource.id + ".jpg"
         );
-
         await this.genResourcePreviewImage(resource, thumbnailFilePath);
 
         this.thumbnailCache[resource.id] = {
@@ -583,7 +584,7 @@ class Notelist {
     resource: any,
     filePath: string
   ): Promise<boolean> {
-    this.log.verbose("Func: genResourcePreviewImage");
+    this.log.verbose("Func: genResourcePreviewImage " + resource);
     const imageHandle = await joplin.imaging.createFromResource(resource.id);
     const resizedImageHandle = await joplin.imaging.resize(imageHandle, {
       width: this.settings["thumbnailSize"],
