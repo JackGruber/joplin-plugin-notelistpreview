@@ -584,7 +584,7 @@ class Notelist {
     resource: any,
     filePath: string
   ): Promise<boolean> {
-    this.log.verbose("Func: genResourcePreviewImage " + resource);
+    this.log.verbose("Func: genResourcePreviewImage " + resource.id);
     const imageHandle = await joplin.imaging.createFromResource(resource.id);
     const resizedImageHandle = await joplin.imaging.resize(imageHandle, {
       width: this.settings["thumbnailSize"],
