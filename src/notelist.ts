@@ -549,8 +549,7 @@ class Notelist {
   ): Promise<string> {
     this.log.verbose("Func: getResourcePreview" + noteId);
 
-    const regExresourceId =
-      /(!\[([^\]]+|)\]\(|<img([^>]+)src=["']):\/(?<resourceId>[\da-z]{32})/g;
+    const regExresourceId = /:\/(?<resourceId>[\da-z]{32})/g;
     let resourceOrder = [];
     let regExMatch = null;
     while ((regExMatch = regExresourceId.exec(noteBody)) != null) {
