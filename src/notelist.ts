@@ -521,6 +521,28 @@ class Notelist {
     await joplin.views.dialogs.open(this.msgDialog);
   }
 
+  private async getThumbnailFromCache(resource: any): Promise<string> {
+    this.log.verbose("Get thumbnail " + resource.id + " from cache");
+
+    const thumbnail = this.thumbnailCache[resource.id];
+    if (thumbnail && thumbnail.updated_time == resource.updated_time) {
+      this.log.verbose("Use cache for " + resource.id);
+      return thumbnail.path;
+    }
+    return "";
+  }
+
+  private async storeThumbnailInCache(
+    resource: any,
+    thumbnailFilePath: string
+  ): Promise<void> {
+    this.log.verbose("Update cache for: " + resource.id);
+    this.thumbnailCache[resource.id] = {
+      path: thumbnailFilePath,
+      updated_time: resource.updated_time,
+    };
+  }
+
   private async getResourcePreview(
     noteId: string,
     noteBody: string
@@ -539,61 +561,70 @@ class Notelist {
       fields: "id, title, mime, filename, updated_time",
     });
     let resource = null;
-    if (resourceOrder.length > 0) {
-      for (const check of resourceOrder) {
-        for (const resourceItem of resources.items) {
-          if (check == resourceItem.id) {
-            if (resourceItem.mime.includes("image/")) {
-              resource = resourceItem;
-            }
-            break;
-          }
-        }
-        if (resource) {
-          break;
-        }
-      }
+
+    if (resourceOrder.length == 0) {
+      return "";
     }
 
-    let thumbnailFilePath = "";
-    if (resource) {
-      this.log.verbose(
-        "Selected ResourceId: " + resource.id + " for NoteId: " + noteId
-      );
+    for (const check of resourceOrder) {
+      for (const resourceItem of resources.items) {
+        if (check != resourceItem.id) {
+          continue;
+        }
 
-      const thumbnail = this.thumbnailCache[resource.id];
-      if (thumbnail && thumbnail.updated_time == resource.updated_time) {
-        thumbnailFilePath = thumbnail.path;
-      } else {
-        thumbnailFilePath = path.join(
+        let thumbnailPath = await this.getThumbnailFromCache(resourceItem);
+        if (thumbnailPath != "") {
+          return thumbnailPath;
+        }
+
+        let thumbnailFilePath = path.join(
           this.dataDir,
-          "thumb_" + resource.id + ".jpg"
+          "thumb_" + resourceItem.id + ".jpg"
         );
-        await this.genResourcePreviewImage(resource, thumbnailFilePath);
 
-        this.thumbnailCache[resource.id] = {
-          path: thumbnailFilePath,
-          updated_time: resource.updated_time,
-        };
+        if (resourceItem.mime.includes("image/")) {
+          thumbnailPath = await this.genResourcePreviewImage(
+            resourceItem,
+            thumbnailFilePath
+          );
+        }
+
+        if (thumbnailPath == "") {
+          continue;
+        }
+
+        await this.storeThumbnailInCache(resourceItem, thumbnailPath);
+
+        return thumbnailPath;
       }
     }
-    return thumbnailFilePath;
   }
 
   private async genResourcePreviewImage(
     resource: any,
     filePath: string
-  ): Promise<boolean> {
+  ): Promise<string> {
     this.log.verbose("Func: genResourcePreviewImage " + resource.id);
-    const imageHandle = await joplin.imaging.createFromResource(resource.id);
-    const resizedImageHandle = await joplin.imaging.resize(imageHandle, {
-      width: this.settings["thumbnailSize"],
-    });
-    await joplin.imaging.toJpgFile(resizedImageHandle, filePath, 90);
-    await joplin.imaging.free(imageHandle);
-    await joplin.imaging.free(resizedImageHandle);
+    try {
+      const imageHandle = await joplin.imaging.createFromResource(resource.id);
+      const resizedImageHandle = await joplin.imaging.resize(imageHandle, {
+        width: this.settings["thumbnailSize"],
+      });
+      await joplin.imaging.toJpgFile(resizedImageHandle, filePath, 90);
+      await joplin.imaging.free(imageHandle);
+      await joplin.imaging.free(resizedImageHandle);
+    } catch (e) {
+      if (e.message.includes("Could not load resource path")) {
+        this.log.warn("Resource file " + resource.id + " is not available");
+      } else {
+        this.log.error("Func: genResourcePreviewImage " + resource.id);
+        this.log.error(e.message);
+      }
 
-    return true;
+      return "";
+    }
+
+    return filePath;
   }
 
   private async cleanResourcePreview(): Promise<void> {
