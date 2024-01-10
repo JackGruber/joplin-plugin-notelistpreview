@@ -560,7 +560,6 @@ class Notelist {
     const resources = await joplin.data.get(["notes", noteId, "resources"], {
       fields: "id, title, mime, filename, updated_time",
     });
-    let resource = null;
 
     if (resourceOrder.length == 0) {
       return "";
