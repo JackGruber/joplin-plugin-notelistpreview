@@ -3,7 +3,7 @@
   "version": "0.3.2",
   "scripts": {
     "dist": "webpack --env joplin-plugin-config=buildMain && webpack --env joplin-plugin-config=buildExtraScripts && webpack --env joplin-plugin-config=createArchive",
-    "prepare": "npm run dist",
+    "prepare": "npm run dist && husky install",
     "updateVersion": "webpack --env joplin-plugin-config=updateVersion",
     "update": "npm install -g generator-joplin && yo joplin --node-package-manager npm --update --force",
     "release": "npm test && node ./node_modules/joplinplugindevtools/dist/createRelease.js",
