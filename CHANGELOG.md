@@ -2,6 +2,8 @@
 
 ## not released
 
+- Fix: homepage_url for README.md for Manage your plugins in Joplin
+
 ## v0.3.2 (2024-01-10)
 
 - Optimize: Remove note title from logs
