@@ -9,6 +9,13 @@ export namespace settings {
       iconName: "far fa-list-alt",
     });
 
+    const availableVariables = [
+      "{{updatedTime}}",
+      "{{createdTime}}",
+      "{{tags}}",
+      "{{url}}",
+    ];
+
     await joplin.settings.registerSettings({
       datePositionInline: {
         value: "begin",
@@ -57,7 +64,7 @@ export namespace settings {
         label: i18n.__("settings.firstLine.label"),
         description: i18n.__(
           "settings.firstLine.description",
-          "{{updatedTime}}, {{createdTime}}, {{tags}}, {{url}}"
+          availableVariables.join(", ")
         ),
       },
       lastLine: {
@@ -69,7 +76,7 @@ export namespace settings {
         label: i18n.__("settings.lastLine.label"),
         description: i18n.__(
           "settings.lastLine.description",
-          "{{updatedTime}}, {{createdTime}}, {{tags}}, {{url}}"
+          availableVariables.join(", ")
         ),
       },
       itemSizeHeight: {
