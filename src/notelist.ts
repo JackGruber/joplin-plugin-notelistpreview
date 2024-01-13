@@ -270,10 +270,20 @@ class Notelist {
     const thumbnailFloat =
       this.settings["thumbnail"] == "right" ? "float: right;" : "float: left;";
 
-    const thumbnailMargin =
+    const thumbnailMarginLayout1 =
       this.settings["thumbnail"] == "right"
         ? "margin: 3px 0px 3px 3px;"
         : "margin: 3px 3px 3px 0px;";
+
+    const thumbnailMarginLayout2 =
+      this.settings["thumbnail"] == "right"
+        ? "margin: 0px 0px 0px 3px;"
+        : "margin: 0px 3px 0px 0px;";
+
+    const thumbnailMargin =
+      this.settings["layout"] == "layout2"
+        ? thumbnailMarginLayout2
+        : thumbnailMarginLayout1;
 
     return `
       > .content {
