@@ -9,7 +9,7 @@
   "homepage_url": "https://github.com/JackGruber/joplin-plugin-hotfolder/blob/master/README.md",
   "repository_url": "https://github.com/JackGruber/joplin-plugin-notelistpreview",
   "keywords": ["preview", "vorschau", "notiz", "note", "notelist"],
-  "categories": ["themes", "productivity"],
+  "categories": ["themes", "productivity", "viewer", "Appearance"],
   "screenshots": [
     {
       "src": "img/main.png",
