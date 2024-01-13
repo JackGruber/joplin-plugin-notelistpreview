@@ -17,6 +17,19 @@ export namespace settings {
     ];
 
     await joplin.settings.registerSettings({
+      layout: {
+        value: "layout1",
+        type: SettingItemType.String,
+        section: "noteListPreview",
+        isEnum: true,
+        public: true,
+        options: {
+          layout1: i18n.__("settings.layout.values.layout1"),
+          layout2: i18n.__("settings.layout.values.layout2"),
+        },
+        label: i18n.__("settings.layout.label"),
+        description: i18n.__("settings.layout.description"),
+      },
       datePositionInline: {
         value: "begin",
         type: SettingItemType.String,

@@ -57,6 +57,14 @@
     "thumbnailSquare": {
       "label": "Vorschaubild quadratisch",
       "description": "Soll das Vorschaubild quadratisch angezeigt werden"
+    },
+    "layout": {
+      "label": "Layout",
+      "description": "Welches Layout soll für die Vorschau verwendet werden",
+      "values": {
+        "layout1": "Layout 1",
+        "layout2": "Layout 2"
+      }
     }
   },
   "msg": {

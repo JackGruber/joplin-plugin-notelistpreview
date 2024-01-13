@@ -61,6 +61,14 @@
     "thumbnailSquare": {
       "label": "Thumbnail Square",
       "description": "Should the preview image be displayed squared"
+    },
+    "layout": {
+      "label": "Layout",
+      "description": "Which layout should be used for the preview",
+      "values": {
+        "layout1": "Layout 1",
+        "layout2": "Layout 2"
+      }
     }
   },
   "msg": {

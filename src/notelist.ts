@@ -101,6 +101,7 @@ class Notelist {
 
     this.settings = {
       itemTemplate: "",
+      layout: await joplin.settings.value("layout"),
       itemSizeHeight: await joplin.settings.value("itemSizeHeight"),
       daysHumanizeDate: await joplin.settings.value("daysHumanizeDate"),
       datePositionInline: await joplin.settings.value("datePositionInline"),
@@ -123,7 +124,16 @@ class Notelist {
 
   private async genItemTemplate(): Promise<void> {
     this.log.verbose("Func: genItemTemplate");
-    this.settings["itemTemplate"] = await this.getItemTemplateLayout1();
+
+    switch (this.settings["layout"]) {
+      case "layout1":
+        this.settings["itemTemplate"] = await this.getItemTemplateLayout1();
+        break;
+      case "layout2":
+        this.settings["itemTemplate"] = await this.getItemTemplateLayout2();
+        break;
+    }
+
     this.log.verbose(this.settings["itemTemplate"]);
   }
 
@@ -158,7 +168,7 @@ class Notelist {
     }
 
     return `
-        <div class="content {{#item.selected}}-selected{{/item.selected}} {{#completed}}-completed{{/completed}}">
+      <div class="content {{#item.selected}}-selected{{/item.selected}} {{#completed}}-completed{{/completed}}">
         ${title}
         ${firstLine}
         <p class="body"> 
@@ -171,7 +181,57 @@ class Notelist {
       </div>
     `;
   }
+
+  private async getItemTemplateLayout2(): Promise<string> {
+    this.log.verbose("Func: getItemTemplateLayout2");
+
+    const noteExcerpt = '<span class="excerpt">{{noteBody}}</span>';
+    const noteDate = '<span class="date">{{noteDate}}</span>';
+    const title = `
+      <div class="title"> 
+        {{#note.is_todo}}<span class="checkbox"><input data-id="todoCheckboxCompleted" type="checkbox" {{#completed}}checked{{/completed}} /></span>{{/note.is_todo}}
+        {{#note.isWatched}}<i class="watchedicon fa fa-share-square"></i>{{/note.isWatched}}
+        <span>{{{noteTitle}}}</span>
       </div>
+    `;
+
+    let firstLine = "";
+    if (this.settings["firstLine"] != "") {
+      firstLine = '<p class="firstLine">{{{firstLine}}}</p>';
+    }
+
+    let lastLine = "";
+    if (this.settings["lastLine"] != "") {
+      lastLine = '<p class="lastLine">{{{lastLine}}}</p>';
+    }
+
+    let noteContent = "";
+    if (this.settings["datePositionInline"] == "begin") {
+      noteContent = noteDate + " " + noteExcerpt;
+    } else if (this.settings["datePositionInline"] == "end") {
+      noteContent = noteExcerpt + noteDate;
+    }
+
+    let templateContent = `
+        ${title}
+        ${firstLine}
+        <p class="body">
+          ${noteContent}
+        </p>
+        ${lastLine}
+    `;
+
+    const templateImg = `
+        {{#thumbnail}}
+          <img class="thumbnail" src="file://{{thumbnail}}"/>
+        {{/thumbnail}}
+    `;
+
+    return `
+        <div class="content {{#item.selected}}-selected{{/item.selected}} {{#completed}}-completed{{/completed}}">
+          ${templateImg}
+          ${templateContent}
+        </div>
     `;
   }
 
@@ -290,13 +350,11 @@ class Notelist {
       }
 
       > .content > .left {
-        background-color: yellow;
         float:left;
-        display: block;
+        width: ${this.settings["thumbnailSize"]}px;
       }
       > .content > .right {
-        background-color: green;
-        display: block;
+        margin-left: ${this.settings["thumbnailSize"] + 3}px;
       }
     `;
   }
