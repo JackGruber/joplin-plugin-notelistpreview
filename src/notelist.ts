@@ -132,6 +132,13 @@ class Notelist {
 
     const noteExcerpt = '<span class="excerpt">{{noteBody}}</span>';
     const noteDate = '<span class="date">{{noteDate}}</span>';
+    const title = `
+      <div class="title"> 
+        {{#note.is_todo}}<span class="checkbox"><input data-id="todoCheckboxCompleted" type="checkbox" {{#completed}}checked{{/completed}} /></span>{{/note.is_todo}}
+        {{#note.isWatched}}<i class="watchedicon fa fa-share-square"></i>{{/note.isWatched}}
+        <span>{{{noteTitle}}}</span>
+      </div>
+    `;
 
     let firstLine = "";
     if (this.settings["firstLine"] != "") {
@@ -152,11 +159,7 @@ class Notelist {
 
     return `
         <div class="content {{#item.selected}}-selected{{/item.selected}} {{#completed}}-completed{{/completed}}">
-        <div class="title">
-          {{#note.is_todo}}<span class="checkbox"><input data-id="todoCheckboxCompleted" type="checkbox" {{#completed}}checked{{/completed}} /></span>{{/note.is_todo}}
-          {{#note.isWatched}}<i class="watchedicon fa fa-share-square"></i>{{/note.isWatched}}
-          <span>{{{noteTitle}}}</span>
-        </div>
+        ${title}
         ${firstLine}
         <p class="body"> 
           {{#thumbnail}}
@@ -165,6 +168,9 @@ class Notelist {
           ${noteContent}
         </p>
         ${lastLine}
+      </div>
+    `;
+  }
       </div>
     `;
   }
