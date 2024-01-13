@@ -354,12 +354,10 @@ class Notelist {
       }
 
       > .content > .firstLine {
-        margin-bottom: 2px;
         ${cssFirstLine}
       }
 
       > .content > .lastLine {
-        margin-top: 2px;
         ${cssLastLine}
       }
 
