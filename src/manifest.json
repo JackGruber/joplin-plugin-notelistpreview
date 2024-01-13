@@ -26,6 +26,10 @@
     {
       "src": "img/showcase3.png",
       "label": "Screenshot: Showing the Note liste preview with thumbnail and tags (Dark theme)"
+    },
+    {
+      "src": "img/showcase4.png",
+      "label": "Screenshot: Showing the Note liste preview with square thumbnail and full size"
     }
   ],
   "icons": {
