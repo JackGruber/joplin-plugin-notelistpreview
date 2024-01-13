@@ -20,13 +20,7 @@ A plugin to add a previw to the note list.
 - [Plugin options](#plugin-options)
 - [Layouts](#layouts)
     - [Layout 1](#layout-1)
-        - [Layout 1 - Thumbnail right](#layout-1---thumbnail-right)
-        - [Layout 1 - Thumbnail left](#layout-1---thumbnail-left)
-        - [Layout 1 - No thumbnail](#layout-1---no-thumbnail)
     - [Layout 2](#layout-2)
-        - [Layout 2 - Thumbnail right](#layout-2---thumbnail-right)
-        - [Layout 2 - Thumbnail left](#layout-2---thumbnail-left)
-        - [Layout 2 - No thumbnail](#layout-2---no-thumbnail)
 - [Examples with settings](#examples-with-settings)
     - [Date and Tags](#date-and-tags)
     - [Thumbnail right](#thumbnail-right)
@@ -66,31 +60,19 @@ Joplin must be restarted after changing settings!
 
 ### Layout 1
 
-#### Layout 1 - Thumbnail right
-
-<img width="50%" src=img/layout1_img_r.svg>
-
-#### Layout 1 - Thumbnail left
-
-<img width="50%" src=img/layout1_img_l.svg>
-
-#### Layout 1 - No thumbnail
-
-<img width="50%" src=img/layout1.svg>
+| Thumbnail | Preview |
+| --- | --- |
+| Right | <img width="300px" src="img/layout1_img_r.svg"> |
+| Left | <img width="300px" src="img/layout1_img_l.svg"> |
+| No | <img width="300px" src="img/layout1.svg"> |
 
 ### Layout 2
 
-#### Layout 2 - Thumbnail right
-
-<img width="50%" src=img/layout2_img_r.svg>
-
-#### Layout 2 - Thumbnail left
-
-<img width="50%" src=img/layout2_img_l.svg>
-
-#### Layout 2 - No thumbnail
-
-<img width="50%" src=img/layout2.svg>
+| Thumbnail | Preview |
+| --- | --- |
+| Right | <img width="300px" src="img/layout2_img_r.svg"> |
+| Left | <img width="300px" src="img/layout2_img_l.svg"> |
+| No | <img width="300px" src="img/layout2.svg"> |
 
 ## Examples with settings
 
