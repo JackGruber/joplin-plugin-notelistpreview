@@ -53,6 +53,10 @@
     "thumbnailSize": {
       "label": "Vorschaubild Größe",
       "description": "Maximale Bereite und Höhe des Vorschaubildes"
+    },
+    "thumbnailSquare": {
+      "label": "Vorschaubild quadratisch",
+      "description": "Soll das Vorschaubild quadratisch angezeigt werden"
     }
   },
   "msg": {

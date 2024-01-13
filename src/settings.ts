@@ -112,6 +112,15 @@ export namespace settings {
         label: i18n.__("settings.thumbnailSize.label"),
         description: i18n.__("settings.thumbnailSize.description"),
       },
+      thumbnailSquare: {
+        value: false,
+        type: SettingItemType.Bool,
+        section: "noteListPreview",
+        public: true,
+        advanced: true,
+        label: i18n.__("settings.thumbnailSquare.label"),
+        description: i18n.__("settings.thumbnailSquare.description"),
+      },
       cssFirstLineOverwrite: {
         value: "",
         type: SettingItemType.String,

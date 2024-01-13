@@ -3,6 +3,7 @@
 ## not released
 
 - Fix: homepage_url for README.md for Manage your plugins in Joplin
+- Add: #7 Option to use squared thumbnails
 
 ## v0.3.2 (2024-01-10)
 

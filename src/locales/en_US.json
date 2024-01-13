@@ -57,6 +57,10 @@
     "thumbnailSize": {
       "label": "Thumbnail size",
       "description": "Maximum width and height of the thumbnail"
+    },
+    "thumbnailSquare": {
+      "label": "Thumbnail Square",
+      "description": "Should the preview image be displayed squared"
     }
   },
   "msg": {

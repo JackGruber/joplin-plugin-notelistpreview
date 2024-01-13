@@ -117,6 +117,7 @@ class Notelist {
       cssLastLineOverwrite: await joplin.settings.value("cssLastLineOverwrite"),
       thumbnail: await joplin.settings.value("thumbnail"),
       thumbnailSize: await joplin.settings.value("thumbnailSize"),
+      thumbnailSquare: await joplin.settings.value("thumbnailSquare"),
     };
   }
 
@@ -608,9 +609,44 @@ class Notelist {
     this.log.verbose("Func: genResourcePreviewImage " + resource.id);
     try {
       const imageHandle = await joplin.imaging.createFromResource(resource.id);
-      const resizedImageHandle = await joplin.imaging.resize(imageHandle, {
-        width: this.settings["thumbnailSize"],
-      });
+      let processImageHandle = imageHandle;
+
+      if (this.settings["thumbnailSquare"]) {
+        const imageSize = await joplin.imaging.getSize(imageHandle);
+
+        let cropSettings = {
+          x: 0,
+          y: 0,
+          size: 0,
+        };
+
+        if (imageSize.width > imageSize.height) {
+          cropSettings["size"] = imageSize.height;
+          cropSettings["x"] = Math.round(
+            imageSize.width / 2 - cropSettings["size"] / 2
+          );
+        } else {
+          cropSettings["size"] = imageSize.width;
+          cropSettings["y"] = Math.round(
+            imageSize.height / 2 - cropSettings["size"] / 2
+          );
+        }
+
+        processImageHandle = await joplin.imaging.crop(imageHandle, {
+          height: cropSettings["size"],
+          width: cropSettings["size"],
+          x: cropSettings["x"],
+          y: cropSettings["y"],
+        });
+      }
+
+      const resizedImageHandle = await joplin.imaging.resize(
+        processImageHandle,
+        {
+          width: this.settings["thumbnailSize"],
+        }
+      );
+
       await joplin.imaging.toJpgFile(resizedImageHandle, filePath, 90);
       await joplin.imaging.free(imageHandle);
       await joplin.imaging.free(resizedImageHandle);
