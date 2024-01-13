@@ -267,6 +267,7 @@ class Notelist {
         max-height: ${this.settings["thumbnailSize"]}px;
         ${thumbnailFloat}
         ${thumbnailMargin}
+        border-radius: 5px;
       }
 
       > .content > .firstLine {
