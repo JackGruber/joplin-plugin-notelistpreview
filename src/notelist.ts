@@ -123,6 +123,13 @@ class Notelist {
 
   private async genItemTemplate(): Promise<void> {
     this.log.verbose("Func: genItemTemplate");
+    this.settings["itemTemplate"] = await this.getItemTemplateLayout1();
+    this.log.verbose(this.settings["itemTemplate"]);
+  }
+
+  private async getItemTemplateLayout1(): Promise<string> {
+    this.log.verbose("Func: getItemTemplateLayout1");
+
     const noteExcerpt = '<span class="excerpt">{{noteBody}}</span>';
     const noteDate = '<span class="date">{{noteDate}}</span>';
 
@@ -160,7 +167,6 @@ class Notelist {
           ${lastLine}
         </div>
     `;
-    this.log.verbose(this.settings["itemTemplate"]);
   }
 
   private async getItemCss(): Promise<string> {
