@@ -68,29 +68,29 @@ Joplin must be restarted after changing settings!
 
 #### Layout 1 - Thumbnail right
 
-<img src=img/layout1_img_r.svg>
+<img width="50%" src=img/layout1_img_r.svg>
 
 #### Layout 1 - Thumbnail left
 
-<img src=img/layout1_img_l.svg>
+<img width="50%" src=img/layout1_img_l.svg>
 
 #### Layout 1 - No thumbnail
 
-<img src=img/layout1.svg>
+<img width="50%" src=img/layout1.svg>
 
 ### Layout 2
 
 #### Layout 2 - Thumbnail right
 
-<img src=img/layout2_img_r.svg>
+<img width="50%" src=img/layout2_img_r.svg>
 
 #### Layout 2 - Thumbnail left
 
-<img src=img/layout2_img_l.svg>
+<img width="50%" src=img/layout2_img_l.svg>
 
 #### Layout 2 - No thumbnail
 
-<img src=img/layout2.svg>
+<img width="50%" src=img/layout2.svg>
 
 ## Examples with settings
 
