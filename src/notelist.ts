@@ -223,18 +223,7 @@ class Notelist {
           margin-bottom: 5px;
       }
 
-      > .content .leftColumn {
-        background-color: yellow;
-        width: 50px;
-        float:left;
-      }
-
-      > .content .rightColumn {
-        background-color: green;
-        margin-left: 50px;
-      }
-
-      > .content > .title {
+      > .content .title {
           font-weight: bold;
           font-family: var(--joplin-font-family);
           font-size: var(--joplin-font-size);
@@ -243,25 +232,25 @@ class Notelist {
           align-items: center;
       }
 
-      > .content > .title > .checkbox {
+      > .content .checkbox {
         padding-right: 4px;
       }
 
-      > .content > .title > .checkbox input {
+      > .content .checkbox input {
         margin: 3px 3px 3px 0px;
       }
 
-      > .content > .title > .watchedicon {
+      > .content .watchedicon {
         padding-right: 4px;
         padding-left: 1px;
         letter-spacing: .03em;
       }
 
-      > .content > .body .excerpt {
+      > .content .excerpt {
         opacity: 0.7;
       }
 
-      > .content > .body .thumbnail {
+      > .content .thumbnail {
         display: flex;
         max-width: ${this.settings["thumbnailSize"]}px;
         max-height: ${this.settings["thumbnailSize"]}px;
@@ -270,44 +259,36 @@ class Notelist {
         border-radius: 5px;
       }
 
-      > .content > .firstLine {
-          margin-bottom: 2px;
-      }
-
-      > .content > .lastLine {
-          margin-top: 2px;
-      }
-
-      > .content > .body > .date {
+      > .content .date {
         ${cssDate}
       }
 
       > .content > .firstLine {
+        margin-bottom: 2px;
         ${cssFirstLine}
       }
 
       > .content > .lastLine {
+        margin-top: 2px;
         ${cssLastLine}
       }
 
-      > .content > .firstLine > .date {
-        ${cssDate}
-      }
-
-      > .content > .lastLine > .date {
-        ${cssDate}
-      }
-
-      > .content > .firstLine > .tags > .tag {
-        ${cssTag}
-      }
-
-      > .content > .lastLine > .tags > .tag {
+      > .content .tags > .tag {
         ${cssTag}
       }
 
       > .content.-selected {
           background-color: var(--joplin-selected-color);
+      }
+
+      > .content > .left {
+        background-color: yellow;
+        float:left;
+        display: block;
+      }
+      > .content > .right {
+        background-color: green;
+        display: block;
       }
     `;
   }
