@@ -123,6 +123,8 @@ class Notelist {
 
   private async genItemTemplate(): Promise<void> {
     this.log.verbose("Func: genItemTemplate");
+    const noteExcerpt = '<span class="excerpt">{{noteBody}}</span>';
+    const noteDate = '<span class="date">{{noteDate}}</span>';
 
     let firstLine = "";
     if (this.settings["firstLine"] != "") {
@@ -134,20 +136,14 @@ class Notelist {
       lastLine = '<p class="lastLine">{{{lastLine}}}</p>';
     }
 
-    let noteBody = '<span class="excerpt">{{noteBody}}</span>';
+    let noteContent = noteExcerpt;
     if (this.settings["datePositionInline"] == "begin") {
-      noteBody =
-        '<span class="date">{{noteDate}}</span><span class="excerpt"> ' +
-        noteBody +
-        "</span>";
+      noteContent = noteDate + " " + noteExcerpt;
     } else if (this.settings["datePositionInline"] == "end") {
-      noteBody =
-        '<span class="excerpt"> ' +
-        noteBody +
-        ' </span><span class="date">{{noteDate}}</span>';
+      noteContent = noteExcerpt + noteDate;
     }
 
-    this.settings["itemTemplate"] = `
+    return `
         <div class="content {{#item.selected}}-selected{{/item.selected}} {{#completed}}-completed{{/completed}}">
           <div class="title">
             {{#note.is_todo}}<span class="checkbox"><input data-id="todoCheckboxCompleted" type="checkbox" {{#completed}}checked{{/completed}} /></span>{{/note.is_todo}}
@@ -159,7 +155,7 @@ class Notelist {
             {{#thumbnail}}
               <img class="thumbnail" src="file://{{thumbnail}}"/>
             {{/thumbnail}}
-            ${noteBody}
+          ${noteContent}
           </p>
           ${lastLine}
         </div>
