@@ -258,14 +258,25 @@ class Notelist {
         ? this.settings["cssTagOverwrite"]
         : cssTagDefault;
 
+    const cssFirstLineDefault = `
+      white-space: nowrap;
+      overflow: hidden;
+      margin-bottom: 2px;
+    `;
+    const cssFirstLastDefault = `
+      white-space: nowrap;
+      overflow: hidden;
+      margin-bottom: 2px;
+    `;
+
     const cssFirstLine =
       this.settings["cssFirstLineOverwrite"].trim() != ""
         ? this.settings["cssFirstLineOverwrite"]
-        : "white-space: nowrap;";
+        : cssFirstLineDefault;
     const cssLastLine =
       this.settings["cssLastLineOverwrite"].trim() != ""
         ? this.settings["cssLastLineOverwrite"]
-        : "white-space: nowrap;";
+        : cssFirstLastDefault;
 
     const thumbnailFloat =
       this.settings["thumbnail"] == "right" ? "float: right;" : "float: left;";
@@ -308,6 +319,7 @@ class Notelist {
           white-space: nowrap;
           display: flex;
           align-items: center;
+          overflow: hidden;
       }
 
       > .content .checkbox {
