@@ -14,6 +14,7 @@ export namespace settings {
       "{{createdTime}}",
       "{{tags}}",
       "{{url}}",
+      "{{noteText}}",
     ];
 
     await joplin.settings.registerSettings({
@@ -30,29 +31,38 @@ export namespace settings {
         label: i18n.__("settings.layout.label"),
         description: i18n.__("settings.layout.description"),
       },
-      datePositionInline: {
-        value: "begin",
+      firstLine: {
+        value: "",
         type: SettingItemType.String,
         section: "noteListPreview",
-        isEnum: true,
         public: true,
-        options: {
-          no: i18n.__("settings.datePositionInline.values.no"),
-          begin: i18n.__("settings.datePositionInline.values.begin"),
-          end: i18n.__("settings.datePositionInline.values.end"),
-        },
-        label: i18n.__("settings.datePositionInline.label"),
-        description: i18n.__("settings.datePositionInline.description"),
+        label: i18n.__("settings.firstLine.label"),
+        description: i18n.__(
+          "settings.firstLine.description",
+          availableVariables.join(", ")
+        ),
       },
-      daysHumanizeDate: {
-        value: 7,
-        minimum: -1,
-        maximum: 999,
-        type: SettingItemType.Int,
+      noteLine: {
+        value: "{{updatedTime}} {{noteText}}",
+        type: SettingItemType.String,
         section: "noteListPreview",
         public: true,
-        label: i18n.__("settings.daysHumanizeDate.label"),
-        description: i18n.__("settings.daysHumanizeDate.description"),
+        label: i18n.__("settings.noteLine.label"),
+        description: i18n.__(
+          "settings.noteLine.description",
+          availableVariables.join(", ")
+        ),
+      },
+      lastLine: {
+        value: "",
+        type: SettingItemType.String,
+        section: "noteListPreview",
+        public: true,
+        label: i18n.__("settings.lastLine.label"),
+        description: i18n.__(
+          "settings.lastLine.description",
+          availableVariables.join(", ")
+        ),
       },
       thumbnail: {
         value: "no",
@@ -68,29 +78,15 @@ export namespace settings {
         label: i18n.__("settings.thumbnail.label"),
         description: i18n.__("settings.thumbnail.description"),
       },
-      firstLine: {
-        value: "",
-        type: SettingItemType.String,
+      daysHumanizeDate: {
+        value: 7,
+        minimum: -1,
+        maximum: 999,
+        type: SettingItemType.Int,
         section: "noteListPreview",
         public: true,
-        advanced: true,
-        label: i18n.__("settings.firstLine.label"),
-        description: i18n.__(
-          "settings.firstLine.description",
-          availableVariables.join(", ")
-        ),
-      },
-      lastLine: {
-        value: "",
-        type: SettingItemType.String,
-        section: "noteListPreview",
-        public: true,
-        advanced: true,
-        label: i18n.__("settings.lastLine.label"),
-        description: i18n.__(
-          "settings.lastLine.description",
-          availableVariables.join(", ")
-        ),
+        label: i18n.__("settings.daysHumanizeDate.label"),
+        description: i18n.__("settings.daysHumanizeDate.description"),
       },
       itemSizeHeight: {
         value: 100,

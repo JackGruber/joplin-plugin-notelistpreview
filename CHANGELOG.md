@@ -5,6 +5,7 @@
 - Fix: homepage_url for README.md for Manage your plugins in Joplin
 - Add: #7 Option to use squared thumbnails
 - Add: Additional layout ( [Deatils](README.md#layouts) )
+- Add: Option to configure note text line
 
 ## v0.3.2 (2024-01-10)
 

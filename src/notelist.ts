@@ -104,9 +104,9 @@ class Notelist {
       layout: await joplin.settings.value("layout"),
       itemSizeHeight: await joplin.settings.value("itemSizeHeight"),
       daysHumanizeDate: await joplin.settings.value("daysHumanizeDate"),
-      datePositionInline: await joplin.settings.value("datePositionInline"),
       bodyExcerpt: await joplin.settings.value("bodyExcerpt"),
       firstLine: (await joplin.settings.value("firstLine")).trim(),
+      noteLine: (await joplin.settings.value("noteLine")).trim(),
       lastLine: (await joplin.settings.value("lastLine")).trim(),
       dateFormatJoplin: await joplin.settings.globalValue("dateFormat"),
       timeFormatJoplin: await joplin.settings.globalValue("timeFormat"),
@@ -140,8 +140,6 @@ class Notelist {
   private async getItemTemplateLayout1(): Promise<string> {
     this.log.verbose("Func: getItemTemplateLayout1");
 
-    const noteExcerpt = '<span class="excerpt">{{noteBody}}</span>';
-    const noteDate = '<span class="date">{{noteDate}}</span>';
     const title = `
       <div class="title"> 
         {{#note.is_todo}}<span class="checkbox"><input data-id="todoCheckboxCompleted" type="checkbox" {{#completed}}checked{{/completed}} /></span>{{/note.is_todo}}
@@ -158,13 +156,6 @@ class Notelist {
     let lastLine = "";
     if (this.settings["lastLine"] != "") {
       lastLine = '<p class="lastLine">{{{lastLine}}}</p>';
-    }
-
-    let noteContent = noteExcerpt;
-    if (this.settings["datePositionInline"] == "begin") {
-      noteContent = noteDate + " " + noteExcerpt;
-    } else if (this.settings["datePositionInline"] == "end") {
-      noteContent = noteExcerpt + noteDate;
     }
 
     return `
@@ -175,7 +166,9 @@ class Notelist {
           {{#thumbnail}}
             <img class="thumbnail" src="file://{{thumbnail}}"/>
           {{/thumbnail}}
-          ${noteContent}
+          {{{noteTextLeft}}}
+          {{#noteBody}}<span class="excerpt">{{noteBody}}</span>{{/noteBody}}
+          {{{noteTextRight}}}
         </p>
         ${lastLine}
       </div>
@@ -185,8 +178,6 @@ class Notelist {
   private async getItemTemplateLayout2(): Promise<string> {
     this.log.verbose("Func: getItemTemplateLayout2");
 
-    const noteExcerpt = '<span class="excerpt">{{noteBody}}</span>';
-    const noteDate = '<span class="date">{{noteDate}}</span>';
     const title = `
       <div class="title"> 
         {{#note.is_todo}}<span class="checkbox"><input data-id="todoCheckboxCompleted" type="checkbox" {{#completed}}checked{{/completed}} /></span>{{/note.is_todo}}
@@ -205,32 +196,19 @@ class Notelist {
       lastLine = '<p class="lastLine">{{{lastLine}}}</p>';
     }
 
-    let noteContent = "";
-    if (this.settings["datePositionInline"] == "begin") {
-      noteContent = noteDate + " " + noteExcerpt;
-    } else if (this.settings["datePositionInline"] == "end") {
-      noteContent = noteExcerpt + noteDate;
-    }
-
-    let templateContent = `
-        ${title}
-        ${firstLine}
-        <p class="body">
-          ${noteContent}
-        </p>
-        ${lastLine}
-    `;
-
-    const templateImg = `
-        {{#thumbnail}}
-          <img class="thumbnail" src="file://{{thumbnail}}"/>
-        {{/thumbnail}}
-    `;
-
     return `
         <div class="content {{#item.selected}}-selected{{/item.selected}} {{#completed}}-completed{{/completed}}">
-          ${templateImg}
-          ${templateContent}
+          {{#thumbnail}}
+            <img class="thumbnail" src="file://{{thumbnail}}"/>
+          {{/thumbnail}}
+          ${title}
+          ${firstLine}
+          <p class="body">
+            {{{noteTextLeft}}}
+            {{#noteBody}}<span class="excerpt">{{noteBody}}</span>{{/noteBody}}
+            {{{noteTextRight}}}
+          </p>
+          ${lastLine}
         </div>
     `;
   }
@@ -475,56 +453,122 @@ class Notelist {
     });
   }
 
-  private async replaceVars(data: string, props: any): Promise<string> {
-    const dateUpdatedTime = await this.getNoteDateFormated(
-      props.note.user_updated_time
-    );
-    const dateCreatedTime = await this.getNoteDateFormated(
-      props.note.user_created_time
-    );
-
-    const tags = await this.getTags(props.note.tags);
-    data = data.replace(
-      /{{date}}/gi,
-      '<span class="date">' + dateUpdatedTime + "</span>"
-    );
-    data = data.replace(
-      /{{createdTime}}/gi,
-      '<span class="date">' + dateCreatedTime + "</span>"
-    );
-    data = data.replace(
-      /{{updatedTime}}/gi,
-      '<span class="date">' + dateUpdatedTime + "</span>"
-    );
-    data = data.replace(
-      /{{url}}/gi,
-      '<span class="url">' + props.note.source_url + "</span>"
-    );
-
-    let tagString = "";
-    if (tags.length > 0) {
-      tagString =
-        '<span class="tags"><span class="tag">' +
-        tags.join('</span> <span class="tag">') +
-        "</span></span>";
+  private async getFieldValue(field: string, props: any): Promise<string> {
+    let value = "";
+    switch (field.toLowerCase()) {
+      case "date":
+      case "createdtime":
+        value = await this.getNoteDateFormated(props.note.user_created_time);
+        value = '<span class="date">' + value + "</span>";
+        break;
+      case "updatedtime":
+        value = await this.getNoteDateFormated(props.note.user_updated_time);
+        value = '<span class="date">' + value + "</span>";
+        break;
+      case "notetext":
+        value = "{{noteBody}}";
+        break;
+      case "url":
+        value = '<span class="url">' + props.note.source_url + "</span>";
+        break;
+      case "tags":
+        const tags = await this.getTags(props.note.tags);
+        if (tags.length > 0) {
+          value =
+            '<span class="tags"><span class="tag">' +
+            tags.join('</span> <span class="tag">') +
+            "</span></span>";
+        }
+        break;
+      default:
+        value = props[field];
     }
-    data = data.replace(/{{tags}}/gi, tagString);
 
-    return data;
+    if (value === "") value = " ";
+
+    return value;
+  }
+
+  private async replaceFieldPlaceholder(
+    text: string,
+    noteFields: string[]
+  ): Promise<string> {
+    // asyncStringReplace copied from https://dev.to/ycmjason/stringprototypereplace-asynchronously-28k9
+    const asyncStringReplace = async (
+      str: string,
+      regex: RegExp,
+      aReplacer: any
+    ) => {
+      const substrs = [];
+      let match;
+      let i = 0;
+      while ((match = regex.exec(str)) !== null) {
+        substrs.push(str.slice(i, match.index));
+        substrs.push(aReplacer(...match));
+        i = regex.lastIndex;
+      }
+      substrs.push(str.slice(i));
+      return (await Promise.all(substrs)).join("");
+    };
+
+    try {
+      return await asyncStringReplace(
+        text,
+        /{{([^}]+)}}/g,
+        async (match, groups) => {
+          return await this.getFieldValue(groups, noteFields);
+        }
+      );
+    } catch (error) {
+      this.log.error(error.message);
+      await this.showMsg("", error.message);
+      throw error;
+    }
+  }
+
+  private async getBodyLineParts(bodyLine: string): Promise<any> {
+    let returnValue = {
+      noteTextLeft: "",
+      noteTextRight: "",
+      noteText: false,
+    };
+
+    if (bodyLine.includes("{{noteText}}")) {
+      let tmp = bodyLine.split("{{noteText}}");
+      returnValue["noteTextLeft"] = tmp[0];
+      returnValue["noteTextRight"] = tmp[1];
+      returnValue["noteText"] = true;
+    } else {
+      returnValue["noteTextLeft"] = bodyLine;
+    }
+    return returnValue;
   }
 
   private async onRenderNoteCall(props: any): Promise<any> {
     this.log.verbose("Func: onRenderNoteCall " + props.note.id);
-    const noteBody = await this.getBody(props.note.body);
-
     const completed =
       props.note.is_todo == 1 && props.note.todo_completed != 0 ? true : false;
 
+    let noteLine = this.settings["noteLine"];
     let firstLine = this.settings["firstLine"];
     let lastLine = this.settings["lastLine"];
+    let noteTextParts = await this.getBodyLineParts(noteLine);
 
-    firstLine = await this.replaceVars(firstLine, props);
-    lastLine = await this.replaceVars(lastLine, props);
+    let noteTextLeft = await this.replaceFieldPlaceholder(
+      noteTextParts["noteTextLeft"],
+      props
+    );
+    let noteTextRight = await this.replaceFieldPlaceholder(
+      noteTextParts["noteTextRight"],
+      props
+    );
+    let noteBody = "";
+    if (noteTextParts["noteText"] == true) {
+      noteBody = await this.getBody(props.note.body);
+    }
+
+    firstLine = await this.replaceFieldPlaceholder(firstLine, props);
+    lastLine = await this.replaceFieldPlaceholder(lastLine, props);
 
     let thumbnail = null;
     if (this.settings["thumbnail"] != "no") {
@@ -538,6 +582,8 @@ class Notelist {
       noteDate: await this.getNoteDateFormated(props.note.user_updated_time),
       firstLine: firstLine,
       lastLine: lastLine,
+      noteTextLeft: noteTextLeft,
+      noteTextRight: noteTextRight,
       completed: completed,
       thumbnail: thumbnail,
     };

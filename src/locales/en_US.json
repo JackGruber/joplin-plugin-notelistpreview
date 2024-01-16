@@ -1,25 +1,20 @@
 {
   "settings": {
-    "datePositionInline": {
-      "label": "Position inline date",
-      "description": "Where should the date be displayed inline to the note text",
-      "values": {
-        "no": "Do not insert a date",
-        "begin": "At the beginning",
-        "end": "At the end"
-      }
-    },
     "daysHumanizeDate": {
       "label": "Humanized date",
       "description": "Up to how many days should the date be displayed humanized? -1 = Deactivated"
     },
     "firstLine": {
       "label": "First line",
-      "description": "Content first line before the note text. The following fields are available as variables: %s"
+      "description": "Content of the first line before the note text. The following fields are available as variables: %s"
+    },
+    "noteLine": {
+      "label": "Note text line",
+      "description": "Content of the note text line. The following fields are available as variables: %s"
     },
     "lastLine": {
       "label": "Last line",
-      "description": "Content last line after the note text. The following fields are available as variables: %s"
+      "description": "Content of the last line after the note text. The following fields are available as variables: %s"
     },
     "itemSizeHeight": {
       "label": "Item height",

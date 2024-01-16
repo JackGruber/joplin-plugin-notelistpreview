@@ -1,14 +1,5 @@
 {
   "settings": {
-    "datePositionInline": {
-      "label": "Position Inline Datum",
-      "description": "Wo soll das Datum inline zum Notetext angezeigt werden",
-      "values": {
-        "no": "Kein Datum einfügen",
-        "begin": "Am Anfang",
-        "end": "Am Ende"
-      }
-    },
     "daysHumanizeDate": {
       "label": "Humanisiertes Datum",
       "description": "Bis zu wieviel Tagen soll das Datum Humanisiert angezeigt werden. -1 = Deaktivert"
@@ -16,6 +7,10 @@
     "firstLine": {
       "label": "Erste Zeile",
       "description": "Inhalt erste Zeile vor dem Notiztext. Als Variablen stehen folgender Felder zu verfügung: %s"
+    },
+    "noteLine": {
+      "label": "Notiz Text Zeile",
+      "description": "Inhalt Notiz text Zeile. Als Variablen stehen folgender Felder zu verfügung: %s"
     },
     "lastLine": {
       "label": "Letzte Zeile",
