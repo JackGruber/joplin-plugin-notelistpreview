@@ -3,7 +3,7 @@ import { SettingItemType } from "api/types";
 import { i18n } from "./notelist";
 
 export namespace settings {
-  export async function register() {
+  export async function register(logFile: string) {
     await joplin.settings.registerSection("noteListPreview", {
       label: "Note list preview",
       iconName: "far fa-list-alt",
@@ -180,7 +180,7 @@ export namespace settings {
         public: true,
         advanced: true,
         label: i18n.__("settings.fileLogLevel.label"),
-        description: i18n.__("settings.fileLogLevel.description"),
+        description: i18n.__("settings.fileLogLevel.description", logFile),
         options: {
           false: "Off",
           verbose: "Verbose",

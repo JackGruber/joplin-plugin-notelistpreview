@@ -27,8 +27,10 @@ class Notelist {
 
   public async init(): Promise<void> {
     this.log.verbose("Func: init");
+    this.logFile = path.join(await joplin.plugins.dataDir(), "log.log");
+
     await this.translate();
-    await settings.register();
+    await settings.register(this.logFile);
     await this.loadSettings();
     await this.fileLogging(true);
     await this.logSettings();
@@ -97,7 +99,6 @@ class Notelist {
     this.log.verbose("Func: loadSettings");
 
     this.dataDir = await joplin.plugins.dataDir();
-    this.logFile = path.join(this.dataDir, "log.log");
 
     this.settings = {
       itemTemplate: "",

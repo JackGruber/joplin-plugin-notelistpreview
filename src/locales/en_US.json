@@ -64,6 +64,10 @@
         "layout1": "Layout 1",
         "layout2": "Layout 2"
       }
+    },
+    "fileLogLevel": {
+      "label": "Log level",
+      "description": "Log level for the log file %s"
     }
   },
   "msg": {
