@@ -6,6 +6,7 @@
 - Add: #7 Option to use squared thumbnails
 - Add: Additional layout ( [Deatils](README.md#layouts) )
 - Add: Option to configure note text line
+- Add: `{{todoDate}}` added as additional variable
 
 ## v0.3.2 (2024-01-10)
 

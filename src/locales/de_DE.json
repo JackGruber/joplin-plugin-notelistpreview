@@ -64,6 +64,26 @@
     "fileLogLevel": {
       "label": "Log level",
       "description": "Log level für die Logdatei %s"
+    },
+    "todoDueColorOpen": {
+      "label": "Farbe ToDo offen",
+      "description": "HTML Font Farbe für das ToDo Datum, wenn die Aufgabe nicht erledigt ist"
+    },
+    "todoDueNearHours": {
+      "label": "Stunden ToDo bald fällig",
+      "description": "Ab wieviel Stunden vor dem ToDo Datum soll dies als nahe dem ToDo Datum behandelt werden"
+    },
+    "todoDueColorNear": {
+      "label": "Farbe ToDo nahe ToDo Datum",
+      "description": "HTML Font Farbe für das ToDo Datum, wenn dies nahe dem ToDo Datum ist"
+    },
+    "todoDueColorOverdue": {
+      "label": "Farbe ToDo überfällig",
+      "description": "HTML Font Farbe für das ToDo Datum, wenn das Datum für die Aufgabe überfällig ist"
+    },
+    "todoDueColorDone": {
+      "label": "Farbe ToDo erledigt",
+      "description": "HTML Font Farbe für das ToDo Datum, wenn die Aufgabe erledigt ist"
     }
   },
   "msg": {

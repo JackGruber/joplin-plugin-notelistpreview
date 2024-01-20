@@ -14,6 +14,7 @@ export namespace settings {
       "{{createdTime}}",
       "{{tags}}",
       "{{url}}",
+      "{{todoDate}}",
       "{{noteText}}",
     ];
 
@@ -130,6 +131,54 @@ export namespace settings {
         label: i18n.__("settings.thumbnailSquare.label"),
         description: i18n.__("settings.thumbnailSquare.description"),
       },
+
+      todoDueColorOpen: {
+        value: "",
+        type: SettingItemType.String,
+        section: "noteListPreview",
+        public: true,
+        advanced: true,
+        label: i18n.__("settings.todoDueColorOpen.label"),
+        description: i18n.__("settings.todoDueColorOpen.description"),
+      },
+      todoDueNearHours: {
+        value: 48,
+        minimum: 1,
+        type: SettingItemType.Int,
+        section: "noteListPreview",
+        public: true,
+        advanced: true,
+        label: i18n.__("settings.todoDueNearHours.label"),
+        description: i18n.__("settings.todoDueNearHours.description"),
+      },
+      todoDueColorNear: {
+        value: "",
+        type: SettingItemType.String,
+        section: "noteListPreview",
+        public: true,
+        advanced: true,
+        label: i18n.__("settings.todoDueColorNear.label"),
+        description: i18n.__("settings.todoDueColorNear.description"),
+      },
+      todoDueColorOverdue: {
+        value: "",
+        type: SettingItemType.String,
+        section: "noteListPreview",
+        public: true,
+        advanced: true,
+        label: i18n.__("settings.todoDueColorOverdue.label"),
+        description: i18n.__("settings.todoDueColorOverdue.description"),
+      },
+      todoDueColorDone: {
+        value: "",
+        type: SettingItemType.String,
+        section: "noteListPreview",
+        public: true,
+        advanced: true,
+        label: i18n.__("settings.todoDueColorDone.label"),
+        description: i18n.__("settings.todoDueColorDone.description"),
+      },
+
       cssFirstLineOverwrite: {
         value: "",
         type: SettingItemType.String,

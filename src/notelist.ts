@@ -120,6 +120,11 @@ class Notelist {
       thumbnail: await joplin.settings.value("thumbnail"),
       thumbnailSize: await joplin.settings.value("thumbnailSize"),
       thumbnailSquare: await joplin.settings.value("thumbnailSquare"),
+      todoDueColorOpen: await joplin.settings.value("todoDueColorOpen"),
+      todoDueNearHours: await joplin.settings.value("todoDueNearHours"),
+      todoDueColorNear: await joplin.settings.value("todoDueColorNear"),
+      todoDueColorOverdue: await joplin.settings.value("todoDueColorOverdue"),
+      todoDueColorDone: await joplin.settings.value("todoDueColorDone"),
     };
   }
 
@@ -248,6 +253,23 @@ class Notelist {
       margin-bottom: 2px;
     `;
 
+    const todoOpen =
+      this.settings["todoDueColorOpen"].trim() != ""
+        ? "color: " + this.settings["todoDueColorOpen"]
+        : "color: var(--joplin-color-correct);";
+    const todoNearDue =
+      this.settings["todoDueColorNear"].trim() != ""
+        ? "color: " + this.settings["todoDueColorNear"]
+        : "color: var(--joplin-color-warn3);";
+    const todoOverdue =
+      this.settings["todoDueColorOverdue"].trim() != ""
+        ? "color: " + this.settings["todoDueColorOverdue"]
+        : "color: var(--joplin-color-error);";
+    const todoDone =
+      this.settings["todoDueColorDone"].trim() != ""
+        ? "color: " + this.settings["todoDueColorDone"]
+        : "color: var(--joplin-color4);";
+
     const cssFirstLine =
       this.settings["cssFirstLineOverwrite"].trim() != ""
         ? this.settings["cssFirstLineOverwrite"]
@@ -355,6 +377,22 @@ class Notelist {
       > .content > .right {
         margin-left: ${this.settings["thumbnailSize"] + 3}px;
       }
+
+      > .content .todoopen {
+        ${todoOpen}
+      }
+
+      > .content .todoneardue {
+        ${todoNearDue}
+      }
+
+      > .content .todooverdue {
+        ${todoOverdue}
+      }
+
+      > .content .tododone {
+        ${todoDone}
+      }
     `;
   }
 
@@ -438,6 +476,7 @@ class Notelist {
         "note.user_created_time",
         "note.tags",
         "note.is_todo",
+        "note.todo_due",
         "note.todo_completed",
         "note.isWatched",
         "note.title",
@@ -454,6 +493,43 @@ class Notelist {
     });
   }
 
+  private async getDueDateColorClass(
+    todo_due: number,
+    todo_completed: number
+  ): Promise<string> {
+    const now = new Date();
+
+    if (todo_due === 0 && todo_completed === 0) {
+      // ToDo open no due date
+      return "todoopen";
+    } else if (todo_due === 0 && todo_completed !== 0) {
+      // ToDo done no due date
+      return "todoopen";
+    } else if (
+      todo_due > now.getTime() &&
+      todo_completed === 0 &&
+      this.settings["todoDueNearHours"] !== 0 &&
+      todo_due - 3600 * this.settings["todoDueNearHours"] * 1000 < now.getTime()
+    ) {
+      // ToDo near due date
+      return "todoneardue";
+    } else if (todo_due > now.getTime() && todo_completed === 0) {
+      // ToDo open in time
+      return "todoopen";
+    } else if (todo_due < now.getTime() && todo_completed === 0) {
+      // ToDo open over time
+      return "todooverdue";
+    } else if (todo_due > todo_completed) {
+      // ToDo done in time
+      return "tododone";
+    } else if (todo_due < todo_completed) {
+      // ToDo done over time
+      return "tododone";
+    } else {
+      return "";
+    }
+  }
+
   private async getFieldValue(field: string, props: any): Promise<string> {
     let value = "";
     switch (field.toLowerCase()) {
@@ -465,6 +541,48 @@ class Notelist {
       case "updatedtime":
         value = await this.getNoteDateFormated(props.note.user_updated_time);
         value = '<span class="date">' + value + "</span>";
+        break;
+      case "tododate":
+        if (props.note.todo_due == 0) {
+          value = "";
+        } else {
+          const colorClass = await this.getDueDateColorClass(
+            props.note.todo_due,
+            props.note.todo_completed
+          );
+
+          if (props.note.todo_completed != 0) {
+            value = await this.getNoteDateFormated(props.note.todo_completed);
+          } else {
+            value = await this.getNoteDateFormated(props.note.todo_due);
+          }
+
+          value = '<span class="' + colorClass + '">' + value + "</span>";
+        }
+        break;
+      case "tododuedate":
+        if (props.note.todo_due == 0) {
+          value = "";
+        } else {
+          const colorClass = await this.getDueDateColorClass(
+            props.note.todo_due,
+            props.note.todo_completed
+          );
+          value = await this.getNoteDateFormated(props.note.todo_due);
+          value = '<span class="' + colorClass + '">' + value + "</span>";
+        }
+        break;
+      case "todocompleteddate":
+        if (props.note.todo_completed == 0) {
+          value = "";
+        } else {
+          const colorClass = await this.getDueDateColorClass(
+            props.note.todo_due,
+            props.note.todo_completed
+          );
+          value = await this.getNoteDateFormated(props.note.todo_completed);
+          value = '<span class="' + colorClass + '">' + value + "</span>";
+        }
         break;
       case "notetext":
         value = "{{noteBody}}";

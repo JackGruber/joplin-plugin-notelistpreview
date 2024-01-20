@@ -68,6 +68,26 @@
     "fileLogLevel": {
       "label": "Log level",
       "description": "Log level for the log file %s"
+    },
+    "todoDueColorOpen": {
+      "label": "Color ToDo open",
+      "description": "HTML font color for the ToDo date if the task is not completed"
+    },
+    "todoDueNearHours": {
+      "label": "Hours ToDo near due",
+      "description": "How many hours before the ToDo date should this be treated as close to the ToDo date"
+    },
+    "todoDueColorNear": {
+      "label": "Color ToDo near due date",
+      "description": "HTML font color for the ToDo date, if this is close to the ToDo date"
+    },
+    "todoDueColorOverdue": {
+      "label": "Color ToDo over due",
+      "description": "HTML font color for the ToDo date if the date for the task is overdue"
+    },
+    "todoDueColorDone": {
+      "label": "Color ToDo done",
+      "description": "HTML font color for the ToDo date when the task is completed"
     }
   },
   "msg": {
