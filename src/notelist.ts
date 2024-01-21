@@ -111,12 +111,6 @@ class Notelist {
       lastLine: (await joplin.settings.value("lastLine")).trim(),
       dateFormatJoplin: await joplin.settings.globalValue("dateFormat"),
       timeFormatJoplin: await joplin.settings.globalValue("timeFormat"),
-      cssDateOverwrite: await joplin.settings.value("cssDateOverwrite"),
-      cssTagOverwrite: await joplin.settings.value("cssTagOverwrite"),
-      cssFirstLineOverwrite: await joplin.settings.value(
-        "cssFirstLineOverwrite"
-      ),
-      cssLastLineOverwrite: await joplin.settings.value("cssLastLineOverwrite"),
       thumbnail: await joplin.settings.value("thumbnail"),
       thumbnailSize: await joplin.settings.value("thumbnailSize"),
       thumbnailSquare: await joplin.settings.value("thumbnailSquare"),
@@ -220,39 +214,6 @@ class Notelist {
   }
 
   private async getItemCss(): Promise<string> {
-    const cssDateDefault = `
-      color: var(--joplin-color4);
-    `;
-    const cssTagDefault = `
-      border-radius: 1em;
-      background: var(--joplin-divider-color);
-      padding: 1px 5px;
-      color: var(--joplin-color);
-      font-family: var(--joplin-font-family);
-      opacity: 0.7;
-      font-size: 12px;
-    `;
-
-    const cssDate =
-      this.settings["cssDateOverwrite"].trim() != ""
-        ? this.settings["cssDateOverwrite"]
-        : cssDateDefault;
-    const cssTag =
-      this.settings["cssTagOverwrite"].trim() != ""
-        ? this.settings["cssTagOverwrite"]
-        : cssTagDefault;
-
-    const cssFirstLineDefault = `
-      white-space: nowrap;
-      overflow: hidden;
-      margin-bottom: 2px;
-    `;
-    const cssFirstLastDefault = `
-      white-space: nowrap;
-      overflow: hidden;
-      margin-bottom: 2px;
-    `;
-
     const todoOpen =
       this.settings["todoDueColorOpen"].trim() != ""
         ? "color: " + this.settings["todoDueColorOpen"]
@@ -269,15 +230,6 @@ class Notelist {
       this.settings["todoDueColorDone"].trim() != ""
         ? "color: " + this.settings["todoDueColorDone"]
         : "color: var(--joplin-color4);";
-
-    const cssFirstLine =
-      this.settings["cssFirstLineOverwrite"].trim() != ""
-        ? this.settings["cssFirstLineOverwrite"]
-        : cssFirstLineDefault;
-    const cssLastLine =
-      this.settings["cssLastLineOverwrite"].trim() != ""
-        ? this.settings["cssLastLineOverwrite"]
-        : cssFirstLastDefault;
 
     const thumbnailFloat =
       this.settings["thumbnail"] == "right" ? "float: right;" : "float: left;";
@@ -351,19 +303,29 @@ class Notelist {
       }
 
       > .content .date {
-        ${cssDate}
+        color: var(--joplin-color4);
       }
 
       > .content > .firstLine {
-        ${cssFirstLine}
+        white-space: nowrap;
+        overflow: hidden;
+        margin-bottom: 2px;
       }
 
       > .content > .lastLine {
-        ${cssLastLine}
+        white-space: nowrap;
+        overflow: hidden;
+        margin-bottom: 2px;
       }
 
       > .content .tags > .tag {
-        ${cssTag}
+        border-radius: 1em;
+        background: var(--joplin-divider-color);
+        padding: 1px 5px;
+        color: var(--joplin-color);
+        font-family: var(--joplin-font-family);
+        opacity: 0.7;
+        font-size: 12px;
       }
 
       > .content.-selected {

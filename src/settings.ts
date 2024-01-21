@@ -131,7 +131,6 @@ export namespace settings {
         label: i18n.__("settings.thumbnailSquare.label"),
         description: i18n.__("settings.thumbnailSquare.description"),
       },
-
       todoDueColorOpen: {
         value: "",
         type: SettingItemType.String,
@@ -177,49 +176,6 @@ export namespace settings {
         advanced: true,
         label: i18n.__("settings.todoDueColorDone.label"),
         description: i18n.__("settings.todoDueColorDone.description"),
-      },
-
-      cssFirstLineOverwrite: {
-        value: "",
-        type: SettingItemType.String,
-        section: "noteListPreview",
-        public: true,
-        advanced: true,
-        label: i18n.__("settings.cssFirstLineOverwrite.label"),
-        description: i18n.__(
-          "settings.cssFirstLineOverwrite.description",
-          ".firstLine"
-        ),
-      },
-      cssLastLineOverwrite: {
-        value: "",
-        type: SettingItemType.String,
-        section: "noteListPreview",
-        public: true,
-        advanced: true,
-        label: i18n.__("settings.cssLastLineOverwrite.label"),
-        description: i18n.__(
-          "settings.cssLastLineOverwrite.description",
-          ".lastLine"
-        ),
-      },
-      cssDateOverwrite: {
-        value: "",
-        type: SettingItemType.String,
-        section: "noteListPreview",
-        public: true,
-        advanced: true,
-        label: i18n.__("settings.cssDateOverwrite.label"),
-        description: i18n.__("settings.cssDateOverwrite.description", ".date"),
-      },
-      cssTagOverwrite: {
-        value: "",
-        type: SettingItemType.String,
-        section: "noteListPreview",
-        public: true,
-        advanced: true,
-        label: i18n.__("settings.cssTagOverwrite.label"),
-        description: i18n.__("settings.cssTagOverwrite.description", ".tags"),
       },
       fileLogLevel: {
         value: "warn",
