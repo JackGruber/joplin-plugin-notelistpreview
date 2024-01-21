@@ -493,13 +493,13 @@ class Notelist {
   }
 
   private async getFieldValue(field: string, props: any): Promise<string> {
-    let value = "";
+    let value = " ";
     switch (field.toLowerCase()) {
-      case "date":
       case "createdtime":
         value = await this.getNoteDateFormated(props.note.user_created_time);
         value = '<span class="date">' + value + "</span>";
         break;
+      case "date":
       case "updatedtime":
         value = await this.getNoteDateFormated(props.note.user_updated_time);
         value = '<span class="date">' + value + "</span>";
@@ -559,13 +559,13 @@ class Notelist {
             '<span class="tags"><span class="tag">' +
             tags.join('</span> <span class="tag">') +
             "</span></span>";
+        } else {
+          value = "";
         }
         break;
       default:
         value = props[field];
     }
-
-    if (value === "") value = " ";
 
     return value;
   }
