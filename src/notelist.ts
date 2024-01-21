@@ -739,18 +739,23 @@ class Notelist {
     };
   }
 
-  private async getResourcePreview(
-    noteId: string,
-    noteBody: string
-  ): Promise<string> {
-    this.log.verbose("Func: getResourcePreview" + noteId);
-
+  private async getResourceOrder(noteBody: string): Promise<any> {
     const regExresourceId = /:\/(?<resourceId>[\da-z]{32})/g;
     let resourceOrder = [];
     let regExMatch = null;
     while ((regExMatch = regExresourceId.exec(noteBody)) != null) {
       resourceOrder.push(regExMatch["groups"]["resourceId"]);
     }
+    return resourceOrder;
+  }
+
+  private async getResourcePreview(
+    noteId: string,
+    noteBody: string
+  ): Promise<string> {
+    this.log.verbose("Func: getResourcePreview" + noteId);
+
+    const resourceOrder = await this.getResourceOrder(noteBody);
 
     const resources = await joplin.data.get(["notes", noteId, "resources"], {
       fields: "id, title, mime, filename, updated_time",
