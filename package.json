@@ -3,7 +3,7 @@
   "version": "0.3.2",
   "scripts": {
     "dist": "webpack --env joplin-plugin-config=buildMain && webpack --env joplin-plugin-config=buildExtraScripts && webpack --env joplin-plugin-config=createArchive",
-    "prepare": "npm run dist",
+    "prepare": "npm run dist && husky install",
     "updateVersion": "webpack --env joplin-plugin-config=updateVersion",
     "update": "npm install -g generator-joplin && yo joplin --node-package-manager npm --update --force",
     "release": "npm test && node ./node_modules/joplinplugindevtools/dist/createRelease.js",
@@ -27,6 +27,7 @@
     "copy-webpack-plugin": "^11.0.0",
     "fs-extra": "^10.1.0",
     "glob": "^8.0.3",
+    "husky": "^8.0.3",
     "jest": "^29.7.0",
     "jest-when": "^3.6.0",
     "joplinplugindevtools": "^1.0.15",

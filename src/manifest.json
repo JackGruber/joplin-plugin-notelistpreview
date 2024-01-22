@@ -9,7 +9,7 @@
   "homepage_url": "https://github.com/JackGruber/joplin-plugin-hotfolder/blob/master/README.md",
   "repository_url": "https://github.com/JackGruber/joplin-plugin-notelistpreview",
   "keywords": ["preview", "vorschau", "notiz", "note", "notelist"],
-  "categories": ["themes", "productivity", "viewer", "appearance"],
+  "categories": ["themes", "viewer", "appearance"],
   "screenshots": [
     {
       "src": "img/main.png",
@@ -26,6 +26,10 @@
     {
       "src": "img/showcase3.png",
       "label": "Screenshot: Showing the Note liste preview with thumbnail and tags (Dark theme)"
+    },
+    {
+      "src": "img/showcase4.png",
+      "label": "Screenshot: Showing the Note liste preview with square thumbnail and full size"
     }
   ],
   "icons": {

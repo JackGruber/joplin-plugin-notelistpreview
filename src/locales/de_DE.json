@@ -1,14 +1,5 @@
 {
   "settings": {
-    "datePositionInline": {
-      "label": "Position Inline Datum",
-      "description": "Wo soll das Datum inline zum Notetext angezeigt werden",
-      "values": {
-        "no": "Kein Datum einfügen",
-        "begin": "Am Anfang",
-        "end": "Am Ende"
-      }
-    },
     "daysHumanizeDate": {
       "label": "Humanisiertes Datum",
       "description": "Bis zu wieviel Tagen soll das Datum Humanisiert angezeigt werden. -1 = Deaktivert"
@@ -16,6 +7,10 @@
     "firstLine": {
       "label": "Erste Zeile",
       "description": "Inhalt erste Zeile vor dem Notiztext. Als Variablen stehen folgender Felder zu verfügung: %s"
+    },
+    "noteLine": {
+      "label": "Notiz Text Zeile",
+      "description": "Inhalt Notiz text Zeile. Als Variablen stehen folgender Felder zu verfügung: %s"
     },
     "lastLine": {
       "label": "Letzte Zeile",
@@ -53,6 +48,42 @@
     "thumbnailSize": {
       "label": "Vorschaubild Größe",
       "description": "Maximale Bereite und Höhe des Vorschaubildes"
+    },
+    "thumbnailSquare": {
+      "label": "Vorschaubild quadratisch",
+      "description": "Soll das Vorschaubild quadratisch angezeigt werden"
+    },
+    "layout": {
+      "label": "Layout",
+      "description": "Welches Layout soll für die Vorschau verwendet werden",
+      "values": {
+        "layout1": "Layout 1",
+        "layout2": "Layout 2"
+      }
+    },
+    "fileLogLevel": {
+      "label": "Log level",
+      "description": "Log level für die Logdatei %s"
+    },
+    "todoDueColorOpen": {
+      "label": "Farbe ToDo offen",
+      "description": "HTML Font Farbe für das ToDo Datum, wenn die Aufgabe nicht erledigt ist"
+    },
+    "todoDueNearHours": {
+      "label": "Stunden ToDo bald fällig",
+      "description": "Ab wieviel Stunden vor dem ToDo Datum soll dies als nahe dem ToDo Datum behandelt werden"
+    },
+    "todoDueColorNear": {
+      "label": "Farbe ToDo nahe ToDo Datum",
+      "description": "HTML Font Farbe für das ToDo Datum, wenn dies nahe dem ToDo Datum ist"
+    },
+    "todoDueColorOverdue": {
+      "label": "Farbe ToDo überfällig",
+      "description": "HTML Font Farbe für das ToDo Datum, wenn das Datum für die Aufgabe überfällig ist"
+    },
+    "todoDueColorDone": {
+      "label": "Farbe ToDo erledigt",
+      "description": "HTML Font Farbe für das ToDo Datum, wenn die Aufgabe erledigt ist"
     }
   },
   "msg": {

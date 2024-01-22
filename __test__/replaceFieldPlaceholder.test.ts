@@ -11,11 +11,7 @@ describe("replaceVars", function () {
 
   afterEach(async () => {});
 
-  const referenzDate = new Date(2021, 5, 21, 15, 30, 45);
-
-  //let now = new Date(Date.now());
-  //let momentDate = moment(now);
-
+  const referenzDate = new Date("2021-05-21T15:30:45");
   const testDates = {
     referenzDate: referenzDate,
     minus2Day: moment(referenzDate).subtract(2, "d"),
@@ -26,7 +22,7 @@ describe("replaceVars", function () {
 
   const testCases = [
     {
-      description: "Date 1",
+      description: "Date 1 (Compatibility)",
       string: "Test {{date}} date",
       props: {
         note: {
@@ -38,7 +34,7 @@ describe("replaceVars", function () {
       dateFormatJoplin: "DD/MM/YYYY",
       timeFormatJoplin: "HH:mm",
       daysHumanizeDate: "1",
-      expected: 'Test <span class="date">19/06/2021 15:30</span> date',
+      expected: 'Test <span class="date">19/05/2021 15:30</span> date',
     },
     {
       description: "Date 2",
@@ -53,7 +49,7 @@ describe("replaceVars", function () {
       dateFormatJoplin: "DD/MM/YYYY",
       timeFormatJoplin: "HH:mm",
       daysHumanizeDate: "7",
-      expected: 'Test <span class="date">22/05/2021 15:30</span> date',
+      expected: 'Test <span class="date">21/04/2021 15:30</span> date',
     },
     {
       description: "Date 3",
@@ -68,7 +64,7 @@ describe("replaceVars", function () {
       dateFormatJoplin: "YYYY-MM-DD",
       timeFormatJoplin: "HH-mm",
       daysHumanizeDate: "7",
-      expected: 'Test <span class="date">2021-05-22 15-30</span> date',
+      expected: 'Test <span class="date">2021-04-21 15-30</span> date',
     },
     {
       description: "Humanize",
@@ -160,7 +156,7 @@ describe("replaceVars", function () {
       dateFormatJoplin: "DD/MM/YYYY",
       timeFormatJoplin: "HH:mm",
       daysHumanizeDate: "1",
-      expected: 'Test <span class="date">16/06/2021 15:30</span> date',
+      expected: 'Test <span class="date">16/05/2021 15:30</span> date',
     },
     {
       description: "Updated time",
@@ -175,7 +171,7 @@ describe("replaceVars", function () {
       dateFormatJoplin: "DD/MM/YYYY",
       timeFormatJoplin: "HH:mm",
       daysHumanizeDate: "1",
-      expected: 'Test <span class="date">19/06/2021 15:30</span> date',
+      expected: 'Test <span class="date">19/05/2021 15:30</span> date',
     },
     {
       description: "Updated time (lower)",
@@ -190,7 +186,7 @@ describe("replaceVars", function () {
       dateFormatJoplin: "DD/MM/YYYY",
       timeFormatJoplin: "HH:mm",
       daysHumanizeDate: "1",
-      expected: 'Test <span class="date">19/06/2021 15:30</span> date',
+      expected: 'Test <span class="date">19/05/2021 15:30</span> date',
     },
     {
       description: "Created time (upper)",
@@ -205,7 +201,7 @@ describe("replaceVars", function () {
       dateFormatJoplin: "DD/MM/YYYY",
       timeFormatJoplin: "HH:mm",
       daysHumanizeDate: "1",
-      expected: 'Test <span class="date">16/06/2021 15:30</span> date',
+      expected: 'Test <span class="date">16/05/2021 15:30</span> date',
     },
     {
       description: "URL",
@@ -237,7 +233,7 @@ describe("replaceVars", function () {
       notelist.settings["timeFormatJoplin"] = testCase.timeFormatJoplin;
       notelist.settings["daysHumanizeDate"] = testCase.daysHumanizeDate;
 
-      const result = await notelist.replaceVars(
+      const result = await notelist.replaceFieldPlaceholder(
         testCase.string,
         testCase.props
       );
