@@ -2,6 +2,8 @@
 
 ## not released
 
+## v0.4.0 (2024-01-25)
+
 > Severeal breaking changes, marked with ⚠️
 
 - Fix: homepage_url for README.md for Manage your plugins in Joplin
