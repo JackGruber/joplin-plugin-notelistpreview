@@ -20,6 +20,5 @@ it("Resource Order", async () => {
     "71077b1a82516888b8f01a215db0c9de",
   ];
 
-  console.log(result);
   expect(result).toStrictEqual(expected);
 });
