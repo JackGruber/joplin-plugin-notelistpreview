@@ -10,6 +10,7 @@
 - Add: Option to configure note text line ⚠️
 - Add: `{{todoDate}}` added as additional variable
 - Removed: CSS overwride settings (Use `userchrome.css` for customization) ⚠️
+- Fix: Create a thumbnail for jpeg and png only #13
 
 ## v0.3.2 (2024-01-10)
 

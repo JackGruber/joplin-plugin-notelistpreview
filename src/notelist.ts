@@ -784,7 +784,10 @@ class Notelist {
           "thumb_" + resourceItem.id + ".jpg"
         );
 
-        if (resourceItem.mime.includes("image/")) {
+        if (
+          resourceItem.mime.includes("image/png") ||
+          resourceItem.mime.includes("image/jpeg")
+        ) {
           thumbnailPath = await this.genResourcePreviewImage(
             resourceItem,
             thumbnailFilePath
