@@ -1,25 +1,20 @@
 {
   "settings": {
-    "datePositionInline": {
-      "label": "Position inline date",
-      "description": "Where should the date be displayed inline to the note text",
-      "values": {
-        "no": "Do not insert a date",
-        "begin": "At the beginning",
-        "end": "At the end"
-      }
-    },
     "daysHumanizeDate": {
       "label": "Humanized date",
       "description": "Up to how many days should the date be displayed humanized? -1 = Deactivated"
     },
     "firstLine": {
       "label": "First line",
-      "description": "Content first line before the note text. The following fields are available as variables: %s"
+      "description": "Content of the first line before the note text. The following fields are available as variables: %s"
+    },
+    "noteLine": {
+      "label": "Note text line",
+      "description": "Content of the note text line. The following fields are available as variables: %s"
     },
     "lastLine": {
       "label": "Last line",
-      "description": "Content last line after the note text. The following fields are available as variables: %s"
+      "description": "Content of the last line after the note text. The following fields are available as variables: %s"
     },
     "itemSizeHeight": {
       "label": "Item height",
@@ -57,6 +52,42 @@
     "thumbnailSize": {
       "label": "Thumbnail size",
       "description": "Maximum width and height of the thumbnail"
+    },
+    "thumbnailSquare": {
+      "label": "Thumbnail Square",
+      "description": "Should the preview image be displayed squared"
+    },
+    "layout": {
+      "label": "Layout",
+      "description": "Which layout should be used for the preview",
+      "values": {
+        "layout1": "Layout 1",
+        "layout2": "Layout 2"
+      }
+    },
+    "fileLogLevel": {
+      "label": "Log level",
+      "description": "Log level for the log file %s"
+    },
+    "todoDueColorOpen": {
+      "label": "Color ToDo open",
+      "description": "HTML font color for the ToDo date if the task is not completed"
+    },
+    "todoDueNearHours": {
+      "label": "Hours ToDo near due",
+      "description": "How many hours before the ToDo date should this be treated as close to the ToDo date"
+    },
+    "todoDueColorNear": {
+      "label": "Color ToDo near due date",
+      "description": "HTML font color for the ToDo date, if this is close to the ToDo date"
+    },
+    "todoDueColorOverdue": {
+      "label": "Color ToDo over due",
+      "description": "HTML font color for the ToDo date if the date for the task is overdue"
+    },
+    "todoDueColorDone": {
+      "label": "Color ToDo done",
+      "description": "HTML font color for the ToDo date when the task is completed"
     }
   },
   "msg": {

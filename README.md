@@ -3,7 +3,7 @@
 <!-- markdownlint-disable MD007 -->
 <!-- markdownlint-disable MD045 -->
 
-# Joplin note list preview
+# Joplin note list preview <img src=img/icon_32.png>
 
 A plugin to add a previw to the note list.
 
@@ -18,9 +18,13 @@ A plugin to add a previw to the note list.
     - [Manual](#manual)
 - [Usage](#usage)
 - [Plugin options](#plugin-options)
+- [Layouts](#layouts)
+    - [Layout 1](#layout-1)
+    - [Layout 2](#layout-2)
 - [Examples with settings](#examples-with-settings)
     - [Date and Tags](#date-and-tags)
     - [Thumbnail right](#thumbnail-right)
+    - [Square Thumbnail](#square-thumbnail)
 - [Changelog](#changelog)
 
 <!-- /TOC -->
@@ -53,6 +57,24 @@ The new note list view can be activated under `View > Note list style > Preview`
 Settings for the plugin, accessible at `Tools > Options > Note overview`.
 Joplin must be restarted after changing settings!
 
+## Layouts
+
+### Layout 1
+
+| Thumbnail | Preview |
+| --- | --- |
+| Right | <img width="300px" src="img/layout1_img_r.svg"> |
+| Left | <img width="300px" src="img/layout1_img_l.svg"> |
+| No | <img width="300px" src="img/layout1.svg"> |
+
+### Layout 2
+
+| Thumbnail | Preview |
+| --- | --- |
+| Right | <img width="300px" src="img/layout2_img_r.svg"> |
+| Left | <img width="300px" src="img/layout2_img_l.svg"> |
+| No | <img width="300px" src="img/layout2.svg"> |
+
 ## Examples with settings
 
 ### Date and Tags
@@ -72,6 +94,17 @@ Joplin must be restarted after changing settings!
 | ------- | ----- |
 | Thumbnail | Right |
 | Note excerpt | 100 |
+
+### Square Thumbnail
+
+<img src=img/example_layout2_square_right.png>
+
+| Setting | Value |
+| ------- | ----- |
+| Layout | Layout 2 |
+| Thumbnail | Right |
+| Item height | 95 |
+| Thumbnail size | 85 |
 
 ## Changelog
 

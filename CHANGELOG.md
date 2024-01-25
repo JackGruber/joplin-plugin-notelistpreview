@@ -2,6 +2,27 @@
 
 ## not released
 
+## v0.4.0 (2024-01-25)
+
+> Severeal breaking changes, marked with ⚠️
+
+- Fix: homepage_url for README.md for Manage your plugins in Joplin
+- Add: #7 Option to use squared thumbnails
+- Add: Additional layout ( [Deatils](README.md#layouts) )
+- Add: Option to configure note text line ⚠️
+- Add: `{{todoDate}}` added as additional variable
+- Removed: CSS overwride settings (Use `userchrome.css` for customization) ⚠️
+- Fix: Create a thumbnail for jpeg and png only #13
+
+## v0.3.2 (2024-01-10)
+
+- Optimize: Remove note title from logs
+- Fix: #10 Previews are not loaded (white field) if the resource file has not been downloaded
+
+## v0.3.1 (2024-01-09)
+
+- Fix: Path for Plugin discovery website
+
 ## v0.3.0 (2024-01-02)
 
 - Fix: #4 Incorrect excerpt on new lines

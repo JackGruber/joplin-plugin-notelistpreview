@@ -27,8 +27,10 @@ class Notelist {
 
   public async init(): Promise<void> {
     this.log.verbose("Func: init");
+    this.logFile = path.join(await joplin.plugins.dataDir(), "log.log");
+
     await this.translate();
-    await settings.register();
+    await settings.register(this.logFile);
     await this.loadSettings();
     await this.fileLogging(true);
     await this.logSettings();
@@ -97,31 +99,54 @@ class Notelist {
     this.log.verbose("Func: loadSettings");
 
     this.dataDir = await joplin.plugins.dataDir();
-    this.logFile = path.join(this.dataDir, "log.log");
 
     this.settings = {
       itemTemplate: "",
+      layout: await joplin.settings.value("layout"),
       itemSizeHeight: await joplin.settings.value("itemSizeHeight"),
       daysHumanizeDate: await joplin.settings.value("daysHumanizeDate"),
-      datePositionInline: await joplin.settings.value("datePositionInline"),
       bodyExcerpt: await joplin.settings.value("bodyExcerpt"),
       firstLine: (await joplin.settings.value("firstLine")).trim(),
+      noteLine: (await joplin.settings.value("noteLine")).trim(),
       lastLine: (await joplin.settings.value("lastLine")).trim(),
       dateFormatJoplin: await joplin.settings.globalValue("dateFormat"),
       timeFormatJoplin: await joplin.settings.globalValue("timeFormat"),
-      cssDateOverwrite: await joplin.settings.value("cssDateOverwrite"),
-      cssTagOverwrite: await joplin.settings.value("cssTagOverwrite"),
-      cssFirstLineOverwrite: await joplin.settings.value(
-        "cssFirstLineOverwrite"
-      ),
-      cssLastLineOverwrite: await joplin.settings.value("cssLastLineOverwrite"),
       thumbnail: await joplin.settings.value("thumbnail"),
       thumbnailSize: await joplin.settings.value("thumbnailSize"),
+      thumbnailSquare: await joplin.settings.value("thumbnailSquare"),
+      todoDueColorOpen: await joplin.settings.value("todoDueColorOpen"),
+      todoDueNearHours: await joplin.settings.value("todoDueNearHours"),
+      todoDueColorNear: await joplin.settings.value("todoDueColorNear"),
+      todoDueColorOverdue: await joplin.settings.value("todoDueColorOverdue"),
+      todoDueColorDone: await joplin.settings.value("todoDueColorDone"),
     };
   }
 
   private async genItemTemplate(): Promise<void> {
     this.log.verbose("Func: genItemTemplate");
+
+    switch (this.settings["layout"]) {
+      case "layout1":
+        this.settings["itemTemplate"] = await this.getItemTemplateLayout1();
+        break;
+      case "layout2":
+        this.settings["itemTemplate"] = await this.getItemTemplateLayout2();
+        break;
+    }
+
+    this.log.verbose(this.settings["itemTemplate"]);
+  }
+
+  private async getItemTemplateLayout1(): Promise<string> {
+    this.log.verbose("Func: getItemTemplateLayout1");
+
+    const title = `
+      <div class="title"> 
+        {{#note.is_todo}}<span class="checkbox"><input data-id="todoCheckboxCompleted" type="checkbox" {{#completed}}checked{{/completed}} /></span>{{/note.is_todo}}
+        {{#note.isWatched}}<i class="watchedicon fa fa-share-square"></i>{{/note.isWatched}}
+        <span>{{{noteTitle}}}</span>
+      </div>
+    `;
 
     let firstLine = "";
     if (this.settings["firstLine"] != "") {
@@ -133,78 +158,96 @@ class Notelist {
       lastLine = '<p class="lastLine">{{{lastLine}}}</p>';
     }
 
-    let noteBody = '<span class="excerpt">{{noteBody}}</span>';
-    if (this.settings["datePositionInline"] == "begin") {
-      noteBody =
-        '<span class="date">{{noteDate}}</span><span class="excerpt"> ' +
-        noteBody +
-        "</span>";
-    } else if (this.settings["datePositionInline"] == "end") {
-      noteBody =
-        '<span class="excerpt"> ' +
-        noteBody +
-        ' </span><span class="date">{{noteDate}}</span>';
+    return `
+      <div class="content {{#item.selected}}-selected{{/item.selected}} {{#completed}}-completed{{/completed}}">
+        ${title}
+        ${firstLine}
+        <p class="body"> 
+          {{#thumbnail}}
+            <img class="thumbnail" src="file://{{thumbnail}}"/>
+          {{/thumbnail}}
+          {{{noteTextLeft}}}
+          {{#noteBody}}<span class="excerpt">{{noteBody}}</span>{{/noteBody}}
+          {{{noteTextRight}}}
+        </p>
+        ${lastLine}
+      </div>
+    `;
+  }
+
+  private async getItemTemplateLayout2(): Promise<string> {
+    this.log.verbose("Func: getItemTemplateLayout2");
+
+    const title = `
+      <div class="title"> 
+        {{#note.is_todo}}<span class="checkbox"><input data-id="todoCheckboxCompleted" type="checkbox" {{#completed}}checked{{/completed}} /></span>{{/note.is_todo}}
+        {{#note.isWatched}}<i class="watchedicon fa fa-share-square"></i>{{/note.isWatched}}
+        <span>{{{noteTitle}}}</span>
+      </div>
+    `;
+
+    let firstLine = "";
+    if (this.settings["firstLine"] != "") {
+      firstLine = '<p class="firstLine">{{{firstLine}}}</p>';
     }
 
-    this.settings["itemTemplate"] = `
+    let lastLine = "";
+    if (this.settings["lastLine"] != "") {
+      lastLine = '<p class="lastLine">{{{lastLine}}}</p>';
+    }
+
+    return `
         <div class="content {{#item.selected}}-selected{{/item.selected}} {{#completed}}-completed{{/completed}}">
-          <div class="title">
-            {{#note.is_todo}}<span class="checkbox"><input data-id="todoCheckboxCompleted" type="checkbox" {{#completed}}checked{{/completed}} /></span>{{/note.is_todo}}
-            {{#note.isWatched}}<i class="watchedicon fa fa-share-square"></i>{{/note.isWatched}}
-            <span>{{{noteTitle}}}</span>
-          </div>
+          {{#thumbnail}}
+            <img class="thumbnail" src="file://{{thumbnail}}"/>
+          {{/thumbnail}}
+          ${title}
           ${firstLine}
-          <p class="body"> 
-            {{#thumbnail}}
-              <img class="thumbnail" src="file://{{thumbnail}}"/>
-            {{/thumbnail}}
-            ${noteBody}
+          <p class="body">
+            {{{noteTextLeft}}}
+            {{#noteBody}}<span class="excerpt">{{noteBody}}</span>{{/noteBody}}
+            {{{noteTextRight}}}
           </p>
           ${lastLine}
         </div>
     `;
-    this.log.verbose(this.settings["itemTemplate"]);
   }
 
   private async getItemCss(): Promise<string> {
-    const cssDateDefault = `
-      color: var(--joplin-color4);
-    `;
-    const cssTagDefault = `
-      border-radius: 1em;
-      background: var(--joplin-divider-color);
-      padding: 1px 5px;
-      color: var(--joplin-color);
-      font-family: var(--joplin-font-family);
-      opacity: 0.7;
-      font-size: 12px;
-    `;
-
-    const cssDate =
-      this.settings["cssDateOverwrite"].trim() != ""
-        ? this.settings["cssDateOverwrite"]
-        : cssDateDefault;
-    const cssTag =
-      this.settings["cssTagOverwrite"].trim() != ""
-        ? this.settings["cssTagOverwrite"]
-        : cssTagDefault;
-
-    const cssFirstLine =
-      this.settings["cssFirstLineOverwrite"].trim() != ""
-        ? this.settings["cssFirstLineOverwrite"]
-        : "white-space: nowrap;";
-    const cssLastLine =
-      this.settings["cssLastLineOverwrite"].trim() != ""
-        ? this.settings["cssLastLineOverwrite"]
-        : "white-space: nowrap;";
+    const todoOpen =
+      this.settings["todoDueColorOpen"].trim() != ""
+        ? "color: " + this.settings["todoDueColorOpen"]
+        : "color: var(--joplin-color-correct);";
+    const todoNearDue =
+      this.settings["todoDueColorNear"].trim() != ""
+        ? "color: " + this.settings["todoDueColorNear"]
+        : "color: var(--joplin-color-warn3);";
+    const todoOverdue =
+      this.settings["todoDueColorOverdue"].trim() != ""
+        ? "color: " + this.settings["todoDueColorOverdue"]
+        : "color: var(--joplin-color-error);";
+    const todoDone =
+      this.settings["todoDueColorDone"].trim() != ""
+        ? "color: " + this.settings["todoDueColorDone"]
+        : "color: var(--joplin-color4);";
 
     const thumbnailFloat =
       this.settings["thumbnail"] == "right" ? "float: right;" : "float: left;";
 
-    const thumbnailMargin =
+    const thumbnailMarginLayout1 =
       this.settings["thumbnail"] == "right"
-        ? "margin: 3px 3px 3px 0px;"
-        : "margin: 3px 0px 3px 3px;";
+        ? "margin: 3px 0px 3px 3px;"
+        : "margin: 3px 3px 3px 0px;";
+
+    const thumbnailMarginLayout2 =
+      this.settings["thumbnail"] == "right"
+        ? "margin: 0px 0px 0px 3px;"
+        : "margin: 0px 3px 0px 0px;";
+
+    const thumbnailMargin =
+      this.settings["layout"] == "layout2"
+        ? thumbnailMarginLayout2
+        : thumbnailMarginLayout1;
 
     return `
       > .content {
@@ -222,90 +265,95 @@ class Notelist {
           margin-bottom: 5px;
       }
 
-      > .content .leftColumn {
-        background-color: yellow;
-        width: 50px;
-        float:left;
-      }
-
-      > .content .rightColumn {
-        background-color: green;
-        margin-left: 50px;
-      }
-
-      > .content > .title {
+      > .content .title {
           font-weight: bold;
           font-family: var(--joplin-font-family);
           font-size: var(--joplin-font-size);
           white-space: nowrap;
           display: flex;
           align-items: center;
+          overflow: hidden;
       }
 
-      > .content > .title > .checkbox {
+      > .content .checkbox {
         padding-right: 4px;
       }
 
-      > .content > .title > .checkbox input {
+      > .content .checkbox input {
         margin: 3px 3px 3px 0px;
       }
 
-      > .content > .title > .watchedicon {
+      > .content .watchedicon {
         padding-right: 4px;
         padding-left: 1px;
         letter-spacing: .03em;
       }
 
-      > .content > .body .excerpt {
+      > .content .excerpt {
         opacity: 0.7;
       }
 
-      > .content > .body .thumbnail {
+      > .content .thumbnail {
         display: flex;
         max-width: ${this.settings["thumbnailSize"]}px;
         max-height: ${this.settings["thumbnailSize"]}px;
         ${thumbnailFloat}
         ${thumbnailMargin}
+        border-radius: 5px;
+      }
+
+      > .content .date {
+        color: var(--joplin-color4);
       }
 
       > .content > .firstLine {
-          margin-bottom: 2px;
+        white-space: nowrap;
+        overflow: hidden;
+        margin-bottom: 2px;
       }
 
       > .content > .lastLine {
-          margin-top: 2px;
+        white-space: nowrap;
+        overflow: hidden;
+        margin-bottom: 2px;
       }
 
-      > .content > .body > .date {
-        ${cssDate}
-      }
-
-      > .content > .firstLine {
-        ${cssFirstLine}
-      }
-
-      > .content > .lastLine {
-        ${cssLastLine}
-      }
-
-      > .content > .firstLine > .date {
-        ${cssDate}
-      }
-
-      > .content > .lastLine > .date {
-        ${cssDate}
-      }
-
-      > .content > .firstLine > .tags > .tag {
-        ${cssTag}
-      }
-
-      > .content > .lastLine > .tags > .tag {
-        ${cssTag}
+      > .content .tags > .tag {
+        border-radius: 1em;
+        background: var(--joplin-divider-color);
+        padding: 1px 5px;
+        color: var(--joplin-color);
+        font-family: var(--joplin-font-family);
+        opacity: 0.7;
+        font-size: 12px;
       }
 
       > .content.-selected {
           background-color: var(--joplin-selected-color);
+      }
+
+      > .content > .left {
+        float:left;
+        width: ${this.settings["thumbnailSize"]}px;
+      }
+      > .content > .right {
+        margin-left: ${this.settings["thumbnailSize"] + 3}px;
+      }
+
+      > .content .todoopen {
+        ${todoOpen}
+      }
+
+      > .content .todoneardue {
+        ${todoNearDue}
+      }
+
+      > .content .todooverdue {
+        ${todoOverdue}
+      }
+
+      > .content .tododone {
+        ${todoDone}
       }
     `;
   }
@@ -390,6 +438,7 @@ class Notelist {
         "note.user_created_time",
         "note.tags",
         "note.is_todo",
+        "note.todo_due",
         "note.todo_completed",
         "note.isWatched",
         "note.title",
@@ -406,58 +455,201 @@ class Notelist {
     });
   }
 
-  private async replaceVars(data: string, props: any): Promise<string> {
-    const dateUpdatedTime = await this.getNoteDateFormated(
-      props.note.user_updated_time
-    );
-    const dateCreatedTime = await this.getNoteDateFormated(
-      props.note.user_created_time
-    );
+  private async getDueDateColorClass(
+    todo_due: number,
+    todo_completed: number
+  ): Promise<string> {
+    const now = new Date();
 
-    const tags = await this.getTags(props.note.tags);
-    data = data.replace(
-      /{{date}}/gi,
-      '<span class="date">' + dateUpdatedTime + "</span>"
-    );
-    data = data.replace(
-      /{{createdTime}}/gi,
-      '<span class="date">' + dateCreatedTime + "</span>"
-    );
-    data = data.replace(
-      /{{updatedTime}}/gi,
-      '<span class="date">' + dateUpdatedTime + "</span>"
-    );
-    data = data.replace(
-      /{{url}}/gi,
-      '<span class="url">' + props.note.source_url + "</span>"
-    );
-
-    let tagString = "";
-    if (tags.length > 0) {
-      tagString =
-        '<span class="tags"><span class="tag">' +
-        tags.join('</span> <span class="tag">') +
-        "</span></span>";
+    if (todo_due === 0 && todo_completed === 0) {
+      // ToDo open no due date
+      return "todoopen";
+    } else if (todo_due === 0 && todo_completed !== 0) {
+      // ToDo done no due date
+      return "todoopen";
+    } else if (
+      todo_due > now.getTime() &&
+      todo_completed === 0 &&
+      this.settings["todoDueNearHours"] !== 0 &&
+      todo_due - 3600 * this.settings["todoDueNearHours"] * 1000 < now.getTime()
+    ) {
+      // ToDo near due date
+      return "todoneardue";
+    } else if (todo_due > now.getTime() && todo_completed === 0) {
+      // ToDo open in time
+      return "todoopen";
+    } else if (todo_due < now.getTime() && todo_completed === 0) {
+      // ToDo open over time
+      return "todooverdue";
+    } else if (todo_due > todo_completed) {
+      // ToDo done in time
+      return "tododone";
+    } else if (todo_due < todo_completed) {
+      // ToDo done over time
+      return "tododone";
+    } else {
+      return "";
     }
-    data = data.replace(/{{tags}}/gi, tagString);
+  }
 
-    return data;
+  private async getFieldValue(field: string, props: any): Promise<string> {
+    let value = " ";
+    switch (field.toLowerCase()) {
+      case "createdtime":
+        value = await this.getNoteDateFormated(props.note.user_created_time);
+        value = '<span class="date">' + value + "</span>";
+        break;
+      case "date":
+      case "updatedtime":
+        value = await this.getNoteDateFormated(props.note.user_updated_time);
+        value = '<span class="date">' + value + "</span>";
+        break;
+      case "tododate":
+        if (props.note.todo_due == 0) {
+          value = "";
+        } else {
+          const colorClass = await this.getDueDateColorClass(
+            props.note.todo_due,
+            props.note.todo_completed
+          );
+
+          if (props.note.todo_completed != 0) {
+            value = await this.getNoteDateFormated(props.note.todo_completed);
+          } else {
+            value = await this.getNoteDateFormated(props.note.todo_due);
+          }
+
+          value = '<span class="' + colorClass + '">' + value + "</span>";
+        }
+        break;
+      case "tododuedate":
+        if (props.note.todo_due == 0) {
+          value = "";
+        } else {
+          const colorClass = await this.getDueDateColorClass(
+            props.note.todo_due,
+            props.note.todo_completed
+          );
+          value = await this.getNoteDateFormated(props.note.todo_due);
+          value = '<span class="' + colorClass + '">' + value + "</span>";
+        }
+        break;
+      case "todocompleteddate":
+        if (props.note.todo_completed == 0) {
+          value = "";
+        } else {
+          const colorClass = await this.getDueDateColorClass(
+            props.note.todo_due,
+            props.note.todo_completed
+          );
+          value = await this.getNoteDateFormated(props.note.todo_completed);
+          value = '<span class="' + colorClass + '">' + value + "</span>";
+        }
+        break;
+      case "notetext":
+        value = "{{noteBody}}";
+        break;
+      case "url":
+        value = '<span class="url">' + props.note.source_url + "</span>";
+        break;
+      case "tags":
+        const tags = await this.getTags(props.note.tags);
+        if (tags.length > 0) {
+          value =
+            '<span class="tags"><span class="tag">' +
+            tags.join('</span> <span class="tag">') +
+            "</span></span>";
+        } else {
+          value = "";
+        }
+        break;
+      default:
+        value = props[field];
+    }
+
+    return value;
+  }
+
+  private async replaceFieldPlaceholder(
+    text: string,
+    noteFields: string[]
+  ): Promise<string> {
+    // asyncStringReplace copied from https://dev.to/ycmjason/stringprototypereplace-asynchronously-28k9
+    const asyncStringReplace = async (
+      str: string,
+      regex: RegExp,
+      aReplacer: any
+    ) => {
+      const substrs = [];
+      let match;
+      let i = 0;
+      while ((match = regex.exec(str)) !== null) {
+        substrs.push(str.slice(i, match.index));
+        substrs.push(aReplacer(...match));
+        i = regex.lastIndex;
+      }
+      substrs.push(str.slice(i));
+      return (await Promise.all(substrs)).join("");
+    };
+
+    try {
+      return await asyncStringReplace(
+        text,
+        /{{([^}]+)}}/g,
+        async (match, groups) => {
+          return await this.getFieldValue(groups, noteFields);
+        }
+      );
+    } catch (error) {
+      this.log.error(error.message);
+      await this.showMsg("", error.message);
+      throw error;
+    }
+  }
+
+  private async getBodyLineParts(bodyLine: string): Promise<any> {
+    let returnValue = {
+      noteTextLeft: "",
+      noteTextRight: "",
+      noteText: false,
+    };
+
+    if (bodyLine.includes("{{noteText}}")) {
+      let tmp = bodyLine.split("{{noteText}}");
+      returnValue["noteTextLeft"] = tmp[0];
+      returnValue["noteTextRight"] = tmp[1];
+      returnValue["noteText"] = true;
+    } else {
+      returnValue["noteTextLeft"] = bodyLine;
+    }
+    return returnValue;
   }
 
   private async onRenderNoteCall(props: any): Promise<any> {
-    this.log.verbose("Func: onRenderNoteCall");
-    this.log.verbose("ID: " + props.note.id);
-    this.log.verbose("Title: " + props.note.title);
-    const noteBody = await this.getBody(props.note.body);
-
+    this.log.verbose("Func: onRenderNoteCall " + props.note.id);
     const completed =
       props.note.is_todo == 1 && props.note.todo_completed != 0 ? true : false;
 
+    let noteLine = this.settings["noteLine"];
     let firstLine = this.settings["firstLine"];
     let lastLine = this.settings["lastLine"];
+    let noteTextParts = await this.getBodyLineParts(noteLine);
 
-    firstLine = await this.replaceVars(firstLine, props);
-    lastLine = await this.replaceVars(lastLine, props);
+    let noteTextLeft = await this.replaceFieldPlaceholder(
+      noteTextParts["noteTextLeft"],
+      props
+    );
+    let noteTextRight = await this.replaceFieldPlaceholder(
+      noteTextParts["noteTextRight"],
+      props
+    );
+    let noteBody = "";
+    if (noteTextParts["noteText"] == true) {
+      noteBody = await this.getBody(props.note.body);
+    }
+
+    firstLine = await this.replaceFieldPlaceholder(firstLine, props);
+    lastLine = await this.replaceFieldPlaceholder(lastLine, props);
 
     let thumbnail = null;
     if (this.settings["thumbnail"] != "no") {
@@ -471,6 +663,8 @@ class Notelist {
       noteDate: await this.getNoteDateFormated(props.note.user_updated_time),
       firstLine: firstLine,
       lastLine: lastLine,
+      noteTextLeft: noteTextLeft,
+      noteTextRight: noteTextRight,
       completed: completed,
       thumbnail: thumbnail,
     };
@@ -523,76 +717,154 @@ class Notelist {
     await joplin.views.dialogs.open(this.msgDialog);
   }
 
-  private async getResourcePreview(
-    noteId: string,
-    noteBody: string
-  ): Promise<string> {
-    this.log.verbose("Func: getResourcePreview");
+  private async getThumbnailFromCache(resource: any): Promise<string> {
+    this.log.verbose("Get thumbnail " + resource.id + " from cache");
 
-    const regExresourceId =
-      /(!\[([^\]]+|)\]\(|<img([^>]+)src=["']):\/(?<resourceId>[\da-z]{32})/g;
+    const thumbnail = this.thumbnailCache[resource.id];
+    if (thumbnail && thumbnail.updated_time == resource.updated_time) {
+      this.log.verbose("Use cache for " + resource.id);
+      return thumbnail.path;
+    }
+    return "";
+  }
+
+  private async storeThumbnailInCache(
+    resource: any,
+    thumbnailFilePath: string
+  ): Promise<void> {
+    this.log.verbose("Update cache for: " + resource.id);
+    this.thumbnailCache[resource.id] = {
+      path: thumbnailFilePath,
+      updated_time: resource.updated_time,
+    };
+  }
+
+  private async getResourceOrder(noteBody: string): Promise<any> {
+    const regExresourceId = /:\/(?<resourceId>[\da-z]{32})/g;
     let resourceOrder = [];
     let regExMatch = null;
     while ((regExMatch = regExresourceId.exec(noteBody)) != null) {
       resourceOrder.push(regExMatch["groups"]["resourceId"]);
     }
+    return resourceOrder;
+  }
+
+  private async getResourcePreview(
+    noteId: string,
+    noteBody: string
+  ): Promise<string> {
+    this.log.verbose("Func: getResourcePreview" + noteId);
+
+    const resourceOrder = await this.getResourceOrder(noteBody);
 
     const resources = await joplin.data.get(["notes", noteId, "resources"], {
       fields: "id, title, mime, filename, updated_time",
     });
-    let resource = null;
-    if (resourceOrder.length > 0) {
-      for (const check of resourceOrder) {
-        for (const resourceItem of resources.items) {
-          if (check == resourceItem.id) {
-            if (resourceItem.mime.includes("image/")) {
-              resource = resourceItem;
-            }
-            break;
-          }
-        }
-        if (resource) {
-          break;
-        }
-      }
+
+    if (resourceOrder.length == 0) {
+      return "";
     }
 
-    let thumbnailFilePath = "";
-    if (resource) {
-      const thumbnail = this.thumbnailCache[resource.id];
-      if (thumbnail && thumbnail.updated_time == resource.updated_time) {
-        thumbnailFilePath = thumbnail.path;
-      } else {
-        thumbnailFilePath = path.join(
-          this.dataDir,
-          "thumb_" + resource.id + ".jpg"
+    for (const check of resourceOrder) {
+      for (const resourceItem of resources.items) {
+        if (check != resourceItem.id) {
+          continue;
+        }
+        this.log.verbose(
+          "Use resource " + resourceItem.id + " for note " + noteId
         );
 
-        await this.genResourcePreviewImage(resource, thumbnailFilePath);
+        let thumbnailPath = await this.getThumbnailFromCache(resourceItem);
+        if (thumbnailPath != "") {
+          return thumbnailPath;
+        }
 
-        this.thumbnailCache[resource.id] = {
-          path: thumbnailFilePath,
-          updated_time: resource.updated_time,
-        };
+        let thumbnailFilePath = path.join(
+          this.dataDir,
+          "thumb_" + resourceItem.id + ".jpg"
+        );
+
+        if (
+          resourceItem.mime.includes("image/png") ||
+          resourceItem.mime.includes("image/jpeg")
+        ) {
+          thumbnailPath = await this.genResourcePreviewImage(
+            resourceItem,
+            thumbnailFilePath
+          );
+        }
+
+        if (thumbnailPath == "") {
+          continue;
+        }
+
+        await this.storeThumbnailInCache(resourceItem, thumbnailPath);
+
+        return thumbnailPath;
       }
     }
-    return thumbnailFilePath;
   }
 
   private async genResourcePreviewImage(
     resource: any,
     filePath: string
-  ): Promise<boolean> {
-    this.log.verbose("Func: genResourcePreviewImage");
-    const imageHandle = await joplin.imaging.createFromResource(resource.id);
-    const resizedImageHandle = await joplin.imaging.resize(imageHandle, {
-      width: this.settings["thumbnailSize"],
-    });
-    await joplin.imaging.toJpgFile(resizedImageHandle, filePath, 90);
-    await joplin.imaging.free(imageHandle);
-    await joplin.imaging.free(resizedImageHandle);
+  ): Promise<string> {
+    this.log.verbose("Func: genResourcePreviewImage " + resource.id);
+    try {
+      const imageHandle = await joplin.imaging.createFromResource(resource.id);
+      let processImageHandle = imageHandle;
 
-    return true;
+      if (this.settings["thumbnailSquare"]) {
+        const imageSize = await joplin.imaging.getSize(imageHandle);
+
+        let cropSettings = {
+          x: 0,
+          y: 0,
+          size: 0,
+        };
+
+        if (imageSize.width > imageSize.height) {
+          cropSettings["size"] = imageSize.height;
+          cropSettings["x"] = Math.round(
+            imageSize.width / 2 - cropSettings["size"] / 2
+          );
+        } else {
+          cropSettings["size"] = imageSize.width;
+          cropSettings["y"] = Math.round(
+            imageSize.height / 2 - cropSettings["size"] / 2
+          );
+        }
+
+        processImageHandle = await joplin.imaging.crop(imageHandle, {
+          height: cropSettings["size"],
+          width: cropSettings["size"],
+          x: cropSettings["x"],
+          y: cropSettings["y"],
+        });
+      }
+
+      const resizedImageHandle = await joplin.imaging.resize(
+        processImageHandle,
+        {
+          width: this.settings["thumbnailSize"],
+        }
+      );
+
+      await joplin.imaging.toJpgFile(resizedImageHandle, filePath, 90);
+      await joplin.imaging.free(imageHandle);
+      await joplin.imaging.free(resizedImageHandle);
+    } catch (e) {
+      if (e.message.includes("Could not load resource path")) {
+        this.log.warn("Resource file " + resource.id + " is not available");
+      } else {
+        this.log.error("Func: genResourcePreviewImage " + resource.id);
+        this.log.error(e.message);
+      }
+
+      return "";
+    }
+
+    return filePath;
   }
 
   private async cleanResourcePreview(): Promise<void> {
