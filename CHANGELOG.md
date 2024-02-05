@@ -2,6 +2,8 @@
 
 ## not released
 
+- Fix: Increase thumbnail size for better previews, the Joplin zoom level is also taken into account #18
+
 ## v0.4.0 (2024-01-25)
 
 > Severeal breaking changes, marked with ⚠️

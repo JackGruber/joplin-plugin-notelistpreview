@@ -119,6 +119,7 @@ class Notelist {
       todoDueColorNear: await joplin.settings.value("todoDueColorNear"),
       todoDueColorOverdue: await joplin.settings.value("todoDueColorOverdue"),
       todoDueColorDone: await joplin.settings.value("todoDueColorDone"),
+      joplinZoome: await joplin.settings.globalValue("windowContentZoomFactor"),
     };
   }
 
@@ -846,7 +847,10 @@ class Notelist {
       const resizedImageHandle = await joplin.imaging.resize(
         processImageHandle,
         {
-          width: this.settings["thumbnailSize"],
+          width:
+            this.settings["thumbnailSize"] *
+            2 *
+            (this.settings["joplinZoome"] / 100),
         }
       );
 
