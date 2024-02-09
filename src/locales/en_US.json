@@ -99,5 +99,6 @@
   },
   "cmd": {
     "toggleConfidential": "Toggle note confidential status"
-  }
+  },
+  "confidentialNotetext": "Confidential note, no preview available"
 }

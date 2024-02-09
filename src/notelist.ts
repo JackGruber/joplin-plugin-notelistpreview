@@ -733,7 +733,7 @@ class Notelist {
     if (!confidential && noteTextParts["noteText"] == true) {
       noteBody = await this.getBody(props.note.body);
     } else if (confidential) {
-      noteBody = "confidential note";
+      noteBody = i18n.__("confidentialNotetext");
     }
 
     firstLine = await this.replaceFieldPlaceholder(
