@@ -96,5 +96,8 @@
       "cleanResourcePreview": "Error when cleaning up the preview images",
       "deleteLogFile": "Error when deleting old logfile"
     }
+  },
+  "cmd": {
+    "toggleConfidential": "Toggle note confidential status"
   }
 }

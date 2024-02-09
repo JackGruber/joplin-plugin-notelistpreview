@@ -92,5 +92,8 @@
       "cleanResourcePreview": "Fehler beim Aufräumen der Vorschaubilder",
       "deleteLogFile": "Fehler beim löschen der alten Logdatei"
     }
+  },
+  "cmd": {
+    "toggleConfidential": "Vertraulichkeitsstatus der Notiz umschalten"
   }
 }

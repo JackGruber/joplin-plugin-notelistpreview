@@ -9,6 +9,8 @@ import { ThumbnailCache, Thumbnail } from "./type";
 import * as naturalCompare from "string-natural-compare";
 import * as fs from "fs-extra";
 import notelistLogging from "electron-log/main";
+import { MenuItemLocation } from "api/types";
+import { ModelType } from "api/types";
 
 let i18n: any;
 
@@ -38,6 +40,7 @@ class Notelist {
     await this.genItemTemplate();
     await this.registerRendererPreview();
     await this.createMsgDialog();
+    await this.registerCommands();
   }
 
   private async setupLog() {
@@ -121,6 +124,56 @@ class Notelist {
       todoDueColorDone: await joplin.settings.value("todoDueColorDone"),
       joplinZoome: await joplin.settings.globalValue("windowContentZoomFactor"),
     };
+  }
+
+  private async registerCommands() {
+    await joplin.commands.register({
+      name: "toggleConfidential",
+      label: i18n.__("cmd.toggleConfidential"),
+      execute: async () => {
+        await this.toggleConfidential();
+      },
+    });
+
+    await joplin.views.menuItems.create(
+      "ToolsToggleConfidential",
+      "toggleConfidential",
+      MenuItemLocation.Tools
+    );
+    await joplin.views.menuItems.create(
+      "NoteListContextMenuToggleConfidential",
+      "toggleConfidential",
+      MenuItemLocation.NoteListContextMenu
+    );
+  }
+
+  private async toggleConfidential() {
+    const ids = await joplin.workspace.selectedNoteIds();
+    if (ids.length > 0) {
+      for (const noteId of ids) {
+        const confidential = await joplin.data.userDataGet(
+          ModelType.Note,
+          noteId,
+          "confidential"
+        );
+
+        let confidentialNew = true;
+        if (confidential) {
+          confidentialNew = false;
+        }
+
+        await joplin.data.userDataSet(
+          ModelType.Note,
+          noteId,
+          "confidential",
+          confidentialNew
+        );
+
+        this.log.verbose(
+          "Toggle confidential of note " + noteId + " to " + confidential
+        );
+      }
+    }
   }
 
   private async genItemTemplate(): Promise<void> {
@@ -635,7 +688,20 @@ class Notelist {
     return returnValue;
   }
 
-  private async isNoteConfidential(tags: any): Promise<boolean> {
+  private async isNoteConfidential(
+    noteId: string,
+    tags: any
+  ): Promise<boolean> {
+    const confidential = await joplin.data.userDataGet(
+      ModelType.Note,
+      noteId,
+      "confidential"
+    );
+
+    if (confidential) {
+      return true;
+    }
+
     return false;
   }
 
@@ -644,7 +710,10 @@ class Notelist {
     const completed =
       props.note.is_todo == 1 && props.note.todo_completed != 0 ? true : false;
 
-    const confidential = await this.isNoteConfidential(props.note.tags);
+    const confidential = await this.isNoteConfidential(
+      props.note.id,
+      props.note.tags
+    );
     let noteLine = this.settings["noteLine"];
     let firstLine = this.settings["firstLine"];
     let lastLine = this.settings["lastLine"];
