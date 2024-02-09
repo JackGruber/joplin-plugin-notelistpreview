@@ -493,7 +493,11 @@ class Notelist {
     }
   }
 
-  private async getFieldValue(field: string, props: any): Promise<string> {
+  private async getFieldValue(
+    field: string,
+    props: any,
+    confidential: boolean
+  ): Promise<string> {
     let value = " ";
     switch (field.toLowerCase()) {
       case "createdtime":
@@ -548,14 +552,18 @@ class Notelist {
         }
         break;
       case "notetext":
-        value = "{{noteBody}}";
+        if (confidential) {
+          value = "{{noteBody}}";
+        } else {
+          value = "{{noteBody}}";
+        }
         break;
       case "url":
         value = '<span class="url">' + props.note.source_url + "</span>";
         break;
       case "tags":
         const tags = await this.getTags(props.note.tags);
-        if (tags.length > 0) {
+        if (!confidential && tags.length > 0) {
           value =
             '<span class="tags"><span class="tag">' +
             tags.join('</span> <span class="tag">') +
@@ -573,7 +581,8 @@ class Notelist {
 
   private async replaceFieldPlaceholder(
     text: string,
-    noteFields: string[]
+    noteFields: string[],
+    confidential: boolean
   ): Promise<string> {
     // asyncStringReplace copied from https://dev.to/ycmjason/stringprototypereplace-asynchronously-28k9
     const asyncStringReplace = async (
@@ -598,7 +607,7 @@ class Notelist {
         text,
         /{{([^}]+)}}/g,
         async (match, groups) => {
-          return await this.getFieldValue(groups, noteFields);
+          return await this.getFieldValue(groups, noteFields, confidential);
         }
       );
     } catch (error) {
@@ -626,11 +635,16 @@ class Notelist {
     return returnValue;
   }
 
+  private async isNoteConfidential(tags: any): Promise<boolean> {
+    return false;
+  }
+
   private async onRenderNoteCall(props: any): Promise<any> {
     this.log.verbose("Func: onRenderNoteCall " + props.note.id);
     const completed =
       props.note.is_todo == 1 && props.note.todo_completed != 0 ? true : false;
 
+    const confidential = await this.isNoteConfidential(props.note.tags);
     let noteLine = this.settings["noteLine"];
     let firstLine = this.settings["firstLine"];
     let lastLine = this.settings["lastLine"];
@@ -638,22 +652,34 @@ class Notelist {
 
     let noteTextLeft = await this.replaceFieldPlaceholder(
       noteTextParts["noteTextLeft"],
-      props
+      props,
+      confidential
     );
     let noteTextRight = await this.replaceFieldPlaceholder(
       noteTextParts["noteTextRight"],
-      props
+      props,
+      confidential
     );
     let noteBody = "";
-    if (noteTextParts["noteText"] == true) {
+    if (!confidential && noteTextParts["noteText"] == true) {
       noteBody = await this.getBody(props.note.body);
+    } else if (confidential) {
+      noteBody = "confidential note";
     }
 
-    firstLine = await this.replaceFieldPlaceholder(firstLine, props);
-    lastLine = await this.replaceFieldPlaceholder(lastLine, props);
+    firstLine = await this.replaceFieldPlaceholder(
+      firstLine,
+      props,
+      confidential
+    );
+    lastLine = await this.replaceFieldPlaceholder(
+      lastLine,
+      props,
+      confidential
+    );
 
     let thumbnail = null;
-    if (this.settings["thumbnail"] != "no") {
+    if (!confidential && this.settings["thumbnail"] != "no") {
       thumbnail = await this.getResourcePreview(props.note.id, props.note.body);
     }
 
