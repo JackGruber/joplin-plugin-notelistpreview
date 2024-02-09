@@ -628,6 +628,8 @@ class Notelist {
 
   private async onRenderNoteCall(props: any): Promise<any> {
     this.log.verbose("Func: onRenderNoteCall " + props.note.id);
+    const start = performance.now();
+
     const completed =
       props.note.is_todo == 1 && props.note.todo_completed != 0 ? true : false;
 
@@ -656,6 +658,13 @@ class Notelist {
     if (this.settings["thumbnail"] != "no") {
       thumbnail = await this.getResourcePreview(props.note.id, props.note.body);
     }
+
+    const stop = performance.now();
+    const inSeconds = (stop - start) / 1000;
+    const rounded = Number(inSeconds).toFixed(3);
+    this.log.verbose(
+      "onRenderNoteCall " + props.note.id + " time: " + rounded + "s"
+    );
 
     return {
       ...props,
