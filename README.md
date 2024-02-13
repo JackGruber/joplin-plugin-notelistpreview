@@ -25,6 +25,8 @@ A plugin to add a previw to the note list.
     - [Date and Tags](#date-and-tags)
     - [Thumbnail right](#thumbnail-right)
     - [Square Thumbnail](#square-thumbnail)
+- [FAQ](#faq)
+- [Confidential notes](#confidential-notes)
 - [Changelog](#changelog)
 
 <!-- /TOC -->
@@ -61,19 +63,19 @@ Joplin must be restarted after changing settings!
 
 ### Layout 1
 
-| Thumbnail | Preview |
-| --- | --- |
-| Right | <img width="300px" src="img/layout1_img_r.svg"> |
-| Left | <img width="300px" src="img/layout1_img_l.svg"> |
-| No | <img width="300px" src="img/layout1.svg"> |
+| Thumbnail | Preview                                         |
+| --------- | ----------------------------------------------- |
+| Right     | <img width="300px" src="img/layout1_img_r.svg"> |
+| Left      | <img width="300px" src="img/layout1_img_l.svg"> |
+| No        | <img width="300px" src="img/layout1.svg">       |
 
 ### Layout 2
 
-| Thumbnail | Preview |
-| --- | --- |
-| Right | <img width="300px" src="img/layout2_img_r.svg"> |
-| Left | <img width="300px" src="img/layout2_img_l.svg"> |
-| No | <img width="300px" src="img/layout2.svg"> |
+| Thumbnail | Preview                                         |
+| --------- | ----------------------------------------------- |
+| Right     | <img width="300px" src="img/layout2_img_r.svg"> |
+| Left      | <img width="300px" src="img/layout2_img_l.svg"> |
+| No        | <img width="300px" src="img/layout2.svg">       |
 
 ## Examples with settings
 
@@ -81,30 +83,37 @@ Joplin must be restarted after changing settings!
 
 <img src=img/example_tag.png>
 
-| Setting | Value |
-| ------- | ----- |
-| Note excerpt | 115 |
-| Last line | {{tags}} |
+| Setting      | Value    |
+| ------------ | -------- |
+| Note excerpt | 115      |
+| Last line    | {{tags}} |
 
 ### Thumbnail right
 
 <img src=img/example_thumbnail_right.png>
 
-| Setting | Value |
-| ------- | ----- |
-| Thumbnail | Right |
-| Note excerpt | 100 |
+| Setting      | Value |
+| ------------ | ----- |
+| Thumbnail    | Right |
+| Note excerpt | 100   |
 
 ### Square Thumbnail
 
 <img src=img/example_layout2_square_right.png>
 
-| Setting | Value |
-| ------- | ----- |
-| Layout | Layout 2 |
-| Thumbnail | Right |
-| Item height | 95 |
-| Thumbnail size | 85 |
+| Setting        | Value    |
+| -------------- | -------- |
+| Layout         | Layout 2 |
+| Thumbnail      | Right    |
+| Item height    | 95       |
+| Thumbnail size | 85       |
+
+## FAQ
+
+## Confidential notes
+
+Notes can be marked as confidential using tags or the context menu.
+The tags witch mark the note confidentiality must be configured in the plugin settings.
 
 ## Changelog
 
