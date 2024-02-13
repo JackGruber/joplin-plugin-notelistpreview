@@ -621,7 +621,11 @@ class Notelist {
         }
         break;
       case "url":
-        value = '<span class="url">' + props.note.source_url + "</span>";
+        let url = props.note.source_url;
+        value = "";
+        if (!confidential && url.length > 0) {
+          value = '<span class="url">' + url + "</span>";
+        }
         break;
       case "tags":
         const tags = await this.getTags(props.note.tags);
