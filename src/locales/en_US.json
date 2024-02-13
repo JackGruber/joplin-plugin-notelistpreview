@@ -88,6 +88,10 @@
     "todoDueColorDone": {
       "label": "Color ToDo done",
       "description": "HTML font color for the ToDo date when the task is completed"
+    },
+    "confidentialTags": {
+      "label": "Confidential tags",
+      "description": "Comma separated list of tags which will be used to define a note as confidential"
     }
   },
   "msg": {

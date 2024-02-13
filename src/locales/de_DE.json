@@ -84,6 +84,10 @@
     "todoDueColorDone": {
       "label": "Farbe ToDo erledigt",
       "description": "HTML Font Farbe für das ToDo Datum, wenn die Aufgabe erledigt ist"
+    },
+    "confidentialTags": {
+      "label": "Vertrauliche Tags",
+      "description": "Komma getrente Liste von Tags, welche die Notiz als Vertrauliche markiert"
     }
   },
   "msg": {

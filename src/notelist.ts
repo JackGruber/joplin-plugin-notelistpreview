@@ -103,6 +103,14 @@ class Notelist {
 
     this.dataDir = await joplin.plugins.dataDir();
 
+    let confidentialTags = await joplin.settings.value("confidentialTags");
+    confidentialTags = confidentialTags.trim().toLowerCase();
+    if (confidentialTags.indexOf(",") != 0 && confidentialTags.length > 0) {
+      confidentialTags = confidentialTags.split(/\s*,\s*/);
+    } else {
+      confidentialTags = [];
+    }
+
     this.settings = {
       itemTemplate: "",
       layout: await joplin.settings.value("layout"),
@@ -123,6 +131,7 @@ class Notelist {
       todoDueColorOverdue: await joplin.settings.value("todoDueColorOverdue"),
       todoDueColorDone: await joplin.settings.value("todoDueColorDone"),
       joplinZoome: await joplin.settings.globalValue("windowContentZoomFactor"),
+      confidentialTags: confidentialTags,
     };
   }
 
@@ -702,6 +711,16 @@ class Notelist {
       return true;
     }
 
+    if (this.settings["confidentialTags"].length > 0) {
+      for (const tag of tags) {
+        if (
+          this.settings["confidentialTags"].indexOf(tag.title.toLowerCase()) !==
+          -1
+        ) {
+          return true;
+        }
+      }
+    }
     return false;
   }
 
