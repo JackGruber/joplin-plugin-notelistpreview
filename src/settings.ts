@@ -177,6 +177,15 @@ export namespace settings {
         label: i18n.__("settings.todoDueColorDone.label"),
         description: i18n.__("settings.todoDueColorDone.description"),
       },
+      confidentialTags: {
+        value: "",
+        type: SettingItemType.String,
+        section: "noteListPreview",
+        public: true,
+        advanced: true,
+        label: i18n.__("settings.confidentialTags.label"),
+        description: i18n.__("settings.confidentialTags.description"),
+      },
       fileLogLevel: {
         value: "warn",
         type: SettingItemType.String,
