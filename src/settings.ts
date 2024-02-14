@@ -5,7 +5,7 @@ import { i18n } from "./notelist";
 export namespace settings {
   export async function register(logFile: string) {
     await joplin.settings.registerSection("noteListPreview", {
-      label: "Note list preview",
+      label: "Note list (Preview)",
       iconName: "far fa-list-alt",
     });
 

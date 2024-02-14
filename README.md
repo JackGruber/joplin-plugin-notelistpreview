@@ -3,7 +3,7 @@
 <!-- markdownlint-disable MD007 -->
 <!-- markdownlint-disable MD045 -->
 
-# Joplin note list preview <img src=img/icon_32.png>
+# Joplin Plugin: Note list (Preview) <img src=img/icon_32.png>
 
 A plugin to add a previw to the note list.
 
