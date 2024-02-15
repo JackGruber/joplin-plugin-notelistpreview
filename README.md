@@ -5,7 +5,7 @@
 
 # Joplin Plugin: Note list (Preview) <img src=img/icon_32.png>
 
-A plugin to add a previw to the note list.
+A plugin to add a preview to the Joplin note list.
 
 <img src=img/main.png>
 
