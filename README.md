@@ -26,7 +26,7 @@ A plugin to add a preview to the Joplin note list.
     - [Thumbnail right](#thumbnail-right)
     - [Square Thumbnail](#square-thumbnail)
 - [FAQ](#faq)
-- [Confidential notes](#confidential-notes)
+    - [Confidential notes](#confidential-notes)
 - [Changelog](#changelog)
 
 <!-- /TOC -->
@@ -110,7 +110,7 @@ Joplin must be restarted after changing settings!
 
 ## FAQ
 
-## Confidential notes
+### Confidential notes
 
 Notes can be marked as confidential using tags or the context menu.
 The tags witch mark the note confidentiality must be configured in the plugin settings.
