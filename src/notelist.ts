@@ -19,7 +19,7 @@ class Notelist {
   private msgDialog: any;
   private thumbnailCache: ThumbnailCache = {};
   private log: any;
-  private logFile: any;
+  private logFile: string;
   private dataDir: string;
 
   constructor() {
@@ -421,7 +421,7 @@ class Notelist {
     `;
   }
 
-  private async getNoteDateFormated(noteDate: any): Promise<string> {
+  private async getNoteDateFormated(noteDate: string): Promise<string> {
     let date = new Date(noteDate);
     const now = new Date(Date.now());
     let dateString: string =
