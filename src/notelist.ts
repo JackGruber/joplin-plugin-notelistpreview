@@ -5,7 +5,7 @@ import * as removeMd from "remove-markdown";
 import { I18n } from "i18n";
 import * as path from "path";
 import { settings } from "./settings";
-import { ThumbnailCache, Thumbnail } from "./type";
+import { ThumbnailCache, Settings } from "./type";
 import * as naturalCompare from "string-natural-compare";
 import * as fs from "fs-extra";
 import notelistLogging from "electron-log/main";
@@ -15,7 +15,7 @@ import { ModelType } from "api/types";
 let i18n: any;
 
 class Notelist {
-  private settings: any;
+  private settings: Settings;
   private msgDialog: any;
   private thumbnailCache: ThumbnailCache = {};
   private log: any;
