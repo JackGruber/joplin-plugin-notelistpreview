@@ -2,6 +2,11 @@
 
 ## not released
 
+## v0.4.1 (2024-02-17)
+
+- Fix: Increase thumbnail size for better previews, the Joplin zoom level is also taken into account #18
+- Add: Option to mark notes as confidential #17
+
 ## v0.4.0 (2024-01-25)
 
 > Severeal breaking changes, marked with ⚠️

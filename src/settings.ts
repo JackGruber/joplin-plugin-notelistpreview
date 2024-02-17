@@ -5,7 +5,7 @@ import { i18n } from "./notelist";
 export namespace settings {
   export async function register(logFile: string) {
     await joplin.settings.registerSection("noteListPreview", {
-      label: "Note list preview",
+      label: "Note list (Preview)",
       iconName: "far fa-list-alt",
     });
 
@@ -176,6 +176,15 @@ export namespace settings {
         advanced: true,
         label: i18n.__("settings.todoDueColorDone.label"),
         description: i18n.__("settings.todoDueColorDone.description"),
+      },
+      confidentialTags: {
+        value: "",
+        type: SettingItemType.String,
+        section: "noteListPreview",
+        public: true,
+        advanced: true,
+        label: i18n.__("settings.confidentialTags.label"),
+        description: i18n.__("settings.confidentialTags.description"),
       },
       fileLogLevel: {
         value: "warn",

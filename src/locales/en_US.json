@@ -88,6 +88,10 @@
     "todoDueColorDone": {
       "label": "Color ToDo done",
       "description": "HTML font color for the ToDo date when the task is completed"
+    },
+    "confidentialTags": {
+      "label": "Confidential tags",
+      "description": "Comma separated list of tags which will be used to define a note as confidential"
     }
   },
   "msg": {
@@ -96,5 +100,9 @@
       "cleanResourcePreview": "Error when cleaning up the preview images",
       "deleteLogFile": "Error when deleting old logfile"
     }
-  }
+  },
+  "cmd": {
+    "toggleConfidential": "Toggle note confidential status"
+  },
+  "confidentialNotetext": "Confidential note, no preview available"
 }

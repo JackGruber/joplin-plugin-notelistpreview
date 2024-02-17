@@ -5,19 +5,21 @@ import * as removeMd from "remove-markdown";
 import { I18n } from "i18n";
 import * as path from "path";
 import { settings } from "./settings";
-import { ThumbnailCache, Thumbnail } from "./type";
+import { ThumbnailCache, Settings } from "./type";
 import * as naturalCompare from "string-natural-compare";
 import * as fs from "fs-extra";
 import notelistLogging from "electron-log/main";
+import { MenuItemLocation } from "api/types";
+import { ModelType } from "api/types";
 
 let i18n: any;
 
 class Notelist {
-  private settings: any;
+  private settings: Settings;
   private msgDialog: any;
   private thumbnailCache: ThumbnailCache = {};
   private log: any;
-  private logFile: any;
+  private logFile: string;
   private dataDir: string;
 
   constructor() {
@@ -38,6 +40,7 @@ class Notelist {
     await this.genItemTemplate();
     await this.registerRendererPreview();
     await this.createMsgDialog();
+    await this.registerCommands();
   }
 
   private async setupLog() {
@@ -100,6 +103,14 @@ class Notelist {
 
     this.dataDir = await joplin.plugins.dataDir();
 
+    let confidentialTags = await joplin.settings.value("confidentialTags");
+    confidentialTags = confidentialTags.trim().toLowerCase();
+    if (confidentialTags.indexOf(",") != 0 && confidentialTags.length > 0) {
+      confidentialTags = confidentialTags.split(/\s*,\s*/);
+    } else {
+      confidentialTags = [];
+    }
+
     this.settings = {
       itemTemplate: "",
       layout: await joplin.settings.value("layout"),
@@ -119,7 +130,59 @@ class Notelist {
       todoDueColorNear: await joplin.settings.value("todoDueColorNear"),
       todoDueColorOverdue: await joplin.settings.value("todoDueColorOverdue"),
       todoDueColorDone: await joplin.settings.value("todoDueColorDone"),
+      joplinZoome: await joplin.settings.globalValue("windowContentZoomFactor"),
+      confidentialTags: confidentialTags,
     };
+  }
+
+  private async registerCommands() {
+    await joplin.commands.register({
+      name: "toggleConfidential",
+      label: i18n.__("cmd.toggleConfidential"),
+      execute: async () => {
+        await this.toggleConfidential();
+      },
+    });
+
+    await joplin.views.menuItems.create(
+      "ToolsToggleConfidential",
+      "toggleConfidential",
+      MenuItemLocation.Tools
+    );
+    await joplin.views.menuItems.create(
+      "NoteListContextMenuToggleConfidential",
+      "toggleConfidential",
+      MenuItemLocation.NoteListContextMenu
+    );
+  }
+
+  private async toggleConfidential() {
+    const ids = await joplin.workspace.selectedNoteIds();
+    if (ids.length > 0) {
+      for (const noteId of ids) {
+        const confidential = await joplin.data.userDataGet(
+          ModelType.Note,
+          noteId,
+          "confidential"
+        );
+
+        let confidentialNew = true;
+        if (confidential) {
+          confidentialNew = false;
+        }
+
+        await joplin.data.userDataSet(
+          ModelType.Note,
+          noteId,
+          "confidential",
+          confidentialNew
+        );
+
+        this.log.verbose(
+          "Toggle confidential of note " + noteId + " to " + confidential
+        );
+      }
+    }
   }
 
   private async genItemTemplate(): Promise<void> {
@@ -358,7 +421,7 @@ class Notelist {
     `;
   }
 
-  private async getNoteDateFormated(noteDate: any): Promise<string> {
+  private async getNoteDateFormated(noteDate: string): Promise<string> {
     let date = new Date(noteDate);
     const now = new Date(Date.now());
     let dateString: string =
@@ -492,7 +555,11 @@ class Notelist {
     }
   }
 
-  private async getFieldValue(field: string, props: any): Promise<string> {
+  private async getFieldValue(
+    field: string,
+    props: any,
+    confidential: boolean
+  ): Promise<string> {
     let value = " ";
     switch (field.toLowerCase()) {
       case "createdtime":
@@ -547,14 +614,22 @@ class Notelist {
         }
         break;
       case "notetext":
-        value = "{{noteBody}}";
+        if (confidential) {
+          value = "{{noteBody}}";
+        } else {
+          value = "{{noteBody}}";
+        }
         break;
       case "url":
-        value = '<span class="url">' + props.note.source_url + "</span>";
+        let url = props.note.source_url;
+        value = "";
+        if (!confidential && url.length > 0) {
+          value = '<span class="url">' + url + "</span>";
+        }
         break;
       case "tags":
         const tags = await this.getTags(props.note.tags);
-        if (tags.length > 0) {
+        if (!confidential && tags.length > 0) {
           value =
             '<span class="tags"><span class="tag">' +
             tags.join('</span> <span class="tag">') +
@@ -572,7 +647,8 @@ class Notelist {
 
   private async replaceFieldPlaceholder(
     text: string,
-    noteFields: string[]
+    noteFields: string[],
+    confidential: boolean
   ): Promise<string> {
     // asyncStringReplace copied from https://dev.to/ycmjason/stringprototypereplace-asynchronously-28k9
     const asyncStringReplace = async (
@@ -597,7 +673,7 @@ class Notelist {
         text,
         /{{([^}]+)}}/g,
         async (match, groups) => {
-          return await this.getFieldValue(groups, noteFields);
+          return await this.getFieldValue(groups, noteFields, confidential);
         }
       );
     } catch (error) {
@@ -625,11 +701,44 @@ class Notelist {
     return returnValue;
   }
 
+  private async isNoteConfidential(
+    noteId: string,
+    tags: any
+  ): Promise<boolean> {
+    const confidential = await joplin.data.userDataGet(
+      ModelType.Note,
+      noteId,
+      "confidential"
+    );
+
+    if (confidential) {
+      return true;
+    }
+
+    if (this.settings["confidentialTags"].length > 0) {
+      for (const tag of tags) {
+        if (
+          this.settings["confidentialTags"].indexOf(tag.title.toLowerCase()) !==
+          -1
+        ) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
   private async onRenderNoteCall(props: any): Promise<any> {
     this.log.verbose("Func: onRenderNoteCall " + props.note.id);
+    const start = performance.now();
+
     const completed =
       props.note.is_todo == 1 && props.note.todo_completed != 0 ? true : false;
 
+    const confidential = await this.isNoteConfidential(
+      props.note.id,
+      props.note.tags
+    );
     let noteLine = this.settings["noteLine"];
     let firstLine = this.settings["firstLine"];
     let lastLine = this.settings["lastLine"];
@@ -637,24 +746,43 @@ class Notelist {
 
     let noteTextLeft = await this.replaceFieldPlaceholder(
       noteTextParts["noteTextLeft"],
-      props
+      props,
+      confidential
     );
     let noteTextRight = await this.replaceFieldPlaceholder(
       noteTextParts["noteTextRight"],
-      props
+      props,
+      confidential
     );
     let noteBody = "";
-    if (noteTextParts["noteText"] == true) {
+    if (!confidential && noteTextParts["noteText"] == true) {
       noteBody = await this.getBody(props.note.body);
+    } else if (confidential) {
+      noteBody = i18n.__("confidentialNotetext");
     }
 
-    firstLine = await this.replaceFieldPlaceholder(firstLine, props);
-    lastLine = await this.replaceFieldPlaceholder(lastLine, props);
+    firstLine = await this.replaceFieldPlaceholder(
+      firstLine,
+      props,
+      confidential
+    );
+    lastLine = await this.replaceFieldPlaceholder(
+      lastLine,
+      props,
+      confidential
+    );
 
     let thumbnail = null;
-    if (this.settings["thumbnail"] != "no") {
+    if (!confidential && this.settings["thumbnail"] != "no") {
       thumbnail = await this.getResourcePreview(props.note.id, props.note.body);
     }
+
+    const stop = performance.now();
+    const inSeconds = (stop - start) / 1000;
+    const rounded = Number(inSeconds).toFixed(3);
+    this.log.verbose(
+      "onRenderNoteCall " + props.note.id + " time: " + rounded + "s"
+    );
 
     return {
       ...props,
@@ -846,7 +974,10 @@ class Notelist {
       const resizedImageHandle = await joplin.imaging.resize(
         processImageHandle,
         {
-          width: this.settings["thumbnailSize"],
+          width:
+            this.settings["thumbnailSize"] *
+            2 *
+            (this.settings["joplinZoome"] / 100),
         }
       );
 
