@@ -3,6 +3,7 @@
 ## not released
 
 - Fix: Display HTML entities in preview #21
+- Add: Thumbnail support for PDFs #15
 
 ## v0.4.1 (2024-02-17)
 
