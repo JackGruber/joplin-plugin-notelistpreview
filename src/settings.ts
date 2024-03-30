@@ -112,7 +112,7 @@ export namespace settings {
         description: i18n.__("settings.bodyExcerpt.description"),
       },
       thumbnailSize: {
-        value: 75,
+        value: 70,
         minimum: 1,
         maximum: 200,
         type: SettingItemType.Int,
