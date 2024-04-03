@@ -4,6 +4,7 @@
 
 - Fix: Display HTML entities in preview #21
 - Add: Thumbnail support for PDFs #15
+- Fix: Images with mime type `image/jpg` are not displayed #22
 
 ## v0.4.1 (2024-02-17)
 
