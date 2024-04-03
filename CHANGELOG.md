@@ -2,6 +2,9 @@
 
 ## not released
 
+- Fix: Display HTML entities in preview #21
+- Add: Thumbnail support for PDFs #15
+
 ## v0.4.1 (2024-02-17)
 
 - Fix: Increase thumbnail size for better previews, the Joplin zoom level is also taken into account #18
