@@ -2,6 +2,12 @@
 
 ## not released
 
+## v1.0.0 (2024-04-19)
+
+- Add: Thumbnail support for PDFs #15
+
+> ❗️ Requires at least Joplin `3.0.3` ❗️
+
 ## v0.4.2 (2024-04-19)
 
 - Fix: Display HTML entities in preview #21
