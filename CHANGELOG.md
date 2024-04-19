@@ -2,6 +2,12 @@
 
 ## not released
 
+## v0.4.2 (2024-04-19)
+
+- Fix: Display HTML entities in preview #21
+- Fix: Images with mime type `image/jpg` are not displayed #22
+- Fix: `homepage_url` for Joplin manage plugins
+
 ## v0.4.1 (2024-02-17)
 
 - Fix: Increase thumbnail size for better previews, the Joplin zoom level is also taken into account #18

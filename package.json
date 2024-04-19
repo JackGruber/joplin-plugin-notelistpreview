@@ -1,6 +1,6 @@
 {
   "name": "joplin-plugin-notelistpreview",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "scripts": {
     "dist": "webpack --env joplin-plugin-config=buildMain && webpack --env joplin-plugin-config=buildExtraScripts && webpack --env joplin-plugin-config=createArchive",
     "prepare": "npm run dist && husky install",
@@ -20,7 +20,7 @@
     "publish"
   ],
   "devDependencies": {
-    "@joplin/lib": "~2.9",
+    "@joplin/lib": "^2.14.1",
     "@types/jest": "^29.5.11",
     "@types/node": "^18.7.13",
     "chalk": "^4.1.0",
@@ -43,7 +43,7 @@
   },
   "dependencies": {
     "electron-log": "^5.0.3",
-    "html-to-image": "^1.11.11",
+    "html-entities": "^2.5.2",
     "i18n": "^0.15.1",
     "moment": "^2.29.4",
     "remove-markdown": "^0.5.0",

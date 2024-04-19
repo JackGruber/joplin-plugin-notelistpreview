@@ -11,6 +11,7 @@ import * as fs from "fs-extra";
 import notelistLogging from "electron-log/main";
 import { MenuItemLocation } from "api/types";
 import { ModelType } from "api/types";
+import { decode } from "html-entities";
 
 let i18n: any;
 
@@ -453,6 +454,8 @@ class Notelist {
     noteBody = noteBody.replace(/(\s\\?~~|~~\s)/g, " ");
     noteBody = noteBody.replace(/(\s\\?==|==\s)/g, " ");
     noteBody = noteBody.replace(/(\s\\?\+\+|\+\+\s)/g, " ");
+
+    noteBody = decode(noteBody); // Decode HTML entities
 
     let bodyExcerpt = "";
     noteBody = noteBody.replace(/(\r\n|\n)/g, " ");
@@ -914,7 +917,9 @@ class Notelist {
 
         if (
           resourceItem.mime.includes("image/png") ||
-          resourceItem.mime.includes("image/jpeg")
+          resourceItem.mime.includes("image/jpeg") ||
+          resourceItem.mime.includes("image/jpg")
+          //// || resourceItem.mime.includes("application/pdf")
         ) {
           thumbnailPath = await this.genResourcePreviewImage(
             resourceItem,
