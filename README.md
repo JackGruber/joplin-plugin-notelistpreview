@@ -16,6 +16,8 @@ A plugin to add a preview to the Joplin note list.
 - [Installation](#installation)
     - [Automatic](#automatic)
     - [Manual](#manual)
+        - [Manual via file system](#manual-via-file-system)
+        - [Manual via file via GUI](#manual-via-file-via-gui)
 - [Usage](#usage)
 - [Plugin options](#plugin-options)
 - [Layouts](#layouts)
@@ -44,10 +46,20 @@ A plugin to add a preview to the Joplin note list.
 
 ### Manual
 
+#### Manual via file system
+
 - Download the latest released JPL package (`io.github.jackgruber.notelistpreview.jpl`) from [here](https://github.com/JackGruber/joplin-plugin-notelistpreview/releases/latest)
 - Close Joplin
 - Copy the downloaded JPL package in your profile `plugins` folder
 - Start Joplin
+
+#### Manual via file via GUI
+
+- Download the latest released JPL package (`io.github.jackgruber.notelistpreview.jpl`) from [here](https://github.com/JackGruber/joplin-plugin-notelistpreview/releases/latest)
+- Go to `Tools > Options > Plugins`
+- Click on the gear wheel and select `Install from file`
+- Select the downloaded JPL file
+- Restart Joplin
 
 ## Usage
 
