@@ -22,6 +22,7 @@ class Notelist {
   private log: any;
   private logFile: string;
   private dataDir: string;
+  private thumbnailCacheDir: string;
 
   constructor() {
     this.log = notelistLogging;
@@ -37,7 +38,8 @@ class Notelist {
     await this.loadSettings();
     await this.fileLogging(true);
     await this.logSettings();
-    await this.cleanResourcePreview();
+    this.loadThumbnailCache(); // Load cache parallel
+    //await this.cleanResourcePreview();
     await this.genItemTemplate();
     await this.registerRendererPreview();
     await this.createMsgDialog();
@@ -103,6 +105,17 @@ class Notelist {
     this.log.verbose("Func: loadSettings");
 
     this.dataDir = await joplin.plugins.dataDir();
+    this.thumbnailCacheDir = path.join(this.dataDir, "thumbnail");
+
+    // Create cache dir
+    if (!fs.existsSync(this.thumbnailCacheDir)) {
+      try {
+        this.log.verbose("Create " + this.thumbnailCacheDir);
+        fs.mkdirSync(this.thumbnailCacheDir);
+      } catch (e) {
+        this.log.error(e.message);
+      }
+    }
 
     let confidentialTags = await joplin.settings.value("confidentialTags");
     confidentialTags = confidentialTags.trim().toLowerCase();
@@ -863,7 +876,7 @@ class Notelist {
     resource: any,
     thumbnailFilePath: string
   ): Promise<void> {
-    this.log.verbose("Update cache for: " + resource.id);
+    this.log.verbose("Store thumbnail in cache: " + resource.id);
     this.thumbnailCache[resource.id] = {
       path: thumbnailFilePath,
       updated_time: resource.updated_time,
@@ -910,21 +923,13 @@ class Notelist {
           return thumbnailPath;
         }
 
-        let thumbnailFilePath = path.join(
-          this.dataDir,
-          "thumb_" + resourceItem.id + ".jpg"
-        );
-
         if (
           resourceItem.mime.includes("image/png") ||
           resourceItem.mime.includes("image/jpeg") ||
           resourceItem.mime.includes("image/jpg") ||
           resourceItem.mime.includes("application/pdf")
         ) {
-          thumbnailPath = await this.genResourcePreviewImage(
-            resourceItem,
-            thumbnailFilePath
-          );
+          thumbnailPath = await this.genResourcePreviewImage(resourceItem);
         }
 
         if (thumbnailPath == "") {
@@ -938,10 +943,7 @@ class Notelist {
     }
   }
 
-  private async genResourcePreviewImage(
-    resource: any,
-    filePath: string
-  ): Promise<string> {
+  private async genResourcePreviewImage(resource: any): Promise<string> {
     this.log.verbose("Func: genResourcePreviewImage " + resource.id);
     try {
       const imageHandle = await joplin.imaging.createFromResource(resource.id);
@@ -985,10 +987,11 @@ class Notelist {
             (this.settings["joplinZoome"] / 100),
         }
       );
-
+      const filePath = (await this.getThumbnailPath(resource.id)) + ".jpg";
       await joplin.imaging.toJpgFile(resizedImageHandle, filePath, 90);
       await joplin.imaging.free(imageHandle);
       await joplin.imaging.free(resizedImageHandle);
+      return filePath;
     } catch (e) {
       if (e.message.includes("Could not load resource path")) {
         this.log.warn("Resource file " + resource.id + " is not available");
@@ -999,8 +1002,6 @@ class Notelist {
 
       return "";
     }
-
-    return filePath;
   }
 
   private async cleanResourcePreview(): Promise<void> {
@@ -1028,6 +1029,67 @@ class Notelist {
         }
       }
     }
+  }
+
+  private async loadThumbnailCache(): Promise<void> {
+    this.log.verbose("Func: loadThumbnailCache");
+    let resources = {};
+
+    // Load resources for timestamp
+    this.log.verbose("Load joplin resources");
+    let pageNum = 1;
+    do {
+      var joplinResources = await joplin.data.get(["resources"], {
+        fields: "id, updated_time",
+        limit: 100,
+        page: pageNum++,
+      });
+      for (const item of joplinResources.items) {
+        resources[item.id] = item.updated_time;
+      }
+    } while (joplinResources.has_more);
+
+    this.log.verbose("Check cache dir");
+    const subDirs = fs
+      .readdirSync(this.thumbnailCacheDir, { withFileTypes: true })
+      .filter((dirent) => dirent.isDirectory())
+      .map((dirent) => dirent.name);
+    for (const subDir of subDirs) {
+      const subFolderPath = path.join(this.thumbnailCacheDir, subDir);
+      this.log.verbose(subFolderPath);
+      const files = fs
+        .readdirSync(subFolderPath, { withFileTypes: true })
+        .filter((dirent) => dirent.isFile())
+        .map((dirent) => dirent.name);
+      for (const file of files) {
+        const filePath = path.join(subFolderPath, file);
+        const resourceId = file.split(".")[0];
+        const updated_time = resources[resourceId];
+        await this.storeThumbnailInCache(
+          { id: resourceId, updated_time: updated_time },
+          filePath
+        );
+      }
+    }
+
+    this.log.verbose("Finished: loadThumbnailCache");
+  }
+
+  private async getThumbnailPath(resourceId: string): Promise<string> {
+    this.log.verbose("Func: getThumbnailPath " + resourceId);
+    const subDir = resourceId.substring(0, 1);
+    const thumbnailCacheSubDir = path.join(this.thumbnailCacheDir, subDir);
+    if (!fs.existsSync(thumbnailCacheSubDir)) {
+      try {
+        this.log.verbose("Create " + thumbnailCacheSubDir);
+        fs.mkdirSync(thumbnailCacheSubDir);
+      } catch (e) {
+        this.log.error("Func: getThumbnailPath " + resourceId);
+        this.log.error(e.message);
+      }
+    }
+
+    return path.join(this.thumbnailCacheDir, subDir, resourceId);
   }
 }
 
