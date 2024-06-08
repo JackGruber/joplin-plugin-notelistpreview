@@ -867,6 +867,9 @@ class Notelist {
     const thumbnail = this.thumbnailCache[resource.id];
     if (thumbnail && thumbnail.updated_time == resource.updated_time) {
       this.log.verbose("Use cache for " + resource.id);
+      this.thumbnailCache[resource.id].accessCount++;
+      this.thumbnailCache[resource.id].lastAccess = Date.now();
+      this.saveThumbnailMetaChacheData(resource.id); // Not syncron for speed
       return thumbnail.path;
     }
     return "";
@@ -880,7 +883,11 @@ class Notelist {
     this.thumbnailCache[resource.id] = {
       path: thumbnailFilePath,
       updated_time: resource.updated_time,
+      lastAccess: Date.now(),
+      accessCount: 1,
     };
+
+    this.saveThumbnailMetaChacheData(resource.id); // Not syncron for speed
   }
 
   private async getResourceOrder(noteBody: string): Promise<any> {
@@ -1004,6 +1011,23 @@ class Notelist {
     }
   }
 
+  private async saveThumbnailMetaChacheData(resourceId: number): Promise<void> {
+    this.log.verbose("Func: saveThumbnailMetaChacheData " + resourceId);
+    let data = JSON.parse(JSON.stringify(this.thumbnailCache[resourceId])); // deep copy
+    delete data["path"];
+
+    try {
+      fs.writeFileSync(
+        this.thumbnailCache[resourceId].path + ".cache",
+        JSON.stringify(data, null, 2),
+        "utf8"
+      );
+    } catch (e) {
+      this.log.error("Func: saveThumbnailMetaChacheData " + resourceId);
+      this.log.error(e.message);
+    }
+  }
+
   private async cleanResourcePreview(): Promise<void> {
     this.log.verbose("Func: cleanResourcePreview");
 
@@ -1033,21 +1057,7 @@ class Notelist {
 
   private async loadThumbnailCache(): Promise<void> {
     this.log.verbose("Func: loadThumbnailCache");
-    let resources = {};
-
-    // Load resources for timestamp
-    this.log.verbose("Load joplin resources");
-    let pageNum = 1;
-    do {
-      var joplinResources = await joplin.data.get(["resources"], {
-        fields: "id, updated_time",
-        limit: 100,
-        page: pageNum++,
-      });
-      for (const item of joplinResources.items) {
-        resources[item.id] = item.updated_time;
-      }
-    } while (joplinResources.has_more);
+    let cachedFiles = 0;
 
     this.log.verbose("Check cache dir");
     const subDirs = fs
@@ -1062,17 +1072,25 @@ class Notelist {
         .filter((dirent) => dirent.isFile())
         .map((dirent) => dirent.name);
       for (const file of files) {
-        const filePath = path.join(subFolderPath, file);
-        const resourceId = file.split(".")[0];
-        const updated_time = resources[resourceId];
-        await this.storeThumbnailInCache(
-          { id: resourceId, updated_time: updated_time },
-          filePath
-        );
+        const fileExt = path.extname(file);
+        if (fileExt != ".cache") {
+          const filePath = path.join(subFolderPath, file);
+          const resourceId = file.split(".")[0];
+          let data = null;
+          try {
+            data = JSON.parse(fs.readFileSync(filePath + ".cache"));
+            data.path = filePath;
+          } catch (e) {
+            this.log.error("Func: loadThumbnailCache " + file);
+            this.log.error(e.message);
+          }
+          this.thumbnailCache[resourceId] = data;
+          cachedFiles++;
+        }
       }
     }
 
-    this.log.verbose("Finished: loadThumbnailCache");
+    this.log.verbose("Finished loading thumbnail cache: " + cachedFiles);
   }
 
   private async getThumbnailPath(resourceId: string): Promise<string> {
