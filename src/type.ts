@@ -3,6 +3,8 @@ type ThumbnailCache = Record<string, Thumbnail>;
 type Thumbnail = {
   path: string;
   updated_time: number;
+  lastAccess: number;
+  accessCount: number;
 };
 
 type Settings = {
