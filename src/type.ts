@@ -3,6 +3,8 @@ type ThumbnailCache = Record<string, Thumbnail>;
 type Thumbnail = {
   path: string;
   updated_time: number;
+  lastAccess: number;
+  accessCount: number;
 };
 
 type Settings = {
@@ -26,6 +28,7 @@ type Settings = {
   todoDueColorDone: string;
   joplinZoome: number;
   confidentialTags: string[];
+  fileCacheDays: number;
 };
 
 export { ThumbnailCache, Thumbnail, Settings };
