@@ -1121,11 +1121,12 @@ class Notelist {
   private async getThumbnailPath(resourceId: string): Promise<string> {
     this.log.verbose("Func: getThumbnailPath " + resourceId);
     const subDirectoryList = [
+      this.thumbnailCacheDir,
       resourceId.substring(0, 1),
       resourceId.substring(1, 2),
     ];
 
-    let thumbnailDirectory = this.thumbnailCacheDir;
+    let thumbnailDirectory = "";
     for (const dirName of subDirectoryList) {
       thumbnailDirectory = path.join(thumbnailDirectory, dirName);
 
