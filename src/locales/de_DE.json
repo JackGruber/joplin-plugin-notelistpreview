@@ -88,12 +88,15 @@
     "confidentialTags": {
       "label": "Vertrauliche Tags",
       "description": "Komma getrente Liste von Tags, welche die Notiz als Vertrauliche markiert"
+    },
+    "fileCacheDays": {
+      "label": "Lebensdauer Cache",
+      "description": "Thumbnails im Cache welche länger als x Tage nicht angezeigt wurden werden beim start gelöscht"
     }
   },
   "msg": {
     "settingsChanged": "Einstellungen für das %s Plugin wurden geändert, bitte Joplin neustarten",
     "error": {
-      "cleanResourcePreview": "Fehler beim Aufräumen der Vorschaubilder",
       "deleteLogFile": "Fehler beim löschen der alten Logdatei"
     }
   },

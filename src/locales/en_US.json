@@ -92,12 +92,15 @@
     "confidentialTags": {
       "label": "Confidential tags",
       "description": "Comma separated list of tags which will be used to define a note as confidential"
+    },
+    "fileCacheDays": {
+      "label": "Cache lifetime",
+      "description": "Thumbnails in the cache that have not been displayed for more than x days are deleted at startup"
     }
   },
   "msg": {
     "settingsChanged": "Settings have been changed for the %s Plugin, please restart Joplin",
     "error": {
-      "cleanResourcePreview": "Error when cleaning up the preview images",
       "deleteLogFile": "Error when deleting old logfile"
     }
   },

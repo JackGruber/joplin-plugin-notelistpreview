@@ -203,6 +203,16 @@ export namespace settings {
           error: "Error",
         },
       },
+      fileCacheDays: {
+        value: 30,
+        minimum: 0,
+        type: SettingItemType.Int,
+        section: "noteListPreview",
+        public: true,
+        advanced: true,
+        label: i18n.__("settings.fileCacheDays.label"),
+        description: i18n.__("settings.fileCacheDays.description"),
+      },
     });
   }
 }

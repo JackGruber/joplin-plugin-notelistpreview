@@ -28,6 +28,7 @@ type Settings = {
   todoDueColorDone: string;
   joplinZoome: number;
   confidentialTags: string[];
+  fileCacheDays: number;
 };
 
 export { ThumbnailCache, Thumbnail, Settings };

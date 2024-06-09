@@ -39,7 +39,6 @@ class Notelist {
     await this.fileLogging(true);
     await this.logSettings();
     this.loadThumbnailCache(); // Load cache parallel
-    //await this.cleanResourcePreview();
     await this.genItemTemplate();
     await this.registerRendererPreview();
     await this.createMsgDialog();
@@ -1040,17 +1039,31 @@ class Notelist {
 
     for (const file of files) {
       if (file.includes("thumb_") && file.includes(".jpg")) {
+      }
+    }
+  }
+
+  private async cleanupCache(): Promise<void> {
+    this.log.verbose("Func: cleanupCache");
+
+    const cleanupDate =
+      Date.now() - this.settings.fileCacheDays * 60 * 60 * 24 * 1000;
+    this.log.info(
+      "Clean all files in cache older than " +
+        this.settings.fileCacheDays +
+        " days: " +
+        cleanupDate
+    );
+    for (const resourceId in this.thumbnailCache) {
+      if (this.thumbnailCache[resourceId].lastAccess < cleanupDate) {
+        this.log.verbose("Clean cache: " + resourceId);
         try {
-          fs.removeSync(path.join(this.dataDir, file));
+          fs.removeSync(this.thumbnailCache[resourceId].path);
+          fs.removeSync(this.thumbnailCache[resourceId].path + ".cache");
+          delete this.thumbnailCache[resourceId];
         } catch (e) {
-          await this.showMsg(
-            i18n.__(
-              "msg.error.cleanResourcePreview",
-              "cleanResourcePreview",
-              e.message
-            )
-          );
-          throw e;
+          this.log.error("cleanupCache");
+          this.log.error(e.message);
         }
       }
     }
@@ -1101,6 +1114,8 @@ class Notelist {
         rounded +
         "s"
     );
+
+    this.cleanupCache();
   }
 
   private async getThumbnailPath(resourceId: string): Promise<string> {
