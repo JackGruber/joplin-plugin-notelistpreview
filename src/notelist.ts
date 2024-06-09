@@ -146,6 +146,7 @@ class Notelist {
       todoDueColorDone: await joplin.settings.value("todoDueColorDone"),
       joplinZoome: await joplin.settings.globalValue("windowContentZoomFactor"),
       confidentialTags: confidentialTags,
+      fileCacheDays: await joplin.settings.value("fileCacheDays"),
     };
   }
 
@@ -1057,57 +1058,74 @@ class Notelist {
 
   private async loadThumbnailCache(): Promise<void> {
     this.log.verbose("Func: loadThumbnailCache");
+    const start = performance.now();
     let cachedFiles = 0;
 
-    this.log.verbose("Check cache dir");
-    const subDirs = fs
-      .readdirSync(this.thumbnailCacheDir, { withFileTypes: true })
-      .filter((dirent) => dirent.isDirectory())
-      .map((dirent) => dirent.name);
-    for (const subDir of subDirs) {
-      const subFolderPath = path.join(this.thumbnailCacheDir, subDir);
-      this.log.verbose(subFolderPath);
-      const files = fs
-        .readdirSync(subFolderPath, { withFileTypes: true })
-        .filter((dirent) => dirent.isFile())
-        .map((dirent) => dirent.name);
-      for (const file of files) {
-        const fileExt = path.extname(file);
+    let directoryScan = null;
+    try {
+      directoryScan = await fs.readdirSync(this.thumbnailCacheDir, {
+        recursive: true,
+        withFileTypes: true,
+      });
+    } catch (e) {
+      this.log.error(e.message);
+    }
+
+    for (const entry of directoryScan) {
+      if (entry.isFile()) {
+        const fileExt = path.extname(entry.name);
         if (fileExt != ".cache") {
-          const filePath = path.join(subFolderPath, file);
-          const resourceId = file.split(".")[0];
+          const filePath = path.join(entry.path, entry.name);
+          const resourceId = entry.name.split(".")[0];
           let data = null;
           try {
             data = JSON.parse(fs.readFileSync(filePath + ".cache"));
             data.path = filePath;
+            this.thumbnailCache[resourceId] = data;
+            cachedFiles++;
           } catch (e) {
-            this.log.error("Func: loadThumbnailCache " + file);
+            this.log.error("Func: loadThumbnailCache " + entry.name);
             this.log.error(e.message);
           }
-          this.thumbnailCache[resourceId] = data;
-          cachedFiles++;
         }
       }
     }
 
-    this.log.verbose("Finished loading thumbnail cache: " + cachedFiles);
+    const stop = performance.now();
+    const inSeconds = (stop - start) / 1000;
+    const rounded = Number(inSeconds).toFixed(3);
+    this.log.info(
+      "Finished loading " +
+        cachedFiles +
+        " thumbnails from cache in " +
+        rounded +
+        "s"
+    );
   }
 
   private async getThumbnailPath(resourceId: string): Promise<string> {
     this.log.verbose("Func: getThumbnailPath " + resourceId);
-    const subDir = resourceId.substring(0, 1);
-    const thumbnailCacheSubDir = path.join(this.thumbnailCacheDir, subDir);
-    if (!fs.existsSync(thumbnailCacheSubDir)) {
-      try {
-        this.log.verbose("Create " + thumbnailCacheSubDir);
-        fs.mkdirSync(thumbnailCacheSubDir);
-      } catch (e) {
-        this.log.error("Func: getThumbnailPath " + resourceId);
-        this.log.error(e.message);
+    const subDirectoryList = [
+      resourceId.substring(0, 1),
+      resourceId.substring(1, 2),
+    ];
+
+    let thumbnailDirectory = this.thumbnailCacheDir;
+    for (const dirName of subDirectoryList) {
+      thumbnailDirectory = path.join(thumbnailDirectory, dirName);
+
+      if (!fs.existsSync(thumbnailDirectory)) {
+        try {
+          this.log.verbose("Create " + thumbnailDirectory);
+          fs.mkdirSync(thumbnailDirectory);
+        } catch (e) {
+          this.log.error("Func: getThumbnailPath " + resourceId);
+          this.log.error(e.message);
+        }
       }
     }
 
-    return path.join(this.thumbnailCacheDir, subDir, resourceId);
+    return path.join(thumbnailDirectory, resourceId);
   }
 }
 
