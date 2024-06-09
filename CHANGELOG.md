@@ -2,6 +2,8 @@
 
 ## not released
 
+- Optimize: The cache is now permanent to prevent that the thumbnails regenerated each time Joplin is started #23
+
 ## v1.0.0 (2024-04-19)
 
 - Add: Thumbnail support for PDFs #15
